@@ -48,7 +48,7 @@ def fixt_dir(tmpdir):
 
     os.close(fd)
 
-@mark.parametrize('regular_file', [fixt_regular_file, fixt_regular_file_byte_name])
+@mark.parametrize('regular_file', [fixt_regular_file, fixt_regular_file_byte_in_name])
 def test_not_a_directory(regular_file):
     with raises(NotADirectoryError):
         getdents_raw(fixt_regular_file, MIN_GETDENTS_BUFF_SIZE)
