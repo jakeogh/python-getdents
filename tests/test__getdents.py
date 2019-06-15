@@ -2,7 +2,7 @@ import os
 
 from unittest.mock import ANY
 
-from pytest import fixture, raises
+from pytest import fixture, raises, mark
 
 from getdents._getdents import (
     DT_DIR,
@@ -48,7 +48,7 @@ def fixt_dir(tmpdir):
 
     os.close(fd)
 
-@pytest.mark.parametrize('regular_file', [fixt_regular_file, fixt_regular_file_bytes_name])
+@mark.parametrize('regular_file', [fixt_regular_file, fixt_regular_file_bytes_name])
 def test_not_a_directory(regular_file):
     with raises(NotADirectoryError):
         getdents_raw(fixt_regular_file, MIN_GETDENTS_BUFF_SIZE)
