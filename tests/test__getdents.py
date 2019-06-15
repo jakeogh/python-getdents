@@ -31,18 +31,18 @@ def fixt_regular_file(tmpdir):
         os.close(fd)
 
 
-@fixture
-def fixt_regular_file_byte_in_name(tmpdir):
-    print("HERE")
-    fn = b'\x80'.txt  # byte 128
-    f = tmpdir.join(fn)
-    f.write('content')
-
-    fd = os.open(str(f), os.O_RDONLY)
-
-    yield fd
-
-    os.close(fd)
+#@fixture
+#def fixt_regular_file_byte_in_name(tmpdir):
+#    print("HERE")
+#    fn = b'\x80'.txt  # byte 128
+#    f = tmpdir.join(fn)
+#    f.write('content')
+#
+#    fd = os.open(str(f), os.O_RDONLY)
+#
+#    yield fd
+#
+#    os.close(fd)
 
 
 @fixture
@@ -57,7 +57,7 @@ def fixt_dir(tmpdir):
     os.close(fd)
 
 #@mark.parametrize('regular_file', [fixt_regular_file, fixt_regular_file_byte_in_name])
-def test_not_a_directory(regular_file):
+def test_not_a_directory(fixt_regular_file):
     with raises(NotADirectoryError):
         getdents_raw(regular_file, MIN_GETDENTS_BUFF_SIZE)
 
