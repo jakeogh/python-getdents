@@ -29,7 +29,7 @@ def fixt_regular_file(tmpdir):
     print(tmpdir)
     all_valid_bytes = set([bytes(chr(x), encoding='Latin-1') for x in range(0, 256)]) - set([b'\x00', b'\x2F'])
     for b in all_valid_bytes:
-        b = Path(b)
+        b = Path(os.fsdecode(b))
         print(b)
         f = tmpdir / b
         f.write('content')
