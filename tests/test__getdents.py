@@ -15,14 +15,14 @@ from getdents._getdents import (
 
 @fixture
 def fixt_regular_file(tmpdir):
-    f = tmpdir.join('test.txt')
-    f.write('content')
+    #f = tmpdir.join('test.txt')
+    #f.write('content')
 
-    fd = os.open(str(f), os.O_RDONLY)
+    #fd = os.open(str(f), os.O_RDONLY)
 
-    yield fd
+    #yield fd
 
-    os.close(fd)
+    #os.close(fd)
 
     #tmpdir = os.fsencode(tmpdir)
     #tmpdir = Path(tmpdir)
