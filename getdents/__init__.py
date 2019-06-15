@@ -72,6 +72,8 @@ class Dent():
     def __fspath__(self):
         return os.fsdecode(self.path)
 
+    def relative_to(self, path):  # temp dont keep
+        return self.path.split(path)[-1]
 
     #def absolute(self):  # this will hand back a pathlib.Path TODO
     #    if self.parent.is_absolute():
