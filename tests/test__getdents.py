@@ -4,6 +4,8 @@ from unittest.mock import ANY
 
 from pytest import fixture, raises, mark
 
+from pathlib import Path
+
 from getdents._getdents import (
     DT_DIR,
     MIN_GETDENTS_BUFF_SIZE,
@@ -23,6 +25,7 @@ def fixt_regular_file(tmpdir):
     os.close(fd)
 
     #tmpdir = os.fsencode(tmpdir)
+    tmpdir = Path(tmpdir)
     print(tmpdir)
     all_valid_bytes = set([bytes(chr(x), encoding='Latin-1') for x in range(0, 256)]) - set([b'\x00', b'\x2F'])
     for b in all_valid_bytes:
