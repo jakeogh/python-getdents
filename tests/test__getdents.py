@@ -24,7 +24,7 @@ def fixt_regular_file(tmpdir):
 
 
 @fixture
-def fixt_regular_file_byte_name(tmpdir):
+def fixt_regular_file_byte_in_name(tmpdir):
     print("HERE")
     fn = b'\x80'.txt  # byte 128
     f = tmpdir.join(fn)
@@ -48,7 +48,7 @@ def fixt_dir(tmpdir):
 
     os.close(fd)
 
-@mark.parametrize('regular_file', [fixt_regular_file, fixt_regular_file_bytes_name])
+@mark.parametrize('regular_file', [fixt_regular_file, fixt_regular_file_byte_name])
 def test_not_a_directory(regular_file):
     with raises(NotADirectoryError):
         getdents_raw(fixt_regular_file, MIN_GETDENTS_BUFF_SIZE)
