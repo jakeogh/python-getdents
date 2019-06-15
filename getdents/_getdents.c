@@ -107,7 +107,8 @@ getdents_next(struct getdents_state *s)
 
 	struct linux_dirent64 *d = (struct linux_dirent64 *)(s->buff + s->bpos);
 
-	PyObject *py_name = PyUnicode_DecodeFSDefault(d->d_name);
+	PyObject *py_name = PyBytes_FromString(d->d_name);
+//	PyObject *py_name = PyUnicode_DecodeFSDefault(d->d_name);
 
 	PyObject *result = Py_BuildValue("KbO", d->d_ino, d->d_type, py_name);
 

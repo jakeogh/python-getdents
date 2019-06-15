@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+import fastentrypoints
 
 from setuptools import setup
 
@@ -25,12 +26,17 @@ setup(
     packages=['getdents'],
     include_package_data=True,
     zip_safe=False,
-    ext_modules = [
+    ext_modules=[
         Extension('getdents._getdents', sources=['getdents/_getdents.c']),
     ],
     install_requires=[
-      'setuptools',
+        'setuptools',
     ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
+    entry_points={
+        'console_scripts': [
+            'getdents = getdents.getdents64:main',
+        ],
+    },
 )
