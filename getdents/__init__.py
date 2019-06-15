@@ -1,7 +1,6 @@
-import sys
 import os
 import attr
-from pathlib import Path
+#from pathlib import Path
 
 from ._getdents import (  # noqa: ignore=F401
     DT_BLK,
@@ -44,26 +43,40 @@ def getdents(path, buff_size=32768, verbose=False):
     fd = os.open(path, O_GETDENTS)
 
     try:
-        yield from (
-            (inode, type, name)
-            for inode, type, name in getdents_raw(fd, buff_size)
-            if not(type == DT_UNKNOWN or inode == 0 or name in (b'.', b'..'))
-        )
+        for inode, dtype, name in getdents_raw(fd, buff_size):
+            if dtype != DT_UNKNOWN:
+                if name != b'..':
+                    #print(b"__NAME:", name)
+                    yield (inode, dtype, name)
     finally:
         os.close(fd)
 
 
-@attr.s(auto_attribs=True, kw_only=True)
+#@attr.s(auto_attribs=True, kw_only=True)
 class Dent():
-    parent: bytes
-    name: bytes
-    #parent: str = attr.ib(converter=Path)
-    #name: str = attr.ib(converter=Path)
-    inode: int
-    dtype: int
-    verbose: bool = False
+    def __init__(self, parent: bytes, name: bytes, inode: int, dtype: int):
+        self.parent = parent
+        self.name = name
+        self.inode = inode
+        self.dtype = dtype
 
-    #def absolute(self):
+        if self.name == b'.':
+            split_p = self.parent.split(b'/')
+            self.name = split_p[-1]
+            self.parent = b'/'.join(split_p[:-1])
+            del split_p
+        self.path = b'/'.join((self.parent, self.name))
+
+    def str(self):
+        return os.fsdecode(self.path)
+
+    def __repr__(self):
+        #print(self.path)
+        #with open('/dev/stdout', mode='wb') as fd:
+        #    fd.write(self.path)
+        return repr(os.fsdecode(self.path))  # todo
+
+    #def absolute(self):  # this will hand back a pathlib.Path TODO
     #    if self.parent.is_absolute():
     #        return self.parent / self.name
     #    return self.parent.resolve() / self.name
@@ -109,7 +122,6 @@ class Dent():
 
 @attr.s(auto_attribs=True)
 class DentGen():
-    #path: str = attr.ib(converter=Path)
     path: bytes
     buff_size: int = 32768
     verbose: bool = False
@@ -121,10 +133,11 @@ class DentGen():
     def go(self):
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, verbose=self.verbose):
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
-            if dent.is_dir():
+            if dent.path == self.path:
+                yield dent
+            elif dent.is_dir():
                 self.path = dent.parent + b'/' + dent.name
                 yield from self.go()
                 self.path = dent.parent
-            yield dent
-
-
+            else:
+                yield dent
