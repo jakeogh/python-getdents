@@ -20,7 +20,7 @@ def fixt_regular_file(tmpdir):
 
     #fd = os.open(str(f), os.O_RDONLY)
 
-    #yield fd
+    #y ield fd
 
     #os.close(fd)
 
