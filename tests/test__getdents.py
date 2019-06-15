@@ -25,6 +25,7 @@ def fixt_regular_file(tmpdir):
 
 @fixture
 def fixt_regular_file_byte_name(tmpdir):
+    print("HERE")
     fn = b'\x80'.txt  # byte 128
     f = tmpdir.join(fn)
     f.write('content')
