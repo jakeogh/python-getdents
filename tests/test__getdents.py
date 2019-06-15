@@ -24,6 +24,19 @@ def fixt_regular_file(tmpdir):
 
 
 @fixture
+def fixt_regular_file_byte_name(tmpdir):
+    fn = b'\x80'.txt  # byte 128
+    f = tmpdir.join(fn)
+    f.write('content')
+
+    fd = os.open(str(f), os.O_RDONLY)
+
+    yield fd
+
+    os.close(fd)
+
+
+@fixture
 def fixt_dir(tmpdir):
     for i in range(10):
         tmpdir.mkdir('subdir%d' % i)
