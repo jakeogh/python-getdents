@@ -27,7 +27,7 @@ def fixt_regular_file(tmpdir):
     all_valid_bytes = set([bytes(chr(x), encoding='Latin-1') for x in range(0, 256)]) - set([b'\x00', b'\x2F'])
     for b in all_valid_bytes:
         print(b)
-        f = tmpdir.join(b)
+        f = tmpdir + b'/' + b
         f.write('content')
         fd = os.open(str(f), os.O_RDONLY)
         yield fd
