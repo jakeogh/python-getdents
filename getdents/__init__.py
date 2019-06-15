@@ -70,7 +70,7 @@ class Dent():
         return repr(os.fsdecode(self.path))  # todo
 
     def __fspath__(self):
-        return self.path.encode('utf8')
+        return os.fsdecode(self.path)
 
 
     #def absolute(self):  # this will hand back a pathlib.Path TODO
