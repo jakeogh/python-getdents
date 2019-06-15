@@ -1,3 +1,4 @@
+import sys
 import os
 import attr
 from pathlib import Path
@@ -46,7 +47,7 @@ def getdents(path, buff_size=32768, verbose=False):
         yield from (
             (inode, type, name)
             for inode, type, name in getdents_raw(fd, buff_size)
-            if not(type == DT_UNKNOWN or inode == 0 or name in ('.', '..'))
+            if not(type == DT_UNKNOWN or inode == 0 or name in (b'.', b'..'))
         )
     finally:
         os.close(fd)
@@ -54,16 +55,18 @@ def getdents(path, buff_size=32768, verbose=False):
 
 @attr.s(auto_attribs=True, kw_only=True)
 class Dent():
-    parent: str = attr.ib(converter=Path)
-    name: str = attr.ib(converter=Path)
-    verbose: bool = False
+    parent: bytes
+    name: bytes
+    #parent: str = attr.ib(converter=Path)
+    #name: str = attr.ib(converter=Path)
     inode: int
     dtype: int
+    verbose: bool = False
 
-    def absolute(self):
-        if self.parent.is_absolute():
-            return self.parent / self.name
-        return self.parent.resolve() / self.name
+    #def absolute(self):
+    #    if self.parent.is_absolute():
+    #        return self.parent / self.name
+    #    return self.parent.resolve() / self.name
 
     # values from /usr/include/dirent.h
     # shouldnt get DT_UNKNOWN since getdents() filters it
@@ -106,19 +109,20 @@ class Dent():
 
 @attr.s(auto_attribs=True)
 class DentGen():
-    path: str = attr.ib(converter=Path)
+    #path: str = attr.ib(converter=Path)
+    path: bytes
     buff_size: int = 32768
     verbose: bool = False
 
     def __attrs_post_init__(self):
-        if not self.path.is_absolute():
-            self.path = self.path.resolve()
+        if self.path[0] != b'/':
+            self.path = os.path.realpath(os.path.expanduser(self.path))
 
     def go(self):
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, verbose=self.verbose):
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             if dent.is_dir():
-                self.path = dent.parent / dent.name
+                self.path = dent.parent + b'/' + dent.name
                 yield from self.go()
                 self.path = dent.parent
             yield dent
