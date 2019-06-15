@@ -22,6 +22,14 @@ def fixt_regular_file(tmpdir):
 
     os.close(fd)
 
+    all_valid_bytes = set([bytes(chr(x), encoding='Latin-1') for x in range(0, 256)]) - set([b'\x00', b'\x2F'])
+    for b in all_valid_bytes:
+        f = tmpdir.join(b)
+        f.write('content')
+        fd = os.open(str(f), os.O_RDONLY)
+        yield fd
+        os.close(fd)
+
 
 @fixture
 def fixt_regular_file_byte_in_name(tmpdir):
@@ -48,7 +56,7 @@ def fixt_dir(tmpdir):
 
     os.close(fd)
 
-@mark.parametrize('regular_file', [fixt_regular_file, fixt_regular_file_byte_in_name])
+#@mark.parametrize('regular_file', [fixt_regular_file, fixt_regular_file_byte_in_name])
 def test_not_a_directory(regular_file):
     with raises(NotADirectoryError):
         getdents_raw(regular_file, MIN_GETDENTS_BUFF_SIZE)
