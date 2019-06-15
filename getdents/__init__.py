@@ -1,6 +1,4 @@
 import os
-import attr
-#from pathlib import Path
 
 from ._getdents import (  # noqa: ignore=F401
     DT_BLK,
@@ -33,7 +31,7 @@ def getdents(path, buff_size=32768, verbose=False):
 
     Note:
        For better performance, set buffer size to be multiple of your block
-       size for filesystem I/O.
+       size for filesystem IO.
 
     Args:
         path (str): Location of the directory.
@@ -46,13 +44,11 @@ def getdents(path, buff_size=32768, verbose=False):
         for inode, dtype, name in getdents_raw(fd, buff_size):
             if dtype != DT_UNKNOWN:
                 if name != b'..':
-                    #print(b"__NAME:", name)
                     yield (inode, dtype, name)
     finally:
         os.close(fd)
 
 
-#@attr.s(auto_attribs=True, kw_only=True)
 class Dent():
     def __init__(self, parent: bytes, name: bytes, inode: int, dtype: int):
         self.parent = parent
@@ -71,9 +67,6 @@ class Dent():
         return os.fsdecode(self.path)
 
     def __repr__(self):
-        #print(self.path)
-        #with open('/dev/stdout', mode='wb') as fd:
-        #    fd.write(self.path)
         return repr(os.fsdecode(self.path))  # todo
 
     #def absolute(self):  # this will hand back a pathlib.Path TODO
@@ -120,13 +113,11 @@ class Dent():
         return False
 
 
-@attr.s(auto_attribs=True)
 class DentGen():
-    path: bytes
-    buff_size: int = 32768
-    verbose: bool = False
-
-    def __attrs_post_init__(self):
+    def __init__(self, path: bytes, buff_size: int = 32768, verbose: bool = False):
+        self.path = path
+        self.buff_size = buff_size
+        self.verbose = verbose
         if self.path[0] != b'/':
             self.path = os.path.realpath(os.path.expanduser(self.path))
 
