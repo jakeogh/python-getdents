@@ -1,4 +1,4 @@
-#!/usr/bin/python3.6m
+#!/usr/bin/python3
 
 import os
 from getdents import DentGen
@@ -16,7 +16,6 @@ def _iterate(path, count):
         with open('/dev/stdout', mode='wb') as fd:
             for item in dentgen:
                 fd.write(item.path + b'\n')
-
 
 
 if __name__ == "__main__":
