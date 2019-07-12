@@ -18,7 +18,7 @@ def _iterate(path, count):
                 fd.write(item.path + b'\n')
 
 
-if __name__ == "__main__":
+def main():
     import sys
     args = len(sys.argv)
     if args >= 2:
@@ -36,3 +36,7 @@ if __name__ == "__main__":
         count = False
 
     _iterate(path, count)
+
+
+if __name__ == '__main__':  # for dev
+    main()
