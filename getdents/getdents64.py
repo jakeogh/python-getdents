@@ -4,7 +4,7 @@ import os
 from getdents import DentGen
 
 
-def _iterate(path, count, nodirs):
+def _iterate(path, count, nodirs, print_end):
     c = 0
     dentgen = DentGen(path, verbose=False).go()
 
@@ -19,7 +19,7 @@ def _iterate(path, count, nodirs):
             for item in dentgen:
                 if nodirs and item.is_dir():
                     continue
-                fd.write(item.path + b'\n')
+                fd.write(item.path + print_end)
 
 
 def main():
@@ -32,17 +32,20 @@ def main():
         quit(1)
     count = False
     nodirs = False
+    print_end = b'\n'
     if args >= 3:
         for arg in sys.argv[2:]:
             if arg == '--count':
                 count = True
             elif arg == "--nodirs":
                 nodirs = True
+            elif arg == "--print0":
+                print_end = b'\x00'
             else:
                 print("unknown option {0}".format(sys.argv[2]), file=sys.stderr)
                 quit(1)
 
-    _iterate(path, count, nodirs)
+    _iterate(path, count, nodirs, print_end)
 
 
 if __name__ == '__main__':  # for dev
