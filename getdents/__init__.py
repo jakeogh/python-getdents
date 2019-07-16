@@ -1,5 +1,7 @@
 import os
 
+BUFF_SIZE = 4096 * 16  # 64k
+
 from ._getdents import (  # noqa: ignore=F401
     DT_BLK,
     DT_CHR,
@@ -15,7 +17,7 @@ from ._getdents import (  # noqa: ignore=F401
 )
 
 
-def getdents(path, buff_size=32768, verbose=False):
+def getdents(path, buff_size=BUFF_SIZE, verbose=False):
     """Get directory entries.
 
     Wrapper around getdents_raw(), simulates ls behaviour: ignores deleted
@@ -124,7 +126,7 @@ class Dent():
 
 
 class DentGen():
-    def __init__(self, path: bytes, buff_size: int = 32768, verbose: bool = False):
+    def __init__(self, path: bytes, buff_size: int = BUFF_SIZE, verbose: bool = False):
         self.path = path
         self.buff_size = buff_size
         self.verbose = verbose
