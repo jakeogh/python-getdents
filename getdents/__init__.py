@@ -80,7 +80,12 @@ class Dent():
     #    return self.parent.resolve() / self.name
 
     # values from /usr/include/dirent.h
-    # shouldnt get DT_UNKNOWN since getdents() filters it
+    # FUSE mounts may return DT_UNKNOWN (bup-fuse with overlayfs for example)
+
+    def is_unknown(self):
+        if self.dtype == 0:
+            return True
+        return False
 
     def is_fifo(self):
         if self.dtype == 1:
@@ -103,7 +108,7 @@ class Dent():
         return False
 
     def is_file(self):
-        if self.dtype == 8:
+        if self.dtype in [8, 0]:  # temp
             return True
         return False
 
