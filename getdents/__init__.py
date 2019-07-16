@@ -47,7 +47,7 @@ def getdents(path, buff_size=32768, verbose=False):
         #            yield (inode, dtype, name)
         yield from (
             (inode, type, name)
-            for inode, type, name in getdents_raw(fd, 32768*2)
+            for inode, type, name in getdents_raw(fd, buff_size)
             if not(type == DT_UNKNOWN or inode == 0 or name in (b'.', b'..'))
         )
     finally:
