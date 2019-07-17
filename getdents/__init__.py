@@ -1,4 +1,6 @@
 import os
+from posix import open as _open
+from posix import close as _close
 
 BUFF_SIZE = 4096 * 16  # 64k
 
@@ -40,14 +42,16 @@ def getdents(path, buff_size=BUFF_SIZE, verbose=False):
         buff_size (int): Buffer size in bytes for getdents64 syscall.
     """
 
-    fd = os.open(path, O_GETDENTS)
+    #fd = os.open(path, O_GETDENTS)
+    fd = _open(path, O_GETDENTS)
 
     try:
         for inode, dtype, name in getdents_raw(fd, buff_size):
             if name != b'..':
                 yield (inode, dtype, name)
     finally:
-        os.close(fd)
+        #os.close(fd)
+        _close(fd)
 
 
 class Dent():
