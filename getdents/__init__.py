@@ -1,8 +1,29 @@
-import os
+#import os
+import sys
 from posix import open as _open
 from posix import close as _close
+from posix import fspath
+import posixpath
 
 BUFF_SIZE = 4096 * 16  # 64k
+
+ENCODING = sys.getfilesystemencoding()
+ERRORS = sys.getfilesystemencodeerrors()
+
+
+def fsdecode(filename):
+    """Decode filename (an os.PathLike, bytes, or str) from the filesystem
+    encoding with 'surrogateescape' error handler, return str unchanged. On
+    Windows, use 'strict' error handler if the file system encoding is
+    'mbcs' (which is the default encoding).
+    """
+    filename = fspath(filename)  # Does type-checking of `filename`.
+    if isinstance(filename, bytes):
+        return filename.decode(ENCODING, ERRORS)
+    else:
+        return filename
+
+
 
 from ._getdents import (  # noqa: ignore=F401
     DT_BLK,
@@ -69,13 +90,16 @@ class Dent():
         self.path = b'/'.join((self.parent, self.name))
 
     def str(self):
-        return os.fsdecode(self.path)
+        #return os.fsdecode(self.path)
+        return fsdecode(self.path)
 
     def __repr__(self):
-        return repr(os.fsdecode(self.path))  # todo
+        #return repr(os.fsdecode(self.path))  # todo
+        return repr(fsdecode(self.path))  # todo
 
     def __fspath__(self):
-        return os.fsdecode(self.path)
+        #return os.fsdecode(self.path)
+        return fsdecode(self.path)
 
     def relative_to(self, path):  # temp dont keep
         return self.path.split(path)[-1]
@@ -135,7 +159,8 @@ class DentGen():
         self.buff_size = buff_size
         self.verbose = verbose
         if self.path[0] != b'/':
-            self.path = os.path.realpath(os.path.expanduser(self.path))
+            #self.path = os.path.realpath(os.path.expanduser(self.path))
+            self.path = posixpath.realpath(posixpath.expanduser(self.path))
 
     def go(self):
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, verbose=self.verbose):
