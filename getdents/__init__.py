@@ -161,6 +161,7 @@ class DentGen():
         if self.path[0] != b'/':
             #self.path = os.path.realpath(os.path.expanduser(self.path))
             self.path = posixpath.realpath(posixpath.expanduser(self.path))
+        print("test")
 
     def go(self):
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, verbose=self.verbose):
