@@ -51,13 +51,14 @@ def getdents(path, buff_size=BUFF_SIZE, verbose=False):
         os.close(fd)
 
 
+@attr.s(auto_attribs=True)
 class Dent():
-    def __init__(self, parent: bytes, name: bytes, inode: int, dtype: int):
-        self.parent = parent
-        self.name = name
-        self.inode = inode
-        self.dtype = dtype
+    parent: bytes
+    name: bytes
+    inode: int
+    dtype: int
 
+    def __attrs_post_init__(self):
         if self.name == b'.':
             split_p = self.parent.split(b'/')
             self.name = split_p[-1]
