@@ -123,13 +123,9 @@ class Dent():
 
 @attr.s(auto_attribs=True)
 class DentGen():
-    path: bytes
+    path: bytes = attr.ib(converter=os.fsencode)
     buff_size: int = BUFF_SIZE
     verbose: bool = False
-
-    def __new__(self):
-        if not isinstance(path, bytes):
-            path = os.fsencode(path)
 
     def __attrs_post_init__(self):
         if self.path[0] != b'/':
