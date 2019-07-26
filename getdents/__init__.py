@@ -349,6 +349,8 @@ class Dent():
 
 class DentGen():
     def __init__(self, path: bytes, buff_size: int = BUFF_SIZE, verbose: bool = False):
+        if not isinstance(path, bytes):
+            path = os.fsencode(path)
         self.path = path
         self.buff_size = buff_size
         self.verbose = verbose
