@@ -284,6 +284,9 @@ class Dent():
         return os.fsdecode(self.path)
         #return fsdecode(self.path)
 
+    def __iter__(self):
+        return self.name
+
     def __repr__(self):
         return repr(os.fsdecode(self.path))  # todo
         #return repr(fsdecode(self.path))  # todo
