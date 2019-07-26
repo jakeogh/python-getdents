@@ -127,6 +127,10 @@ class DentGen():
     buff_size: int = BUFF_SIZE
     verbose: bool = False
 
+    def __new__(self):
+        if not isinstance(path, bytes):
+            path = os.fsencode(path)
+
     def __attrs_post_init__(self):
         if self.path[0] != b'/':
             self.path = os.path.realpath(os.path.expanduser(self.path))
