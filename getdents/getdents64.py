@@ -6,7 +6,7 @@ from getdents import DentGen
 
 def _iterate(path, count, nodirs, print_end):
     c = 0
-    dentgen = DentGen(path, verbose=False).go()
+    dentgen = DentGen(path, verbose=False)
 
     if count:
         for i, item in enumerate(dentgen):
