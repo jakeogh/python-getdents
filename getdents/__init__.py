@@ -1,4 +1,5 @@
 import os
+import attr
 
 BUFF_SIZE = 4096 * 16  # 64k
 
@@ -120,13 +121,13 @@ class Dent():
         return False
 
 
+@attr.s(auto_attribs=True)
 class DentGen():
-    def __init__(self, path: bytes, buff_size: int = BUFF_SIZE, verbose: bool = False):
-        if not isinstance(path, bytes):
-            path = os.fsencode(path)
-        self.path = path
-        self.buff_size = buff_size
-        self.verbose = verbose
+    path: bytes
+    buff_size: int = BUFF_SIZE
+    verbose: bool = False
+
+    def __attrs_post_init__(self):
         if self.path[0] != b'/':
             self.path = os.path.realpath(os.path.expanduser(self.path))
 
