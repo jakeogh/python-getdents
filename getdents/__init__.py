@@ -66,14 +66,14 @@ class Dent():
             del split_p
         self.path = b'/'.join((self.parent, self.name))
 
-    def str(self):
+    def __str__(self):
         return os.fsdecode(self.path)
 
     def __iter__(self):
-        return iter(self.name)
+        return iter(self.path)
 
-    def __repr__(self):
-        return repr(os.fsdecode(self.path))  # todo
+    #def __repr__(self):
+    #    return repr(os.fsdecode(self.path))  # todo
 
     def __fspath__(self):
         return os.fsdecode(self.path)
