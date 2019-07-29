@@ -1,7 +1,7 @@
 import os
 import attr
-from functools import update_wrapper
-from pathlib import Path
+#from functools import update_wrapper
+#from pathlib import Path
 
 
 BUFF_SIZE = 4096 * 16  # 64k
@@ -21,18 +21,18 @@ from ._getdents import (  # noqa: ignore=F401
 )
 
 
-# https://raw.githubusercontent.com/Pylons/pyramid/master/src/pyramid/decorator.py
-class reify(object):
-    def __init__(self, wrapped):
-        self.wrapped = wrapped
-        update_wrapper(self, wrapped)
-
-    def __get__(self, inst, objtype=None):
-        if inst is None:
-            return self
-        val = self.wrapped(inst)
-        setattr(inst, self.wrapped.__name__, val)
-        return val
+## https://raw.githubusercontent.com/Pylons/pyramid/master/src/pyramid/decorator.py
+#class reify(object):
+#    def __init__(self, wrapped):
+#        self.wrapped = wrapped
+#        update_wrapper(self, wrapped)
+#
+#    def __get__(self, inst, objtype=None):
+#        if inst is None:
+#            return self
+#        val = self.wrapped(inst)
+#        setattr(inst, self.wrapped.__name__, val)
+#        return val
 
 
 def getdents(path, buff_size=BUFF_SIZE, verbose=False):
