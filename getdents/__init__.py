@@ -1,7 +1,9 @@
+import sys
 import os
 import attr
 from functools import update_wrapper
 from pathlib import Path
+
 
 BUFF_SIZE = 4096 * 16  # 64k
 
@@ -25,6 +27,7 @@ class reify(object):
     def __init__(self, wrapped):
         self.wrapped = wrapped
         update_wrapper(self, wrapped)
+        print("reify", file=sys.stderr)
 
     def __get__(self, inst, objtype=None):
         if inst is None:
@@ -38,7 +41,7 @@ def getdents(path, buff_size=BUFF_SIZE, verbose=False):
     """Get directory entries.
 
     Wrapper around getdents_raw(), simulates ls behaviour: ignores deleted
-    files, skips . and .. entries.
+    files, skips .. entries.
 
     Note:
        Default buffer size is 32k, it's a default allocation size of glibc's
