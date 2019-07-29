@@ -1,4 +1,3 @@
-import sys
 import os
 import attr
 from functools import update_wrapper
@@ -27,7 +26,6 @@ class reify(object):
     def __init__(self, wrapped):
         self.wrapped = wrapped
         update_wrapper(self, wrapped)
-        print("reify", file=sys.stderr)
 
     def __get__(self, inst, objtype=None):
         if inst is None:
@@ -89,7 +87,6 @@ class Dent():
     @reify
     def pathlib(self):
         return Path(os.fsdecode(self.path))
-
 
     def __str__(self):
         return os.fsdecode(self.path)
