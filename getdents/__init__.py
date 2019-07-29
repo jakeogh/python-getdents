@@ -1,5 +1,6 @@
 import os
 import attr
+from pathlib import Path
 
 BUFF_SIZE = 4096 * 16  # 64k
 
@@ -65,6 +66,7 @@ class Dent():
             self.parent = b'/'.join(split_p[:-1])
             del split_p
         self.path = b'/'.join((self.parent, self.name))
+        self.pathlib = Path(os.fsdecode(self.path))
 
     def __str__(self):
         return os.fsdecode(self.path)
