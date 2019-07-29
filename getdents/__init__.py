@@ -84,9 +84,9 @@ class Dent():
         self.path = b'/'.join((self.parent, self.name))
         #self.pathlib = Path(os.fsdecode(self.path))
 
-    @reify
-    def pathlib(self):
-        return Path(os.fsdecode(self.path))
+    #@reify
+    #def pathlib(self):
+    #    return Path(os.fsdecode(self.path))
 
     def __str__(self):
         return os.fsdecode(self.path)
