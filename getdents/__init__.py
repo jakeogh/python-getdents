@@ -22,7 +22,7 @@ from ._getdents import (  # noqa: ignore=F401
 
 
 # https://raw.githubusercontent.com/Pylons/pyramid/master/src/pyramid/decorator.py
-class reify(object):
+class Reify():
     def __init__(self, wrapped):
         self.wrapped = wrapped
         update_wrapper(self, wrapped)
@@ -35,7 +35,7 @@ class reify(object):
         return val
 
 
-def getdents(path, buff_size=BUFF_SIZE, verbose=False):
+def getdents(path, buff_size=BUFF_SIZE):
     """Get directory entries.
 
     Wrapper around getdents_raw(), simulates ls behaviour: ignores deleted
@@ -58,14 +58,14 @@ def getdents(path, buff_size=BUFF_SIZE, verbose=False):
         buff_size (int): Buffer size in bytes for getdents64 syscall.
     """
 
-    fd = os.open(path, O_GETDENTS)
+    path_fd = os.open(path, O_GETDENTS)
 
     try:
-        for inode, dtype, name in getdents_raw(fd, buff_size):
+        for inode, dtype, name in getdents_raw(path_fd, buff_size):
             if name != b'..':
                 yield (inode, dtype, name)
     finally:
-        os.close(fd)
+        os.close(path_fd)
 
 
 @attr.s(auto_attribs=True)
@@ -84,7 +84,7 @@ class Dent():
         self.path = b'/'.join((self.parent, self.name))
         #self.pathlib = Path(os.fsdecode(self.path))
 
-    @reify
+    @Reify
     def pathlib(self):
         return Path(os.fsdecode(self.path))
 
@@ -155,7 +155,7 @@ class DentGen():
             self.path = os.path.realpath(os.path.expanduser(self.path))
 
     def __iter__(self):
-        for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, verbose=self.verbose):
+        for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size):
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             if dent.path == self.path:
                 yield dent
@@ -165,3 +165,31 @@ class DentGen():
                 self.path = dent.parent
             else:
                 yield dent
+
+
+def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names_only=False) -> Dent:
+    path = os.fsencode(path)
+    fiterator = DentGen(path=path)
+    for thing in fiterator:
+        if not return_dirs:
+            if thing.is_dir():
+                continue
+        if not return_files:
+            if thing.is_file():
+                continue
+        if not return_symlinks:
+            if thing.is_symlink():
+                continue
+
+        if names_only:
+            yield thing.name
+        else:
+            yield thing
+
+
+def files(path, names_only=False) -> Dent:
+    return paths(path=path, return_dirs=False, return_symlinks=False, names_only=names_only)
+
+
+def links(path, names_only=False) -> Dent:
+    return paths(path=path, return_dirs=False, return_symlinks=True, names_only=names_only)
