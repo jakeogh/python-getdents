@@ -5,9 +5,9 @@ import sys
 from getdents import DentGen
 
 
-def _iterate(path, count, nodirs, print_end):
+def _iterate(path, depth, count, nodirs, print_end):
     c = 0
-    dentgen = DentGen(path, verbose=False)
+    dentgen = DentGen(path, depth, verbose=False)
 
     if count:
         for i, item in enumerate(dentgen):
@@ -34,9 +34,7 @@ Options:
 
 
 def help_depth(depth=None):
-    print(depth)
     print(help(), file=sys.stderr)
-
     if depth:
         print("Error: --depth requires a positive integer, not \"{0}\".".format(depth), file=sys.stderr)
         return
@@ -57,7 +55,6 @@ def main():
     index = 2
     if args >= 2:
         while index <= args:
-            print("index:", index, sys.argv[index])
             if sys.argv[index] == '--depth':
                 index += 1
                 try:
@@ -87,7 +84,7 @@ def main():
                 print("Error: Unknown option \"{0}\".".format(sys.argv[index]), file=sys.stderr)
                 quit(1)
 
-    _iterate(path, count, nodirs, print_end)
+    _iterate(path, depth, count, nodirs, print_end)
 
 
 if __name__ == '__main__':  # for dev
