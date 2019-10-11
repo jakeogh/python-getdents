@@ -5,7 +5,7 @@ import sys
 from getdents import DentGen
 
 
-def _iterate(path, depth, count, nodirs, print_end):
+def _iterate(path, depth, command, count, nodirs, print_end):
     c = 0
     dentgen = DentGen(path, depth, verbose=False)
 
@@ -20,6 +20,8 @@ def _iterate(path, depth, count, nodirs, print_end):
             for item in dentgen:
                 if nodirs and item.is_dir():
                     continue
+                if command:
+                    os.system(command + ' ' + item.path)
                 fd.write(item.path + print_end)
 
 
@@ -27,10 +29,11 @@ def help():
     return '''Usage: getdents PATH [OPTIONS]
 
 Options:
-    --depth   Descend at most levels (>= 0) levels of directories below the starting-point.
-    --count   Print number of entries under PATH.
-    --nodirs  Do not print directories.
-    --print0  Items are terminated by a null character.
+    --depth  INT  Descend at most levels (>= 0) levels of directories below the starting-point.
+    --exec   CMD  Execute command for every printed result. Must be a single argument.
+    --count       Print number of entries under PATH.
+    --nodirs      Do not print directories.
+    --print0      Items are terminated by a null character.
     '''
 
 
@@ -44,6 +47,7 @@ def help_depth(depth=None):
 
 def main():
     depth = -1
+    command = None
     args = len(sys.argv) - 1
     if args >= 1:
         path = os.fsencode(sys.argv[1])
@@ -71,7 +75,10 @@ def main():
                     help_depth()
                     quit(1)
                 index += 1
-
+            elif sys.argv[index] == '--exec':
+                index += 1
+                command = sys.argv[index]
+                index += 1
             elif sys.argv[index] == '--count':
                 count = True
                 index += 1
@@ -86,7 +93,7 @@ def main():
                 print("Error: Unknown option \"{0}\".".format(sys.argv[index]), file=sys.stderr)
                 quit(1)
 
-    _iterate(path, depth, count, nodirs, print_end)
+    _iterate(path, depth, command, count, nodirs, print_end)
 
 
 if __name__ == '__main__':  # for dev
