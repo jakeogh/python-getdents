@@ -48,6 +48,7 @@ def main():
     if args >= 3:
         #for index, arg in enumerate(sys.argv[2:]):
         while index <= args:
+            print("index:", index, sys.argv[index])
         #for index in enumerate(sys.argv[2:]):
             if sys.argv[index] == '--depth':
                 index += 1
