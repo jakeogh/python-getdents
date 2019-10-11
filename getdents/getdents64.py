@@ -38,9 +38,10 @@ def help_depth(depth=None):
     print(help(), file=sys.stderr)
 
     if depth:
-        if depth < 0:
-            print("Error: --depth requires a integer >= 0.", file=sys.stderr)
-        else:
+        try:
+            if depth < 0:
+                print("Error: --depth requires a integer >= 0.", file=sys.stderr)
+        except TypeError:
             print("Error: --depth requires an integer, not \"{0}\".".format(depth), file=sys.stderr)
         return
 
