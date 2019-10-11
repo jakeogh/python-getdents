@@ -156,6 +156,7 @@ class DentGen():
             self.path = os.path.realpath(os.path.expanduser(self.path))
 
     def __iter__(self, cur_depth=0):
+        print("self.depth:", self.depth)
         print("cur_depth:", cur_depth)
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size):
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
