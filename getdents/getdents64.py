@@ -65,7 +65,7 @@ def main():
                     help_depth()
                     quit(1)
                 except ValueError:
-                    help_depth(int(depth))
+                    help_depth(sys.argv[index])
                     quit(1)
                 index += 1
 
