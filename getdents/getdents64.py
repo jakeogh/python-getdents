@@ -23,7 +23,7 @@ def _iterate(path, depth, command, count, nodirs, print_end):
                 if nodirs and item.is_dir():
                     continue
                 if command:
-                    output = check_output(command + ' ' + os.fsdecode(item.path))
+                    output = check_output([command, os.fsdecode(item.path)])
                 fd.write(item.path + print_end)
 
 
