@@ -26,7 +26,8 @@ def _iterate(path, depth, command, count, nodirs, print_end):
                     output = check_output([command, os.fsdecode(item.path)])
                     if output.endswith(b'\n'):
                         output = output[:-1]
-                    fd.write(output + item.path + print_end)
+
+                    fd.write(output + ' ' + item.path + print_end)
                 else:
                     fd.write(item.path + print_end)
 
@@ -36,7 +37,7 @@ def help():
 
 Options:
     --depth  INT  Descend at most levels (>= 0) levels of directories below the starting-point.
-    --exec   CMD  Execute command for every printed result. Must be a single argument.
+    --exec   CMD  Execute command for every printed result. Must be a single argument. Should produce a single line.
     --count       Print number of entries under PATH.
     --nodirs      Do not print directories.
     --print0      Items are terminated by a null character.
