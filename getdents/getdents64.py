@@ -64,9 +64,10 @@ def main():
                 except IndexError:
                     help_depth()
                     quit(1)
-                if not int(depth):
-                    help_depth(depth)
-                    quit(1)
+                #try:
+                depth = int(depth)
+                    #help_depth(int(depth))
+                    #quit(1)
                 index += 1
 
             elif sys.argv[index] == '--count':
