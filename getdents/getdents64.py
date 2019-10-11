@@ -46,7 +46,7 @@ def main():
     print_end = b'\n'
     index = 1
     if args >= 2:
-        while index < args:
+        while index <= args:
             print("index:", index, sys.argv[index])
             if sys.argv[index] == '--depth':
                 index += 1
