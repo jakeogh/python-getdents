@@ -156,13 +156,14 @@ class DentGen():
             self.path = os.path.realpath(os.path.expanduser(self.path))
 
     def __iter__(self, cur_depth=0):
+        print("cur_depth:", cur_depth)
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size):
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             if dent.path == self.path:
                 yield dent
             elif dent.is_dir():
                 self.path = dent.parent + b'/' + dent.name
-                yield from self.__iter__(cur_depth)
+                yield from self.__iter__(cur_depth + 1)
                 self.path = dent.parent
             else:
                 yield dent
