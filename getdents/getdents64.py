@@ -21,7 +21,7 @@ def _iterate(path, depth, command, count, nodirs, print_end):
                 if nodirs and item.is_dir():
                     continue
                 if command:
-                    os.system(command + ' ' + item.path)
+                    os.system(command + ' ' + os.fsdecode(item.path))
                 fd.write(item.path + print_end)
 
 
