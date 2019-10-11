@@ -60,14 +60,13 @@ def main():
             if sys.argv[index] == '--depth':
                 index += 1
                 try:
-                    depth = sys.argv[index]
+                    depth = int(sys.argv[index])
                 except IndexError:
                     help_depth()
                     quit(1)
-                #try:
-                depth = int(depth)
-                    #help_depth(int(depth))
-                    #quit(1)
+                except ValueError:
+                    help_depth(int(depth))
+                    quit(1)
                 index += 1
 
             elif sys.argv[index] == '--count':
