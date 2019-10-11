@@ -39,7 +39,7 @@ def main():
         path = os.fsencode(sys.argv[1])
     else:
         print(help(), file=sys.stderr)
-        print("\nError: A path is required.", file=sys.stderr)
+        print("Error: A path is required.", file=sys.stderr)
         quit(1)
     count = False
     nodirs = False
@@ -54,7 +54,7 @@ def main():
                 print_end = b'\x00'
             else:
                 print(help(), file=sys.stderr)
-                print("\nError: Unknown option \"{0}\".".format(sys.argv[2]), file=sys.stderr)
+                print("Error: Unknown option \"{0}\".".format(sys.argv[2]), file=sys.stderr)
                 quit(1)
 
     _iterate(path, count, nodirs, print_end)
