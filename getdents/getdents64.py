@@ -44,7 +44,7 @@ def main():
     count = False
     nodirs = False
     print_end = b'\n'
-    index = 1
+    index = 2
     if args >= 2:
         while index <= args:
             print("index:", index, sys.argv[index])
@@ -68,7 +68,7 @@ def main():
                 index += 1
             else:
                 print(help(), file=sys.stderr)
-                print("Error: Unknown option \"{0}\".".format(sys.argv[2]), file=sys.stderr)
+                print("Error: Unknown option \"{0}\".".format(sys.argv[index]), file=sys.stderr)
                 quit(1)
 
     _iterate(path, count, nodirs, print_end)
