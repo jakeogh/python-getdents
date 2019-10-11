@@ -27,6 +27,7 @@ def help():
     return '''Usage: getdents PATH [OPTIONS]
 
 Options:
+    --depth   Descend at most levels (>= 0) levels of directories below the starting-point.
     --count   Print number of entries under PATH.
     --nodirs  Do not print directories.
     --print0  Items are terminated by a null character.
