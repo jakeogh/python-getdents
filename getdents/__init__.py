@@ -165,7 +165,7 @@ class DentGen():
                 self.path = dent.parent + b'/' + dent.name
                 if cur_depth < self.depth:
                     yield from self.__iter__(cur_depth + 1)
-                    self.path = dent.parent
+                self.path = dent.parent
             else:
                 yield dent
 
