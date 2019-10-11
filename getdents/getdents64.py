@@ -73,7 +73,7 @@ def main():
                 except ValueError:
                     help_depth(sys.argv[index])
                     quit(1)
-                if depth < 0:
+                if depth < 0 or sys.argv[index].startswith('-'):
                     help_depth(depth)
                     quit(1)
                 index += 1
