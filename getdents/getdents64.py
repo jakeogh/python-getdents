@@ -27,7 +27,7 @@ def _iterate(path, depth, command, count, nodirs, print_end):
                     if output.endswith(b'\n'):
                         output = output[:-1]
 
-                    fd.write(output + ' ' + item.path + print_end)
+                    fd.write(output + b' ' + item.path + print_end)
                 else:
                     fd.write(item.path + print_end)
 
