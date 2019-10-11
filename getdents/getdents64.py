@@ -7,6 +7,8 @@ from getdents import DentGen
 
 def _iterate(path, depth, command, count, nodirs, print_end):
     c = 0
+    if command:
+        from subprocess import check_output
     dentgen = DentGen(path, depth, verbose=False)
 
     if count:
@@ -21,7 +23,7 @@ def _iterate(path, depth, command, count, nodirs, print_end):
                 if nodirs and item.is_dir():
                     continue
                 if command:
-                    os.system(command + ' ' + os.fsdecode(item.path))
+                    output = check_output(command + ' ' + os.fsdecode(item.path))
                 fd.write(item.path + print_end)
 
 
