@@ -34,6 +34,7 @@ Options:
 
 
 def help_depth(depth=None):
+    print(depth)
     print(help(), file=sys.stderr)
     if depth:
         print("Error: --depth requires an integer, not \"{0}\".".format(sys.argv[depth]), file=sys.stderr)
