@@ -25,10 +25,10 @@ def _iterate(path, count, nodirs, print_end):
 def help():
     return '''Usage: getdents PATH [OPTIONS]
 
-    Options:
-        --count     Print number of entries under PATH.
-        --nodirs    Do not print directories.
-        --print0    Items are terminated by a null character.
+Options:
+    --count   Print number of entries under PATH.
+    --nodirs  Do not print directories.
+    --print0  Items are terminated by a null character.
     '''
 
 
