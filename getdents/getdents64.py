@@ -69,7 +69,7 @@ def main():
                     help_depth(sys.argv[index])
                     quit(1)
                 if depth < 0 or sys.argv[index].startswith('-'):
-                    help_depth(depth)
+                    help_depth()
                     quit(1)
                 index += 1
 
