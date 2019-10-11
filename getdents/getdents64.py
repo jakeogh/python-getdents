@@ -42,6 +42,7 @@ def help_depth(depth=None):
 
 
 def main():
+    depth = -1
     args = len(sys.argv) - 1
     if args >= 1:
         path = os.fsencode(sys.argv[1])
