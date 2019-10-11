@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import os
+import sys
 from getdents import DentGen
 
 
@@ -32,8 +33,15 @@ Options:
     '''
 
 
+def help_depth(depth=None):
+    print(help(), file=sys.stderr)
+    if depth:
+        print("Error: --depth requires an integer, not \"{0}\".".format(sys.argv[index]), file=sys.stderr)
+        return
+    print("Error: --depth requires an integer.", file=sys.stderr)
+
+
 def main():
-    import sys
     args = len(sys.argv) - 1
     if args >= 1:
         path = os.fsencode(sys.argv[1])
@@ -50,10 +58,13 @@ def main():
             print("index:", index, sys.argv[index])
             if sys.argv[index] == '--depth':
                 index += 1
-                depth = sys.argv[index]
+                try:
+                    depth = sys.argv[index]
+                except IndexError:
+                    help_depth()
+                    quit(1)
                 if not int(depth):
-                    print(help(), file=sys.stderr)
-                    print("Error: --depth requires an integer, not \"{0}\".".format(sys.argv[index]), file=sys.stderr)
+                    help_depth(depth)
                     quit(1)
                 index += 1
 
