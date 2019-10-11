@@ -34,8 +34,8 @@ Options:
 
 def main():
     import sys
-    args = len(sys.argv)
-    if args >= 2:
+    args = len(sys.argv) - 1
+    if args >= 1:
         path = os.fsencode(sys.argv[1])
     else:
         print(help(), file=sys.stderr)
@@ -44,8 +44,8 @@ def main():
     count = False
     nodirs = False
     print_end = b'\n'
-    index = 2
-    if args >= 3:
+    index = 1
+    if args >= 2:
         while index < args:
             print("index:", index, sys.argv[index])
             if sys.argv[index] == '--depth':
@@ -60,7 +60,7 @@ def main():
             elif sys.argv[index] == '--count':
                 count = True
                 index += 1
-            elif ys.argv[index] == "--nodirs":
+            elif sys.argv[index] == "--nodirs":
                 nodirs = True
                 index += 1
             elif sys.argv[index] == "--print0":
