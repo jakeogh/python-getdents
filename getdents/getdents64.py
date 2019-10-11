@@ -24,6 +24,8 @@ def _iterate(path, depth, command, count, nodirs, print_end):
                     continue
                 if command:
                     output = check_output([command, os.fsdecode(item.path)])
+                    if output.endswith(b'\n'):
+                        output = output[:-1]
                     fd.write(output + item.path + print_end)
                 else:
                     fd.write(item.path + print_end)
