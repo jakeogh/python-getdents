@@ -5,7 +5,7 @@ import sys
 from getdents import DentGen
 
 
-def _iterate(path, depth, command, count, nodirs, print_end):
+def _iterate(path, depth, command, count, nodirs, nosymlinks, print_end):
     c = 0
     if command:
         from subprocess import check_output
@@ -15,12 +15,16 @@ def _iterate(path, depth, command, count, nodirs, print_end):
         for i, item in enumerate(dentgen):
             if nodirs and item.is_dir():
                 continue
+            if nosymlinks and item.is_symlink():
+                continue
             c += 1
         print(c)
     else:
         with open('/dev/stdout', mode='wb') as fd:
             for item in dentgen:
                 if nodirs and item.is_dir():
+                    continue
+                if nosymlinks and item.is_symlink():
                     continue
                 if command:
                     output = check_output([command, os.fsdecode(item.path)])
@@ -40,6 +44,7 @@ Options:
     --exec   CMD  Execute command for every printed result. Must be a single argument. Should produce a single line.
     --count       Print number of entries under PATH.
     --nodirs      Do not print directories.
+    --nosymlinks  Do not print symbolic links.
     --print0      Items are terminated by a null character.
     '''
 
@@ -64,6 +69,7 @@ def main():
         quit(1)
     count = False
     nodirs = False
+    nosymlinks = False
     print_end = b'\n'
     index = 2
     if args >= 2:
@@ -92,6 +98,9 @@ def main():
             elif sys.argv[index] == "--nodirs":
                 nodirs = True
                 index += 1
+            elif sys.argv[index] == "--nosymlinks":
+                nosymlinks = True
+                index += 1
             elif sys.argv[index] == "--print0":
                 print_end = b'\x00'
                 index += 1
@@ -100,7 +109,7 @@ def main():
                 print("Error: Unknown option \"{0}\".".format(sys.argv[index]), file=sys.stderr)
                 quit(1)
 
-    _iterate(path, depth, command, count, nodirs, print_end)
+    _iterate(path, depth, command, count, nodirs, nosymlinks, print_end)
 
 
 if __name__ == '__main__':  # for dev
