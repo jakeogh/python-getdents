@@ -44,14 +44,29 @@ def main():
     count = False
     nodirs = False
     print_end = b'\n'
+    index = 2
     if args >= 3:
-        for arg in sys.argv[2:]:
-            if arg == '--count':
+        #for index, arg in enumerate(sys.argv[2:]):
+        while index <= args:
+        #for index in enumerate(sys.argv[2:]):
+            if sys.argv[index] == '--depth':
+                index += 1
+                depth = sys.argv[index]
+                if not int(depth):
+                    print(help(), file=sys.stderr)
+                    print("Error: --depth requires an integer, not \"{0}\".".format(sys.argv[index]), file=sys.stderr)
+                    quit(1)
+                index += 1
+
+            elif sys.argv[index] == '--count':
                 count = True
-            elif arg == "--nodirs":
+                index += 1
+            elif ys.argv[index] == "--nodirs":
                 nodirs = True
-            elif arg == "--print0":
+                index += 1
+            elif sys.argv[index] == "--print0":
                 print_end = b'\x00'
+                index += 1
             else:
                 print(help(), file=sys.stderr)
                 print("Error: Unknown option \"{0}\".".format(sys.argv[2]), file=sys.stderr)
