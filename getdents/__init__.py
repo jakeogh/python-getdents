@@ -154,6 +154,7 @@ class DentGen():
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
     verbose: bool = False
+    iters: int = 0
 
     def __attrs_post_init__(self):
         if self.path[0] != b'/':
@@ -163,6 +164,7 @@ class DentGen():
     def __iter__(self, cur_depth=0):
         # print("self.depth:", self.depth)
         # print("cur_depth:", cur_depth)
+        self.iters += 1
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size):
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             if dent.path == self.path:
@@ -199,6 +201,7 @@ def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names
             yield thing.name
         else:
             yield thing
+    print(fiterator.iters)
 
 
 def files(path, names_only=False, depth=-1) -> Dent:
