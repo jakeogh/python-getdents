@@ -173,9 +173,10 @@ class DentGen():
                 yield dent
 
 
-def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names_only=False) -> Dent:
+# TODO: it may be faster to filter in a function that this feeds
+def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names_only=False, depth=-1) -> Dent:
     path = os.fsencode(path)
-    fiterator = DentGen(path=path)
+    fiterator = DentGen(path=path, depth=depth)
     for thing in fiterator:
         if not return_dirs:
             if thing.is_dir():
@@ -193,13 +194,13 @@ def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names
             yield thing
 
 
-def files(path, names_only=False) -> Dent:
-    return paths(path=path, return_dirs=False, return_symlinks=False, return_files=True, names_only=names_only)
+def files(path, names_only=False, depth=-1) -> Dent:
+    return paths(path=path, return_dirs=False, return_symlinks=False, return_files=True, names_only=names_only, depth=depth)
 
 
-def links(path, names_only=False) -> Dent:
-    return paths(path=path, return_dirs=False, return_symlinks=True, return_files=False, names_only=names_only)
+def links(path, names_only=False, depth=-1) -> Dent:
+    return paths(path=path, return_dirs=False, return_symlinks=True, return_files=False, names_only=names_only, depth=depth)
 
 
-def dirs(path, names_only=False) -> Dent:
-    return paths(path=path, return_dirs=True, return_symlinks=False, return_files=False, names_only=names_only)
+def dirs(path, names_only=False, depth=-1) -> Dent:
+    return paths(path=path, return_dirs=True, return_symlinks=False, return_files=False, names_only=names_only, depth=depth)
