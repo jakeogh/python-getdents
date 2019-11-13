@@ -144,7 +144,7 @@ class Dent():
         return False
 
     def depth(self):
-        return len(self.pathlib().parts)
+        return len(self.pathlib.parts)
 
 @attr.s(auto_attribs=True)
 class DentGen():
