@@ -57,6 +57,7 @@ def help_depth(depth=None):
     print("Error: --depth requires a integer >= 0.", file=sys.stderr)
 
 
+# TODO add --
 def main():
     depth = -1
     command = None
