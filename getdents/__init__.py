@@ -150,7 +150,6 @@ class Dent():
 @attr.s(auto_attribs=True)
 class DentGen():
     path: bytes = attr.ib(converter=os.fsencode)
-    #depth: float = inf
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
     verbose: bool = False
@@ -159,11 +158,9 @@ class DentGen():
     def __attrs_post_init__(self):
         if self.path[0] != b'/':
             self.path = os.path.realpath(os.path.expanduser(self.path))
-        #print("self.depth:", self.depth)
         print("self.max_depth:", self.max_depth)
 
     def __iter__(self, cur_depth=0):
-        # print("self.max_depth:", self.max_depth)
         print("cur_depth:", cur_depth)
         self.iters += 1
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size):
