@@ -150,7 +150,7 @@ class Dent():
 @attr.s(auto_attribs=True)
 class DentGen():
     path: bytes = attr.ib(converter=os.fsencode)
-    depth: int = -1
+    depth: float = inf
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
     verbose: bool = False
@@ -172,10 +172,11 @@ class DentGen():
                 yield dent
             elif dent.is_dir():
                 self.path = dent.parent + b'/' + dent.name
-                if cur_depth < self.depth or self.depth == -1:
-                    if cur_depth < self.max_depth - 1:
+                #if cur_depth < self.depth or self.depth == -1:
+                if cur_depth < self.depth:
+                    #if cur_depth < self.max_depth - 1:
                         #print("cur_depth:", cur_depth, self.max_depth)
-                        yield from self.__iter__(cur_depth + 1)
+                    yield from self.__iter__(cur_depth + 1)
                 elif cur_depth == self.depth:
                     yield dent
                 self.path = dent.parent
