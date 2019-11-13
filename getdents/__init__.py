@@ -194,8 +194,12 @@ def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names
 
 
 def files(path, names_only=False) -> Dent:
-    return paths(path=path, return_dirs=False, return_symlinks=False, names_only=names_only)
+    return paths(path=path, return_dirs=False, return_symlinks=False, return_files=True, names_only=names_only)
 
 
 def links(path, names_only=False) -> Dent:
-    return paths(path=path, return_dirs=False, return_symlinks=True, names_only=names_only)
+    return paths(path=path, return_dirs=False, return_symlinks=True, return_files=False, names_only=names_only)
+
+
+def dirs(path, names_only=False) -> Dent:
+    return paths(path=path, return_dirs=True, return_symlinks=False, return_files=False, names_only=names_only)
