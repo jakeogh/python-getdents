@@ -159,6 +159,7 @@ class DentGen():
     def __attrs_post_init__(self):
         if self.path[0] != b'/':
             self.path = os.path.realpath(os.path.expanduser(self.path))
+        print("self.depth:", self.depth)
         print("self.max_depth:", self.max_depth)
 
     def __iter__(self, cur_depth=0):
