@@ -2,7 +2,7 @@ import os
 import attr
 from functools import update_wrapper
 from pathlib import Path
-
+from math import inf
 
 BUFF_SIZE = 4096 * 16  # 64k
 
@@ -146,10 +146,12 @@ class Dent():
     def depth(self):
         return len(self.pathlib.parts)
 
+
 @attr.s(auto_attribs=True)
 class DentGen():
     path: bytes = attr.ib(converter=os.fsencode)
     depth: int = -1
+    max_depth: float = inf
     buff_size: int = BUFF_SIZE
     verbose: bool = False
 
@@ -167,7 +169,8 @@ class DentGen():
             elif dent.is_dir():
                 self.path = dent.parent + b'/' + dent.name
                 if cur_depth < self.depth or self.depth == -1:
-                    yield from self.__iter__(cur_depth + 1)
+                    if cur_depth < self.max_depth:
+                        yield from self.__iter__(cur_depth + 1)
                 elif cur_depth == self.depth:
                     yield dent
                 self.path = dent.parent
