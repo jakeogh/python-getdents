@@ -173,6 +173,7 @@ class DentGen():
             elif dent.is_dir():
                 self.path = dent.parent + b'/' + dent.name
                 if cur_depth < self.max_depth:
+                    print(cur_depth, "<", self.max_depth)
                     yield from self.__iter__(cur_depth + 1)
                 elif cur_depth == self.max_depth:
                     yield dent
