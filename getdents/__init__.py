@@ -150,7 +150,7 @@ class Dent():
 @attr.s(auto_attribs=True)
 class DentGen():
     path: bytes = attr.ib(converter=os.fsencode)
-    depth: float = inf
+    #depth: float = inf
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
     verbose: bool = False
@@ -159,11 +159,11 @@ class DentGen():
     def __attrs_post_init__(self):
         if self.path[0] != b'/':
             self.path = os.path.realpath(os.path.expanduser(self.path))
-        print("self.depth:", self.depth)
+        #print("self.depth:", self.depth)
         print("self.max_depth:", self.max_depth)
 
     def __iter__(self, cur_depth=0):
-        # print("self.depth:", self.depth)
+        # print("self.max_depth:", self.max_depth)
         # print("cur_depth:", cur_depth)
         self.iters += 1
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size):
@@ -172,12 +172,9 @@ class DentGen():
                 yield dent
             elif dent.is_dir():
                 self.path = dent.parent + b'/' + dent.name
-                #if cur_depth < self.depth or self.depth == -1:
-                if cur_depth <= self.depth:
-                    #if cur_depth < self.max_depth - 1:
-                        #print("cur_depth:", cur_depth, self.max_depth)
+                if cur_depth <= self.max_depth:
                     yield from self.__iter__(cur_depth + 1)
-                elif cur_depth == self.depth:
+                elif cur_depth == self.max_depth:
                     yield dent
                 self.path = dent.parent
             else:
@@ -185,9 +182,9 @@ class DentGen():
 
 
 # TODO: it may be faster to filter in a function that this feeds
-def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names_only=False, depth=-1, max_depth=inf) -> Dent:
+def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names_only=False, max_depth=inf) -> Dent:
     path = os.fsencode(path)
-    fiterator = DentGen(path=path, depth=depth, max_depth=max_depth)
+    fiterator = DentGen(path=path, max_depth=max_depth)
     for thing in fiterator:
         if not return_dirs:
             if thing.is_dir():
@@ -206,13 +203,13 @@ def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names
     print(fiterator.iters)
 
 
-def files(path, names_only=False, depth=-1) -> Dent:
-    return paths(path=path, return_dirs=False, return_symlinks=False, return_files=True, names_only=names_only, depth=depth)
+def files(path, names_only=False, max_depth=inf) -> Dent:
+    return paths(path=path, return_dirs=False, return_symlinks=False, return_files=True, names_only=names_only, max_depth=max_depth)
 
 
-def links(path, names_only=False, depth=-1) -> Dent:
-    return paths(path=path, return_dirs=False, return_symlinks=True, return_files=False, names_only=names_only, depth=depth)
+def links(path, names_only=False, max_depth=inf) -> Dent:
+    return paths(path=path, return_dirs=False, return_symlinks=True, return_files=False, names_only=names_only, max_depth=max_depth)
 
 
-def dirs(path, names_only=False, depth=-1, max_depth=inf) -> Dent:
-    return paths(path=path, return_dirs=True, return_symlinks=False, return_files=False, names_only=names_only, depth=depth, max_depth=max_depth)
+def dirs(path, names_only=False, max_depth=inf) -> Dent:
+    return paths(path=path, return_dirs=True, return_symlinks=False, return_files=False, names_only=names_only, max_depth=max_depth)
