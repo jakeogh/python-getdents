@@ -161,7 +161,12 @@ class DentGen():
             self.path = os.path.realpath(os.path.expanduser(self.path))
         if self.max_depth < 0:
             self.max_depth = inf
-        #print("self.max_depth:", self.max_depth)
+        if self.min_depth < 0:
+            self.min_depth = 0
+        else:
+            self.min_depth = self.min_depth + len(self.path.split(b'/'))
+        print("self.min_depth:", self.min_depth)
+        print("self.max_depth:", self.max_depth)
 
     def __iter__(self, cur_depth=0):
         print("cur_depth:", cur_depth)
