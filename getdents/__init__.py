@@ -150,11 +150,11 @@ class Dent():
 
 @attr.s(auto_attribs=True)
 class DentGen():
-    min_depth: int
     max_depth: float = inf
     path: bytes = attr.ib(converter=os.fsencode)
     buff_size: int = BUFF_SIZE
     verbose: bool = False
+    min_depth: int
     #iters: int = 0
 
     def __attrs_post_init__(self):
