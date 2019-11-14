@@ -164,7 +164,7 @@ class DentGen():
         #print("self.max_depth:", self.max_depth)
 
     def __iter__(self, cur_depth=0):
-        #print("cur_depth:", cur_depth)
+        print("cur_depth:", cur_depth)
         #self.iters += 1
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size):
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)

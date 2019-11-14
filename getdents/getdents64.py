@@ -5,11 +5,11 @@ import sys
 from getdents import DentGen
 
 
-def _iterate(path, max_depth, command, count, nodirs, nosymlinks, print_end):
+def _iterate(path, max_depth, min_depth, command, count, nodirs, nosymlinks, print_end):
     c = 0
     if command:
         from subprocess import check_output
-    dentgen = DentGen(path=path, max_depth=max_depth, verbose=False)
+    dentgen = DentGen(path=path, max_depth=max_depth, min_depth=min_depth, verbose=False)
 
     if count:
         for i, item in enumerate(dentgen):
@@ -40,8 +40,9 @@ def help():
     return '''Usage: getdents PATH [OPTIONS]
 
 Options:
-    --max-depth  INT  Descend at most levels (>= 0) levels of directories below the starting-point.
-    --exec   CMD      Execute command for every printed result. Must be a single argument. Should produce a single line.
+    --max-depth INT   Descend at most levels (>= 0) of directories below the starting-point.
+    --min-depth INT   Return directories atleast (>= 0) levels below the starting-point.
+    --exec CMD        Execute command for every printed result. Must be a single argument. Should produce a single line.
     --count           Print number of entries under PATH.
     --nodirs          Do not print directories.
     --nosymlinks      Do not print symbolic links.
@@ -57,9 +58,18 @@ def help_max_depth(max_depth=None):
     print("Error: --max-depth requires a integer >= 0.", file=sys.stderr)
 
 
+def help_min_depth(min_depth=None):
+    print(help(), file=sys.stderr)
+    if min_depth:
+        print("Error: --min-depth requires a integer >= 0, not \"{0}\".".format(min_depth), file=sys.stderr)
+        return
+    print("Error: --min-depth requires a integer >= 0.", file=sys.stderr)
+
+
 # TODO add --
 def main():
     max_depth = -1
+    min_depth = -1
     command = None
     args = len(sys.argv) - 1
     if args >= 1:
@@ -89,6 +99,20 @@ def main():
                     help_max_depth()
                     quit(1)
                 index += 1
+            elif sys.argv[index] == '--min-depth':
+                index += 1
+                try:
+                    min_depth = int(sys.argv[index])
+                except IndexError:
+                    help_min_depth()
+                    quit(1)
+                except ValueError:
+                    help_min_depth(sys.argv[index])
+                    quit(1)
+                if min_depth < 0 or sys.argv[index].startswith('-'):
+                    help_min_depth()
+                    quit(1)
+                index += 1
             elif sys.argv[index] == '--exec':
                 index += 1
                 command = sys.argv[index]
@@ -110,7 +134,7 @@ def main():
                 print("Error: Unknown option \"{0}\".".format(sys.argv[index]), file=sys.stderr)
                 quit(1)
 
-    _iterate(path, max_depth, command, count, nodirs, nosymlinks, print_end)
+    _iterate(path, max_depth, min_depth, command, count, nodirs, nosymlinks, print_end)
 
 
 if __name__ == '__main__':  # for dev
