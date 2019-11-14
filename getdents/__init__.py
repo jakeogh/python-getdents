@@ -152,9 +152,9 @@ class Dent():
 class DentGen():
     path: bytes = attr.ib(converter=os.fsencode)
     max_depth: float = inf
-    min_depth: int = 0
     buff_size: int = BUFF_SIZE
     verbose: bool = False
+    min_depth: int
     #iters: int = 0
 
     def __attrs_post_init__(self):
