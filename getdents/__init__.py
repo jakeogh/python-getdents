@@ -3,6 +3,7 @@ import attr
 from functools import update_wrapper
 from pathlib import Path
 from math import inf
+from icecream import ic
 
 BUFF_SIZE = 4096 * 16  # 64k
 
@@ -164,7 +165,9 @@ class DentGen():
         if self.min_depth < 0:
             self.min_depth = 0
         else:
+            ic(self.min_depth)
             self.min_depth = self.min_depth + len(self.path.split(b'/'))
+            ic(self.min_depth)
         print("self.min_depth:", self.min_depth)
         print("self.max_depth:", self.max_depth)
 
