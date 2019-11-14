@@ -3,7 +3,7 @@ import attr
 from functools import update_wrapper
 from pathlib import Path
 from math import inf
-from icecream import ic
+#from icecream import ic
 
 BUFF_SIZE = 4096 * 16  # 64k
 
@@ -158,7 +158,6 @@ class DentGen():
     #iters: int = 0
 
     def __attrs_post_init__(self):
-        ic(self.min_depth)
         if self.path[0] != b'/':
             self.path = os.path.realpath(os.path.expanduser(self.path))
         if self.max_depth < 0:
@@ -166,14 +165,10 @@ class DentGen():
         if self.min_depth < 0:
             self.min_depth = 0
         else:
-            ic(self.min_depth)
             self.min_depth = self.min_depth + len(self.path.split(b'/'))
-            ic(self.min_depth)
-        print("self.min_depth:", self.min_depth)
-        print("self.max_depth:", self.max_depth)
 
     def __iter__(self, cur_depth=0):
-        print("cur_depth:", cur_depth)
+        #print("cur_depth:", cur_depth)
         #self.iters += 1
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size):
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
@@ -181,7 +176,7 @@ class DentGen():
                 if self.min_depth:
                     if dent.depth() < self.min_depth:
                         continue
-                print("yielding dent", dent.depth())
+                #print("yielding dent", dent.depth())
                 yield dent
             elif dent.is_dir():
                 self.path = dent.parent + b'/' + dent.name
@@ -229,5 +224,4 @@ def links(path, names_only=False, max_depth=inf, min_depth=0) -> Dent:
 
 
 def dirs(path, names_only=False, max_depth=inf, min_depth=0) -> Dent:
-    ic(min_depth)
     return paths(path=path, return_dirs=True, return_symlinks=False, return_files=False, names_only=names_only, max_depth=max_depth, min_depth=min_depth)
