@@ -196,7 +196,7 @@ class DentGen():
 
 
 # TODO: it may be faster to filter in a function that this feeds
-def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names_only=False, max_depth=inf) -> Dent:
+def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names_only=False, max_depth=inf, min_depth=0) -> Dent:
     path = os.fsencode(path)
     fiterator = DentGen(path=path, max_depth=max_depth)
     for thing in fiterator:
@@ -216,13 +216,13 @@ def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names
     #print(fiterator.iters)
 
 
-def files(path, names_only=False, max_depth=inf) -> Dent:
-    return paths(path=path, return_dirs=False, return_symlinks=False, return_files=True, names_only=names_only, max_depth=max_depth)
+def files(path, names_only=False, max_depth=inf, min_depth=0) -> Dent:
+    return paths(path=path, return_dirs=False, return_symlinks=False, return_files=True, names_only=names_only, max_depth=max_depth, min_depth=min_depth)
 
 
-def links(path, names_only=False, max_depth=inf) -> Dent:
-    return paths(path=path, return_dirs=False, return_symlinks=True, return_files=False, names_only=names_only, max_depth=max_depth)
+def links(path, names_only=False, max_depth=inf, min_depth=0) -> Dent:
+    return paths(path=path, return_dirs=False, return_symlinks=True, return_files=False, names_only=names_only, max_depth=max_depth, min_depth=min_depth)
 
 
-def dirs(path, names_only=False, max_depth=inf) -> Dent:
-    return paths(path=path, return_dirs=True, return_symlinks=False, return_files=False, names_only=names_only, max_depth=max_depth)
+def dirs(path, names_only=False, max_depth=inf, min_depth=0) -> Dent:
+    return paths(path=path, return_dirs=True, return_symlinks=False, return_files=False, names_only=names_only, max_depth=max_depth, min_depth=min_depth)
