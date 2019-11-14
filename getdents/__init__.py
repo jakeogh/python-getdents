@@ -228,4 +228,5 @@ def links(path, names_only=False, max_depth=inf, min_depth=0) -> Dent:
 
 
 def dirs(path, names_only=False, max_depth=inf, min_depth=0) -> Dent:
+    ic(min_depth)
     return paths(path=path, return_dirs=True, return_symlinks=False, return_files=False, names_only=names_only, max_depth=max_depth, min_depth=min_depth)
