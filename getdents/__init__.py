@@ -170,7 +170,7 @@ class DentGen():
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             if dent.path == self.path:
                 if self.min_depth:
-                    if dent.depth < self.min_depth:
+                    if dent.depth() < self.min_depth:
                         continue
                 yield dent
             elif dent.is_dir():
