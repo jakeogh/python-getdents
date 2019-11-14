@@ -153,18 +153,18 @@ class DentGen():
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
     verbose: bool = False
-    iters: int = 0
+    #iters: int = 0
 
     def __attrs_post_init__(self):
         if self.path[0] != b'/':
             self.path = os.path.realpath(os.path.expanduser(self.path))
         if self.max_depth < 0:
             self.max_depth = inf
-        print("self.max_depth:", self.max_depth)
+        #print("self.max_depth:", self.max_depth)
 
     def __iter__(self, cur_depth=0):
-        print("cur_depth:", cur_depth)
-        self.iters += 1
+        #print("cur_depth:", cur_depth)
+        #self.iters += 1
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size):
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             if dent.path == self.path:
@@ -172,10 +172,10 @@ class DentGen():
             elif dent.is_dir():
                 self.path = dent.parent + b'/' + dent.name
                 if cur_depth < self.max_depth:
-                    print(cur_depth, "<", self.max_depth)
+                    #print(cur_depth, "<", self.max_depth)
                     yield from self.__iter__(cur_depth + 1)
                 elif cur_depth == self.max_depth:
-                    print(cur_depth, "==", self.max_depth)
+                    #print(cur_depth, "==", self.max_depth)
                     yield dent
                 self.path = dent.parent
             else:
@@ -196,12 +196,11 @@ def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names
         if not return_symlinks:
             if thing.is_symlink():
                 continue
-
         if names_only:
             yield thing.name
         else:
             yield thing
-    print(fiterator.iters)
+    #print(fiterator.iters)
 
 
 def files(path, names_only=False, max_depth=inf) -> Dent:
