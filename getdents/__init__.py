@@ -147,6 +147,9 @@ class Dent():
     def depth(self):
         return len(self.pathlib.parts)
 
+    def size(self):
+        return self.pathlib.stat().st_size
+
 
 @attr.s(auto_attribs=True)
 class DentGen():
@@ -166,6 +169,7 @@ class DentGen():
             self.min_depth = 0
         else:
             self.min_depth = self.min_depth + len(self.path.split(b'/'))
+
 
     def __iter__(self, cur_depth=0):
         #print("cur_depth:", cur_depth)
@@ -215,8 +219,18 @@ def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names
     #print(fiterator.iters)
 
 
-def files(path, names_only=False, max_depth=inf, min_depth=0) -> Dent:
-    return paths(path=path, return_dirs=False, return_symlinks=False, return_files=True, names_only=names_only, max_depth=max_depth, min_depth=min_depth)
+def files(path, names_only=False, max_depth=inf, min_depth=0, max_size=inf, min_size=0) -> Dent:
+    for p in paths(path=path, return_dirs=False, return_symlinks=False, return_files=True, names_only=False, max_depth=max_depth, min_depth=min_depth):
+        if min_size > 0 or max_size < inf:
+            size = p.size()
+            if size < min_size:
+                continue
+            if size > max_size:
+                continue
+        if names_only:
+            yield p.name
+        else:
+            yield p
 
 
 def links(path, names_only=False, max_depth=inf, min_depth=0) -> Dent:
