@@ -220,6 +220,8 @@ def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names
 
 
 def files(path, names_only=False, max_depth=inf, min_depth=0, max_size=inf, min_size=0) -> Dent:
+    if max_size < 0:
+        max_size = inf
     for p in paths(path=path, return_dirs=False, return_symlinks=False, return_files=True, names_only=False, max_depth=max_depth, min_depth=min_depth):
         if min_size > 0 or max_size < inf:
             size = p.size()
