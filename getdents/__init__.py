@@ -153,7 +153,7 @@ class Dent():
 
 @attr.s(auto_attribs=True)
 class DentGen():
-    min_depth: int
+    min_depth: int = 0
     path: bytes = attr.ib(converter=os.fsencode)
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
@@ -169,7 +169,6 @@ class DentGen():
             self.min_depth = 0
         else:
             self.min_depth = self.min_depth + len(self.path.split(b'/'))
-
 
     def __iter__(self, cur_depth=0):
         #print("cur_depth:", cur_depth)
