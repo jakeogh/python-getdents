@@ -212,7 +212,9 @@ def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names
             if thing.is_symlink():
                 continue
         if names_only:
-            yield thing.name
+            yield thing.name    # this should still be a Dent,
+                                # but it CANT BE, Dents reprsent real fs objects, and have parents
+                                # so, unless one wants bytes, just return the Dents and use Dent.pathlib.name
         else:
             yield thing
     #print(fiterator.iters)
