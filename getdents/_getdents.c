@@ -107,9 +107,13 @@ getdents_next(struct getdents_state *s)
 
     struct linux_dirent64 *d = (struct linux_dirent64 *)(s->buff + s->bpos);
 
-    PyObject *py_name = PyBytes_FromString(d->d_name);
+    PyObject *py_name = PyBytes_FromString(d->d_name);  // want bytes
 //  PyObject *py_name = PyUnicode_DecodeFSDefault(d->d_name);
 
+    // https://docs.python.org/3/c-api/arg.html#c.Py_BuildValue
+    // K (int) [unsigned long long]     Convert a C unsigned long long to a Python integer object
+    // b (int) [char]                   Convert a plain C char to a Python integer object
+    // O (object) [PyObject *]          Pass a Python object untouched (except for its reference count, which is incremented by one)
     PyObject *result = Py_BuildValue("KbO", d->d_ino, d->d_type, py_name);
 
     s->bpos += d->d_reclen;
