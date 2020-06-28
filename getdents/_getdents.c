@@ -104,7 +104,7 @@ getdents_next(struct getdents_state *s)
         //         size_t s->buff_size
         s->nread = syscall(SYS_getdents64, s->fd, s->buff, s->buff_size);
         //         int    s->nread (number of bytes read)
-        printf("%d\n", s->nread);
+        printf("nread: %d d_reclen: %d\n", s->nread, d->d_reclen);
 
         if (s->nread == 0)
             return NULL;
