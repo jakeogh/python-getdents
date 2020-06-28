@@ -118,7 +118,7 @@ getdents_next(struct getdents_state *s)
         if (!buff)
             return PyErr_NoMemory();
 
-        free(buff)
+        free(buff);
     }
 
     struct linux_dirent64 *d = (struct linux_dirent64 *)(s->buff + s->bpos);
