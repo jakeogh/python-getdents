@@ -120,7 +120,7 @@ getdents_next(struct getdents_state *s)
         int bpos = 0;
         while(1) {
             struct linux_dirent64 *dd = (struct linux_dirent64 *)(s->buff + bpos);
-            printf("%X dd->name: %s\n", &dd, dd->d_name);
+            printf("%X %X dd->name: %s\n", &dd, s->buff + bpos, dd->d_name);
             bpos += dd->d_reclen;
             if (bpos >= s->nread)
                 break;
