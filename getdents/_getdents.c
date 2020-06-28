@@ -116,13 +116,22 @@ getdents_next(struct getdents_state *s)
         void *buff = malloc(s->buff_size);
         if (!buff)
             return PyErr_NoMemory();
+        // each struct linux_dirent64 in s->buff has a different d->d_reclen
+        int bpos = 0;
+        while(1) {
+            struct linux_dirent64 *dd = (struct linux_dirent64 *)(s->buff + bpos);
+            printf("dd->name: %s\n", dd->name);
+            bpos += dd->d_reclen;
+            if (bpos >= s->nread)
+                break;
+
+        }
 
         free(buff);
     }
 
     struct linux_dirent64 *d = (struct linux_dirent64 *)(s->buff + s->bpos);
-    // right here, I want to change the order of the linux_dirent64 entries
-    printf("nread: %d d_reclen: %d\n", s->nread, d->d_reclen);
+    //printf("nread: %d d_reclen: %d\n", s->nread, d->d_reclen);
 
     PyObject *py_name = PyBytes_FromString(d->d_name);  // want bytes
 //  PyObject *py_name = PyUnicode_DecodeFSDefault(d->d_name);
@@ -133,7 +142,7 @@ getdents_next(struct getdents_state *s)
     // O (object) [PyObject *]          Pass a Python object untouched (except for its reference count, which is incremented by one)
     PyObject *result = Py_BuildValue("KbO", d->d_ino, d->d_type, py_name);
 
-    // unsigned short  d->d_reclen
+    // unsigned short  d->d_reclen  //always even
     s->bpos += d->d_reclen;
 
     return result;
