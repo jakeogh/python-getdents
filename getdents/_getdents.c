@@ -10,11 +10,11 @@
 #include <sys/syscall.h>
 
 struct linux_dirent64 {
-    uint64_t        d_ino;
-    int64_t         d_off;
-    unsigned short  d_reclen;
-    unsigned char   d_type;
-    char            d_name[];
+    uint64_t        d_ino;      /* 64-bit inode number */
+    int64_t         d_off;      /* 64-bit offset to next structure */
+    unsigned short  d_reclen;   /* Size of this dirent */
+    unsigned char   d_type;     /* File type */
+    char            d_name[];   /* Filename (null-terminated) */
 };
 
 struct getdents_state {
@@ -90,6 +90,9 @@ getdents_dealloc(struct getdents_state *state)
 static PyObject *
 getdents_next(struct getdents_state *s)
 {
+    // bool s->ready_for_next_batch
+    // int  s->bpos
+    // int  s->nread
     s->ready_for_next_batch = s->bpos >= s->nread;
 
     if (s->ready_for_next_batch) {
@@ -101,6 +104,7 @@ getdents_next(struct getdents_state *s)
         //         size_t s->buff_size
         s->nread = syscall(SYS_getdents64, s->fd, s->buff, s->buff_size);
         //         int    s->nread (number of bytes read)
+        printf("%d\n", s->nread);
 
         if (s->nread == 0)
             return NULL;
@@ -109,6 +113,12 @@ getdents_next(struct getdents_state *s)
             PyErr_SetString(PyExc_OSError, "getdents64");
             return NULL;
         }
+
+        void *buff = malloc(s->buff_size);
+        if (!buff)
+            return PyErr_NoMemory();
+
+        free(buff)
     }
 
     struct linux_dirent64 *d = (struct linux_dirent64 *)(s->buff + s->bpos);
@@ -123,6 +133,7 @@ getdents_next(struct getdents_state *s)
     // O (object) [PyObject *]          Pass a Python object untouched (except for its reference count, which is incremented by one)
     PyObject *result = Py_BuildValue("KbO", d->d_ino, d->d_type, py_name);
 
+    // unsigned short  d->d_reclen
     s->bpos += d->d_reclen;
 
     return result;
