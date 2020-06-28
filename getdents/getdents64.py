@@ -36,7 +36,7 @@ def _iterate(path, max_depth, min_depth, command, count, nodirs, nosymlinks, pri
                     fd.write(item.path + print_end)
 
 
-def help():
+def usage():
     return '''Usage: getdents PATH [OPTIONS]
 
 Options:
@@ -51,7 +51,7 @@ Options:
 
 
 def help_max_depth(max_depth=None):
-    print(help(), file=sys.stderr)
+    print(usage(), file=sys.stderr)
     if max_depth:
         print("Error: --max-depth requires a integer >= 0, not \"{0}\".".format(max_depth), file=sys.stderr)
         return
@@ -59,7 +59,7 @@ def help_max_depth(max_depth=None):
 
 
 def help_min_depth(min_depth=None):
-    print(help(), file=sys.stderr)
+    print(usage(), file=sys.stderr)
     if min_depth:
         print("Error: --min-depth requires a integer >= 0, not \"{0}\".".format(min_depth), file=sys.stderr)
         return
@@ -75,9 +75,9 @@ def main():
     if args >= 1:
         path = os.fsencode(sys.argv[1])
     else:
-        print(help(), file=sys.stderr)
+        print(usage(), file=sys.stderr)
         print("Error: A path is required.", file=sys.stderr)
-        quit(1)
+        sys.exit(1)
     count = False
     nodirs = False
     nosymlinks = False
@@ -91,13 +91,13 @@ def main():
                     max_depth = int(sys.argv[index])
                 except IndexError:
                     help_max_depth()
-                    quit(1)
+                    sys.exit(1)
                 except ValueError:
                     help_max_depth(sys.argv[index])
-                    quit(1)
+                    sys.exit(1)
                 if max_depth < 0 or sys.argv[index].startswith('-'):
                     help_max_depth()
-                    quit(1)
+                    sys.exit(1)
                 index += 1
             elif sys.argv[index] == '--min-depth':
                 index += 1
@@ -105,13 +105,13 @@ def main():
                     min_depth = int(sys.argv[index])
                 except IndexError:
                     help_min_depth()
-                    quit(1)
+                    sys.exit(1)
                 except ValueError:
                     help_min_depth(sys.argv[index])
-                    quit(1)
+                    sys.exit(1)
                 if min_depth < 0 or sys.argv[index].startswith('-'):
                     help_min_depth()
-                    quit(1)
+                    sys.exit(1)
                 index += 1
             elif sys.argv[index] == '--exec':
                 index += 1
@@ -130,9 +130,9 @@ def main():
                 print_end = b'\x00'
                 index += 1
             else:
-                print(help(), file=sys.stderr)
+                print(usage(), file=sys.stderr)
                 print("Error: Unknown option \"{0}\".".format(sys.argv[index]), file=sys.stderr)
-                quit(1)
+                sys.exit(1)
 
     _iterate(path, max_depth, min_depth, command, count, nodirs, nosymlinks, print_end)
 

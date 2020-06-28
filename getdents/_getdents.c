@@ -94,7 +94,13 @@ getdents_next(struct getdents_state *s)
 
     if (s->ready_for_next_batch) {
         s->bpos = 0;
+        // man getdents64:
+        //     int getdents64(unsigned int fd, struct linux_dirent64 *dirp, unsigned int count);  # count is the buffer size
+        //         int    s->fd
+        //         char*  s->buff  (linux_dirent64 entries)
+        //         size_t s->buff_size
         s->nread = syscall(SYS_getdents64, s->fd, s->buff, s->buff_size);
+        //         int    s->nread (number of bytes read)
 
         if (s->nread == 0)
             return NULL;
@@ -106,6 +112,7 @@ getdents_next(struct getdents_state *s)
     }
 
     struct linux_dirent64 *d = (struct linux_dirent64 *)(s->buff + s->bpos);
+    // right here, I want to change the order of the linux_dirent64 entries
 
     PyObject *py_name = PyBytes_FromString(d->d_name);  // want bytes
 //  PyObject *py_name = PyUnicode_DecodeFSDefault(d->d_name);
