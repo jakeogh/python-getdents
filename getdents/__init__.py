@@ -157,6 +157,7 @@ class DentGen():
     min_depth: int = 0
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
+    random: bool = False
     verbose: bool = False
     #iters: int = 0
 
@@ -173,7 +174,7 @@ class DentGen():
     def __iter__(self, cur_depth=0):
         #print("cur_depth:", cur_depth)
         #self.iters += 1
-        for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size):
+        for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random):
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             if dent.path == self.path:
                 if self.min_depth:
