@@ -139,7 +139,7 @@ getdents_next(struct getdents_state *s)
         free(dents);
         free(bpos);
         free(index);
-        free(dd);
+        //free(dd);
     }
 
     struct linux_dirent64 *d = (struct linux_dirent64 *)(s->buff + s->bpos);
