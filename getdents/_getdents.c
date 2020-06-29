@@ -136,9 +136,9 @@ getdents_next(struct getdents_state *s)
             fprintf(stderr, "%lu\n", dents[i]);
         }
         free(buff);
-        free(dents);
-        free(bpos);
-        free(index);
+        //free(dents);
+        //free(bpos);
+        //free(index);
         //free(dd);
     }
 
