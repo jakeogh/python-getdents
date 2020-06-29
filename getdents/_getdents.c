@@ -9,9 +9,8 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <sys/syscall.h>
-#include "shuffle.h"
-
 #define SHUFFLE_IMPLEMENTATION
+#include "shuffle.h"
 
 struct linux_dirent64 {
     uint64_t        d_ino;      /* 64-bit inode number */
