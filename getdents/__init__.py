@@ -297,7 +297,7 @@ def dirs(path,
          names_only=False,
          max_depth=inf,
          min_depth=0,
-         random=False
+         random=False,
          verbose=False) -> Dent:
     return paths(path=path,
                  return_dirs=True,
