@@ -160,8 +160,8 @@ getdents_next(struct getdents_state *s)
 
         }
 
-        size_t size = sizeof(dents)/sizeof(dents[0]);
-        fprintf(stderr, "size: %d:\n", size);
+        size_t size = index;
+        fprintf(stderr, "size: %d\n", size);
 
         struct shuffle_ctx ctx;
         shuffle_init(&ctx, size, 0xBAD5EEED);
