@@ -99,7 +99,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 static void
 getdents_dealloc(struct getdents_state *state)
 {
-    fprintf(stderr, "about to free(state->buff)\n");
+    //fprintf(stderr, "about to free(state->buff)\n");
     free(state->buff);
     Py_TYPE(state)->tp_free(state);
 }
@@ -190,30 +190,28 @@ getdents_next(struct getdents_state *s)
             for (idx=0; idx<=index; idx++) {
                 //fprintf(stderr, "%d %lu\n", idx, random_dents[idx]);
                 struct linux_dirent64 *dd = (struct linux_dirent64 *)(random_dents[idx]);
-                fprintf(stderr, "random_dents[%d]: %lu dd->d_reclen: %hu dd->name: %s\n", idx, random_dents[idx], dd->d_reclen, dd->d_name);
-
+                //fprintf(stderr, "random_dents[%d]: %lu dd->d_reclen: %hu dd->name: %s\n", idx, random_dents[idx], dd->d_reclen, dd->d_name);
 
                 memcpy(random_buff + bpos, random_dents[idx], dd->d_reclen);
-                struct linux_dirent64 *ddd = (struct linux_dirent64 *)(random_buff + bpos);
-                fprintf(stderr, "%hu ddd->name: %s\n", ddd->d_reclen, ddd->d_name); //works as expected
-
+                //struct linux_dirent64 *ddd = (struct linux_dirent64 *)(random_buff + bpos);
+                //fprintf(stderr, "%hu ddd->name: %s\n", ddd->d_reclen, ddd->d_name); //works as expected
 
                 bpos += dd->d_reclen;
-                fprintf(stderr, "bpos: %d\n", bpos);
+                //fprintf(stderr, "bpos: %d\n", bpos);
             }
-            fprintf(stderr, "about to memcpy\n");
+            //fprintf(stderr, "about to memcpy\n");
             memcpy(s->buff, random_buff, s->nread);
-            fprintf(stderr, "after memcpy\n");
+            //fprintf(stderr, "after memcpy\n");
 
             //free(random_buff);
             //free(buff);
-            fprintf(stderr, "after frees\n");
+            //fprintf(stderr, "after frees\n");
         }
 
     }
 
     struct linux_dirent64 *d = (struct linux_dirent64 *)(s->buff + s->bpos);
-    printf("nread: %d d_reclen: %d d->name: %s\n", s->nread, d->d_reclen, d->d_name);
+    //printf("nread: %d d_reclen: %d d->name: %s\n", s->nread, d->d_reclen, d->d_name);
 
     PyObject *py_name = PyBytes_FromString(d->d_name);  // want bytes
 //  PyObject *py_name = PyUnicode_DecodeFSDefault(d->d_name);
@@ -226,7 +224,7 @@ getdents_next(struct getdents_state *s)
 
     // unsigned short  d->d_reclen  //always even
     s->bpos += d->d_reclen;
-    fprintf(stderr, "s->bpos: %d\n", s->bpos);
+    //fprintf(stderr, "s->bpos: %d\n", s->bpos);
 
     return result;
 }
