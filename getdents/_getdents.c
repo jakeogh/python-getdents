@@ -85,6 +85,13 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
         return NULL;
     }
 
+    if ((random != 1) or (random != 0)) {
+        PyErr_SetString(
+            PyExc_ValueError,
+            "random must be 0 or 1"
+        );
+        return NULL;
+
     struct getdents_state *state = (void *) type->tp_alloc(type, 0);
 
     if (!state)
@@ -138,69 +145,75 @@ getdents_next(struct getdents_state *s)
             return NULL;
         }
 
-        void *buff = malloc(s->buff_size);
-        if (!buff)
-            return PyErr_NoMemory();
-        void *random_buff = malloc(s->buff_size);
-        if (!random_buff)
-            return PyErr_NoMemory();
-        // each struct linux_dirent64 in s->buff has a different d->d_reclen
 
-        int bpos = 0;
-        int index = 0;
-        unsigned long *dents[s->nread/24];  // 24 appears the be the min linux_dirent64 size
-        unsigned long *random_dents[s->nread/24];
-        while(1) {
-            struct linux_dirent64 *dd = (struct linux_dirent64 *)(s->buff + bpos);
-            fprintf(stderr, "%p %p %lu %d %hu dd->name: %s\n", &dd, s->buff + bpos, s->buff + bpos, bpos, dd->d_reclen, dd->d_name);
-            dents[index] = s->buff + bpos;
-            //fprintf(stderr, "%lu\n", dents[index]);
-            bpos += dd->d_reclen;
-            if (bpos >= s->nread)
-                break;
-            index += 1;
-        }
+        if (random) {
+            void *buff = malloc(s->buff_size);
+            if (!buff)
+                return PyErr_NoMemory();
 
-        int idx = 0;
-        for (idx=0; idx<=index; idx++) {
-            fprintf(stderr, "%d %lu\n", idx, dents[idx]);
+            void *random_buff = malloc(s->buff_size);
+            if (!random_buff)
+                return PyErr_NoMemory();
+            // each struct linux_dirent64 in s->buff has a different d->d_reclen
 
-        }
+            int bpos = 0;
+            int index = 0;
+            unsigned long *dents[s->nread/24];  // 24 appears the be the min linux_dirent64 size
+            unsigned long *random_dents[s->nread/24];
 
-        size_t size = index + 1;
-        fprintf(stderr, "size: %d\n", size);
+            // calculate index, the number of dents in the struct
+            while(1) {
+                struct linux_dirent64 *dd = (struct linux_dirent64 *)(s->buff + bpos);
+                //fprintf(stderr, "%p %p %lu %d %hu dd->name: %s\n", &dd, s->buff + bpos, s->buff + bpos, bpos, dd->d_reclen, dd->d_name);
+                dents[index] = s->buff + bpos;
+                //fprintf(stderr, "%lu\n", dents[index]);
+                bpos += dd->d_reclen;
+                if (bpos >= s->nread)
+                    break;
+                index += 1;
+            }
 
-        struct timeval tv;
-        gettimeofday(&tv, NULL);
-        int usec = tv.tv_usec;
+            /*
+            int idx = 0;
+            for (idx=0; idx<=index; idx++) {
+                fprintf(stderr, "%d %lu\n", idx, dents[idx]);
 
-        struct shuffle_ctx ctx;
-        //shuffle_init(&ctx, size, 0xBAD5EEED);
-        shuffle_init(&ctx, size, usec);
+            }*/
 
-        size_t i, j, k;
-        for (i = 0; i < size; ++i) {
-                j = shuffle_index(&ctx, i);
-                k = shuffle_index_invert(&ctx, j);
-                //k = 0;
-                fprintf(stderr, "%2zu %6lu   %2zu %6lu\n", j, dents[j], k, dents[k]);
-                random_dents[i] = dents[j];
-        }
+            size_t size = index + 1;
+            //fprintf(stderr, "size: %d\n", size);
 
-        idx = 0;
-        for (idx=0; idx<=index; idx++) {
-            //fprintf(stderr, "%d %lu\n", idx, random_dents[idx]);
-            struct linux_dirent64 *dd = (struct linux_dirent64 *)(random_dents[idx]);
-            fprintf(stderr, "%lu %hu dd->name: %s\n", random_dents[idx], dd->d_reclen, dd->d_name);
+            struct timeval tv;
+            gettimeofday(&tv, NULL);
+            int usec = tv.tv_usec;
 
+            struct shuffle_ctx ctx;
+            //shuffle_init(&ctx, size, 0xBAD5EEED);
+            shuffle_init(&ctx, size, usec);
+
+            //size_t i, j, k;
+            size_t i, j;
+            for (i = 0; i < size; ++i) {
+                    j = shuffle_index(&ctx, i);
+                    //k = shuffle_index_invert(&ctx, j);
+                    //k = 0;
+                    //fprintf(stderr, "%2zu %6lu   %2zu %6lu\n", j, dents[j], k, dents[k]);
+                    random_dents[i] = dents[j];
+            }
+
+            idx = 0;
+            for (idx=0; idx<=index; idx++) {
+                //fprintf(stderr, "%d %lu\n", idx, random_dents[idx]);
+                struct linux_dirent64 *dd = (struct linux_dirent64 *)(random_dents[idx]);
+                fprintf(stderr, "%lu %hu dd->name: %s\n", random_dents[idx], dd->d_reclen, dd->d_name);
+                memcpy(random_buff, random_dents[idx], dd->d_reclen);
+            }
+            memcpy(s->buff, random_buff, s->nread);
+
+            free(random_buff);
         }
 
         free(buff);
-        free(random_buff);
-        //free(dents);
-        //free(bpos);
-        //free(index);
-        //free(dd);
     }
 
     struct linux_dirent64 *d = (struct linux_dirent64 *)(s->buff + s->bpos);
