@@ -47,6 +47,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
     int fd;
     int rand;
 
+    // https://docs.python.org/3/c-api/arg.html#c.PyArg_ParseTuple
     if (!PyArg_ParseTuple(args, "ini", &fd, &buff_size, &rand))
         return NULL;
 
@@ -182,14 +183,16 @@ getdents_next(struct getdents_state *s)
                     random_dents[i] = dents[j];
             }
 
+            bpos = 0
             idx = 0;
             for (idx=0; idx<=index; idx++) {
                 //fprintf(stderr, "%d %lu\n", idx, random_dents[idx]);
                 struct linux_dirent64 *dd = (struct linux_dirent64 *)(random_dents[idx]);
                 fprintf(stderr, "%lu %hu dd->name: %s\n", random_dents[idx], dd->d_reclen, dd->d_name);
-                memcpy(random_buff, random_dents[idx], dd->d_reclen);
+                memcpy(&random_buff + bpos, random_dents[idx], dd->d_reclen);
+                bpos += dd->d_reclen;
             }
-            memcpy(s->buff, random_buff, s->nread);
+            memcpy(s->buff, &random_buff, s->nread);
 
             free(random_buff);
             free(buff);
