@@ -213,7 +213,7 @@ getdents_next(struct getdents_state *s)
     s->bpos += d->d_reclen;
 
     return result;
-}
+};
 
 PyTypeObject getdents_type = {
     PyVarObject_HEAD_INIT(NULL, 0)
