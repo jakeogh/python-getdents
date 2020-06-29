@@ -29,7 +29,6 @@ struct getdents_state {
     bool   ready_for_next_batch;
 };
 
-
 #ifndef O_GETDENTS
 # define O_GETDENTS (O_DIRECTORY | O_RDONLY | O_NONBLOCK | O_CLOEXEC)
 #endif
