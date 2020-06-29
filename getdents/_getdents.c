@@ -25,7 +25,7 @@ struct getdents_state {
     char  *buff;
     int    bpos;
     int    fd;
-    int    random;
+    int    rand;
     int    nread;
     size_t buff_size;
     bool   ready_for_next_batch;
@@ -64,9 +64,9 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
     size_t buff_size;
     int fd;
-    int random;
+    int rand;
 
-    if (!PyArg_ParseTuple(args, "ini", &fd, &buff_size, &random))
+    if (!PyArg_ParseTuple(args, "ini", &fd, &buff_size, &rand))
         return NULL;
 
     if (!(fcntl(fd, F_GETFL) & O_DIRECTORY)) {
@@ -85,7 +85,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
         return NULL;
     }
 
-    if ((random != 1) | (random != 0)) {
+    if ((rand != 1) | (rand != 0)) {
         PyErr_SetString(
             PyExc_ValueError,
             "random must be 0 or 1"
@@ -105,7 +105,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
     state->buff = buff;
     state->buff_size = buff_size;
     state->fd = fd;
-    state->random = random;
+    state->rand = rand;
     state->bpos = 0;
     state->nread = 0;
     state->ready_for_next_batch = true;
@@ -146,7 +146,7 @@ getdents_next(struct getdents_state *s)
         }
 
 
-        if (s->random) {
+        if (s->rand) {
             void *buff = malloc(s->buff_size);
             if (!buff)
                 return PyErr_NoMemory();
