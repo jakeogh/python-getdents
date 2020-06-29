@@ -126,7 +126,7 @@ getdents_next(struct getdents_state *s)
             return NULL;
         }
 
-
+        /*
         if (s->rand) {
             void *buff = malloc(s->buff_size);
             if (!buff)
@@ -155,11 +155,10 @@ getdents_next(struct getdents_state *s)
             }
 
             int idx = 0;
-            /*
-            for (idx=0; idx<=index; idx++) {
-                fprintf(stderr, "%d %lu\n", idx, dents[idx]);
 
-            }*/
+            //for (idx=0; idx<=index; idx++) {
+            //    fprintf(stderr, "%d %lu\n", idx, dents[idx]);
+            //}
 
             size_t size = index + 1;
             //fprintf(stderr, "size: %d\n", size);
@@ -193,7 +192,7 @@ getdents_next(struct getdents_state *s)
 
             free(random_buff);
             free(buff);
-        };
+        };*/
 
     }
 
