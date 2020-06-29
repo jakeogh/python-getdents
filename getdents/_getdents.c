@@ -155,9 +155,9 @@ getdents_next(struct getdents_state *s)
             index += 1;
         }
 
-        int i = 0;
-        for (i=0; i<=index; i++) {
-            fprintf(stderr, "i%d %lu\n", i, dents[i]);
+        int idx = 0;
+        for (idx=0; idx<=index; idx++) {
+            fprintf(stderr, "i%d %lu\n", idx, dents[idx]);
 
         }
 
