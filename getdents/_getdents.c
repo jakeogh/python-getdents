@@ -113,7 +113,7 @@ getdents_dealloc(struct getdents_state *state)
 }
 
 static PyObject *
-getdents_next(struct getdents_state *s, bool random)
+getdents_next(struct getdents_state *s)
 {
     // bool s->ready_for_next_batch
     // int  s->bpos
