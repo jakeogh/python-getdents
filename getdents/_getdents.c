@@ -43,7 +43,7 @@ get_random(int n)
     // https://stackoverflow.com/questions/10984974/why-do-people-say-there-is-modulo-bias-when-using-a-random-number-generator
     int x;
 
-    if n != 0 {
+    if (n != 0) {
         do {
             x = rand();
         } while (x > (RAND_MAX - ( ( ( RAND_MAX % n ) + 1 ) % n) ) );
