@@ -119,7 +119,7 @@ getdents_next(struct getdents_state *s)
         // each struct linux_dirent64 in s->buff has a different d->d_reclen
         int bpos = 0;
         int index = 0;
-        unsigned long *dents[];
+        unsigned long *dents[s->nread/24];  // 24 appears the be the min linux_dirent64 size
         while(1) {
             struct linux_dirent64 *dd = (struct linux_dirent64 *)(s->buff + bpos);
             fprintf(stderr, "%p %p %lu %hu dd->name: %s\n", &dd, s->buff + bpos, s->buff + bpos, dd->d_reclen, dd->d_name);
