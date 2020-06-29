@@ -99,6 +99,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 static void
 getdents_dealloc(struct getdents_state *state)
 {
+    fprintf(stderr, "about to free(state->buff)\n");
     free(state->buff);
     Py_TYPE(state)->tp_free(state);
 }
