@@ -198,7 +198,7 @@ getdents_next(struct getdents_state *s)
             fprintf(stderr, "after memcpy\n");
 
             //free(random_buff);
-            free(buff);
+            //free(buff);
             fprintf(stderr, "after frees\n");
         }
 
