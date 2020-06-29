@@ -211,9 +211,9 @@ getdents_next(struct getdents_state *s)
             memcpy(s->buff, random_buff, s->nread);
 
             free(random_buff);
+            free(buff);
         }
 
-        free(buff);
     }
 
     struct linux_dirent64 *d = (struct linux_dirent64 *)(s->buff + s->bpos);
