@@ -66,6 +66,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
         return NULL;
     }
 
+    fprintf(stderr, "rand: %d\n", rand)
     if ((rand != 1) | (rand != 0)) {
         PyErr_SetString(
             PyExc_ValueError,
