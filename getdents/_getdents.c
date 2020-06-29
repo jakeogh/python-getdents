@@ -111,7 +111,7 @@ getdents_dealloc(struct getdents_state *state)
 }
 
 static PyObject *
-getdents_next(struct getdents_state *s)
+getdents_next(struct getdents_state *s, bool random)
 {
     // bool s->ready_for_next_batch
     // int  s->bpos
@@ -187,13 +187,14 @@ getdents_next(struct getdents_state *s)
 
         idx = 0;
         for (idx=0; idx<=index; idx++) {
-            fprintf(stderr, "%d %lu\n", idx, random_dents[idx]);
+            //fprintf(stderr, "%d %lu\n", idx, random_dents[idx]);
             struct linux_dirent64 *dd = (struct linux_dirent64 *)(random_dents[idx]);
             fprintf(stderr, "%lu %hu dd->name: %s\n", random_dents[idx], dd->d_reclen, dd->d_name);
 
         }
 
         free(buff);
+        free(random_buff);
         //free(dents);
         //free(bpos);
         //free(index);
