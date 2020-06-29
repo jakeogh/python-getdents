@@ -62,8 +62,9 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
     size_t buff_size;
     int fd;
+    bool random;
 
-    if (!PyArg_ParseTuple(args, "in", &fd, &buff_size))
+    if (!PyArg_ParseTuple(args, "in", &fd, &buff_size, &random))
         return NULL;
 
     if (!(fcntl(fd, F_GETFL) & O_DIRECTORY)) {
@@ -82,7 +83,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
         return NULL;
     }
 
-    srand(time(NULL));
+    //srand(time(NULL));
 
     struct getdents_state *state = (void *) type->tp_alloc(type, 0);
 
@@ -220,7 +221,7 @@ getdents_next(struct getdents_state *s, bool random)
 }
 
 PyTypeObject getdents_type = {
-    PyVarObject_HEAD_INIT(NULL, 0, 0)
+    PyVarObject_HEAD_INIT(NULL, 0)
     "getdents_raw",                 /* tp_name */
     sizeof(struct getdents_state),  /* tp_basicsize */
     0,                              /* tp_itemsize */
