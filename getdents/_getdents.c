@@ -220,7 +220,7 @@ getdents_next(struct getdents_state *s, bool random)
 }
 
 PyTypeObject getdents_type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
+    PyVarObject_HEAD_INIT(NULL, 0, 0)
     "getdents_raw",                 /* tp_name */
     sizeof(struct getdents_state),  /* tp_basicsize */
     0,                              /* tp_itemsize */
