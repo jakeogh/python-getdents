@@ -85,7 +85,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
         return NULL;
     }
 
-    if ((random != 1) or (random != 0)) {
+    if ((random != 1) | (random != 0)) {
         PyErr_SetString(
             PyExc_ValueError,
             "random must be 0 or 1"
