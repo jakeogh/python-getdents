@@ -164,8 +164,13 @@ getdents_next(struct getdents_state *s)
         size_t size = index + 1;
         fprintf(stderr, "size: %d\n", size);
 
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        int usec = tv.tv_usec;
+
         struct shuffle_ctx ctx;
-        shuffle_init(&ctx, size, 0xBAD5EEED);
+        //shuffle_init(&ctx, size, 0xBAD5EEED);
+        shuffle_init(&ctx, size, usec);
 
         size_t i, j, k;
         for (i = 0; i < size; ++i) {
