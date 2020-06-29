@@ -36,7 +36,7 @@ class Reify():
         return val
 
 
-def getdents(path, buff_size=BUFF_SIZE):
+def getdents(path, buff_size=BUFF_SIZE, random=False):
     """Get directory entries.
 
     Wrapper around getdents_raw(), simulates ls behaviour: ignores deleted
@@ -62,7 +62,7 @@ def getdents(path, buff_size=BUFF_SIZE):
     path_fd = os.open(path, O_GETDENTS)
 
     try:
-        for inode, dtype, name in getdents_raw(path_fd, buff_size):
+        for inode, dtype, name in getdents_raw(path_fd, buff_size, random):
             if name != b'..':
                 yield (inode, dtype, name)
     finally:
