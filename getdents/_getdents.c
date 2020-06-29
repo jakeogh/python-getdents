@@ -156,11 +156,12 @@ getdents_next(struct getdents_state *s)
 
         int idx = 0;
         for (idx=0; idx<=index; idx++) {
-            fprintf(stderr, "i%d %lu\n", idx, dents[idx]);
+            fprintf(stderr, "%d %lu\n", idx, dents[idx]);
 
         }
 
         size_t size = sizeof(dents)/sizeof(dents[0]);
+        fprintf(stderr, "size: %d:\n", size);
 
         struct shuffle_ctx ctx;
         shuffle_init(&ctx, size, 0xBAD5EEED);
