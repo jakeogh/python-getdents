@@ -39,25 +39,6 @@ struct getdents_state {
 # define MIN_GETDENTS_BUFF_SIZE (MAXNAMLEN + sizeof(struct linux_dirent64))
 #endif
 
-/*
-int
-get_random(int n)
-{
-    // https://stackoverflow.com/questions/10984974/why-do-people-say-there-is-modulo-bias-when-using-a-random-number-generator
-    int x;
-
-    if (n != 0) {
-        do {
-            x = rand();
-        } while (x > (RAND_MAX - ( ( ( RAND_MAX % n ) + 1 ) % n) ) );
-
-        x %= n;
-    } else {
-        x = rand();
-    }
-    return x;
-}*/
-
 
 static PyObject *
 getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
