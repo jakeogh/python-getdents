@@ -146,7 +146,7 @@ getdents_next(struct getdents_state *s)
         }
 
 
-        if (s->rand) {
+        //if (s->rand) {
             void *buff = malloc(s->buff_size);
             if (!buff)
                 return PyErr_NoMemory();
@@ -212,7 +212,7 @@ getdents_next(struct getdents_state *s)
 
             free(random_buff);
             free(buff);
-        }
+        //}
 
     }
 
