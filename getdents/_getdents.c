@@ -132,7 +132,7 @@ getdents_next(struct getdents_state *s)
         }
 
         int i = 0;
-        for (i=0; i<=index, i++) {
+        for (i=0; i<=index; i++) {
             fprintf(stderr, "%lu\n", dents[i]);
         }
         free(buff);
