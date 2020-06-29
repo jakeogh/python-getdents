@@ -80,6 +80,7 @@ def main():
         print("Error: A path is required.", file=sys.stderr)
         sys.exit(1)
     count = False
+    random = 0
     nodirs = False
     nosymlinks = False
     print_end = b'\n'
@@ -122,7 +123,7 @@ def main():
                 count = True
                 index += 1
             elif sys.argv[index] == '--random':
-                random = True
+                random = 1
                 index += 1
             elif sys.argv[index] == "--nodirs":
                 nodirs = True
