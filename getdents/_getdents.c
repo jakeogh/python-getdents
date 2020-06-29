@@ -9,6 +9,7 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <sys/syscall.h>
+#include "shuffle.h"
 
 struct linux_dirent64 {
     uint64_t        d_ino;      /* 64-bit inode number */
@@ -155,11 +156,9 @@ getdents_next(struct getdents_state *s)
 
         int i = 0;
         for (i=0; i<=index; i++) {
-            fprintf(stderr, "%lu\n", dents[i]);
+            fprintf(stderr, "i%d %lu\n", i, dents[i]);
 
         }
-
-
 
 
         free(buff);
