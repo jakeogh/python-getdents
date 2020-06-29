@@ -176,11 +176,11 @@ getdents_next(struct getdents_state *s)
             //size_t i, j, k;
             size_t i, j;
             for (i = 0; i < size; ++i) {
-                    j = shuffle_index(&ctx, i);
-                    //k = shuffle_index_invert(&ctx, j);
-                    //k = 0;
-                    //fprintf(stderr, "%2zu %6lu   %2zu %6lu\n", j, dents[j], k, dents[k]);
-                    random_dents[i] = dents[j];
+                j = shuffle_index(&ctx, i);
+                //k = shuffle_index_invert(&ctx, j);
+                //k = 0;
+                //fprintf(stderr, "%2zu %6lu   %2zu %6lu\n", j, dents[j], k, dents[k]);
+                random_dents[i] = dents[j];
             }
 
             bpos = 0;
@@ -208,7 +208,7 @@ getdents_next(struct getdents_state *s)
     }
 
     struct linux_dirent64 *d = (struct linux_dirent64 *)(s->buff + s->bpos);
-    //printf("nread: %d d_reclen: %d\n", s->nread, d->d_reclen);
+    printf("nread: %d d_reclen: %d d->name: %s\n", s->nread, d->d_reclen, d->name);
 
     PyObject *py_name = PyBytes_FromString(d->d_name);  // want bytes
 //  PyObject *py_name = PyUnicode_DecodeFSDefault(d->d_name);
@@ -224,7 +224,7 @@ getdents_next(struct getdents_state *s)
     fprintf(stderr, "s->bpos: %d\n", s->bpos);
 
     return result;
-};
+}
 
 PyTypeObject getdents_type = {
     PyVarObject_HEAD_INIT(NULL, 0)
