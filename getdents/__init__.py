@@ -1,4 +1,5 @@
 import os
+import sys  # benchmark that
 from pathlib import Path
 from functools import update_wrapper
 from math import inf
@@ -175,6 +176,8 @@ class DentGen():
             self.min_depth = 0
         else:
             self.min_depth = self.min_depth + len(self.path.split(b'/'))
+        if self.verbose:
+            print("path:", self.path, file=sys.stderr)
 
     def __iter__(self, cur_depth=0):
         #print("cur_depth:", cur_depth)
@@ -212,12 +215,14 @@ def paths(path,
           names_only=False,
           max_depth=inf,
           min_depth=0,
-          random=False) -> Dent:
+          random=False,
+          verbose=False) -> Dent:
     path = os.fsencode(path)
     fiterator = DentGen(path=path,
                         max_depth=max_depth,
                         min_depth=min_depth,
-                        random=random)
+                        random=random,
+                        verbose=verbose)
     for thing in fiterator:
         if not return_dirs:
             if thing.is_dir():
@@ -244,7 +249,8 @@ def files(path,
           min_depth=0,
           max_size=inf,
           min_size=0,
-          random=False) -> Dent:
+          random=False,
+          verbose=False) -> Dent:
     if max_size < 0:
         max_size = inf
     for p in paths(path=path,
@@ -254,7 +260,8 @@ def files(path,
                    names_only=False,
                    max_depth=max_depth,
                    min_depth=min_depth,
-                   random=random):
+                   random=random,
+                   verbose=verbose):
         if min_size > 0 or max_size < inf:
             size = p.size()
             if size < min_size:
@@ -272,7 +279,8 @@ def links(path,
           names_only=False,
           max_depth=inf,
           min_depth=0,
-          random=False) -> Dent:
+          random=False,
+          verbose=False) -> Dent:
     return paths(path=path,
                  return_dirs=False,
                  return_symlinks=True,
@@ -280,7 +288,8 @@ def links(path,
                  names_only=names_only,
                  max_depth=max_depth,
                  min_depth=min_depth,
-                 random=random)
+                 random=random,
+                 verbose=verbose)
 
 
 def dirs(path,
@@ -288,7 +297,8 @@ def dirs(path,
          names_only=False,
          max_depth=inf,
          min_depth=0,
-         random=False) -> Dent:
+         random=False
+         verbose=False) -> Dent:
     return paths(path=path,
                  return_dirs=True,
                  return_symlinks=False,
@@ -296,4 +306,5 @@ def dirs(path,
                  names_only=names_only,
                  max_depth=max_depth,
                  min_depth=min_depth,
-                 random=random)
+                 random=random,
+                 verbose=verbose)
