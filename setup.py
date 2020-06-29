@@ -27,7 +27,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     ext_modules=[
-        Extension('getdents._getdents', sources=['getdents/_getdents.c'], headers=['getdents/shuffle.h']),
+        Extension('getdents._getdents', sources=['getdents/_getdents.c'], include_dirs=['getdents/']),
     ],
     install_requires=[
         'setuptools',
