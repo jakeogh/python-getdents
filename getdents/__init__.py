@@ -3,7 +3,7 @@ from pathlib import Path
 from functools import update_wrapper
 from math import inf
 import attr
-#from icecream import ic
+from icecream import ic
 
 BUFF_SIZE = 4096 * 16  # 64k
 
@@ -59,6 +59,7 @@ def getdents(path, buff_size=BUFF_SIZE, random=0):
         buff_size (int): Buffer size in bytes for getdents64 syscall.
     """
 
+    ic(path)
     path_fd = os.open(path, O_GETDENTS)
 
     try:

@@ -25,7 +25,7 @@ struct getdents_state {
     char  *buff;
     int    bpos;
     int    fd;
-    bool   random;
+    int    random;
     int    nread;
     size_t buff_size;
     bool   ready_for_next_batch;
@@ -64,7 +64,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
     size_t buff_size;
     int fd;
-    bool random;
+    int random;
 
     if (!PyArg_ParseTuple(args, "ini", &fd, &buff_size, &random))
         return NULL;
