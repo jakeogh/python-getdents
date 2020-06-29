@@ -39,6 +39,7 @@ struct getdents_state {
 # define MIN_GETDENTS_BUFF_SIZE (MAXNAMLEN + sizeof(struct linux_dirent64))
 #endif
 
+/*
 int
 get_random(int n)
 {
@@ -55,7 +56,7 @@ get_random(int n)
         x = rand();
     }
     return x;
-}
+}*/
 
 
 static PyObject *
@@ -84,8 +85,6 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
         return NULL;
     }
 
-    //srand(time(NULL));
-
     struct getdents_state *state = (void *) type->tp_alloc(type, 0);
 
     if (!state)
@@ -99,6 +98,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
     state->buff = buff;
     state->buff_size = buff_size;
     state->fd = fd;
+    state->random = random;
     state->bpos = 0;
     state->nread = 0;
     state->ready_for_next_batch = true;
