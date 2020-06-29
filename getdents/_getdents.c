@@ -146,7 +146,7 @@ getdents_next(struct getdents_state *s)
         }
 
 
-        //if (s->rand) {
+        if (s->rand) {
             void *buff = malloc(s->buff_size);
             if (!buff)
                 return PyErr_NoMemory();
@@ -206,13 +206,13 @@ getdents_next(struct getdents_state *s)
                 //fprintf(stderr, "%d %lu\n", idx, random_dents[idx]);
                 struct linux_dirent64 *dd = (struct linux_dirent64 *)(random_dents[idx]);
                 fprintf(stderr, "%lu %hu dd->name: %s\n", random_dents[idx], dd->d_reclen, dd->d_name);
-                memcpy(random_buff, random_dents[idx], dd->d_reclen);
+                //memcpy(random_buff, random_dents[idx], dd->d_reclen);
             }
-            memcpy(s->buff, random_buff, s->nread);
+            //memcpy(s->buff, random_buff, s->nread);
 
             free(random_buff);
             free(buff);
-        //}
+        }
 
     }
 
