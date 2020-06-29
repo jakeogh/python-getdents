@@ -188,7 +188,9 @@ getdents_next(struct getdents_state *s)
         idx = 0;
         for (idx=0; idx<=index; idx++) {
             fprintf(stderr, "%d %lu\n", idx, random_dents[idx]);
-            //struct linux_dirent64 *dd = (struct linux_dirent64 *)(s->buff + );
+            struct linux_dirent64 *dd = (struct linux_dirent64 *)(random_dents[idx]);
+            fprintf(stderr, "%lu %hu dd->name: %s\n", random_dents[idx], dd->d_reclen, dd->d_name);
+
         }
 
         free(buff);
