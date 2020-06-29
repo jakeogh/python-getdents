@@ -5,7 +5,7 @@ import sys
 from getdents import DentGen
 
 
-def _iterate(path, max_depth, min_depth, command, count, random, nodirs, nosymlinks, print_end):
+def _iterate(*, path, max_depth, min_depth, command, count, random, nodirs, nosymlinks, print_end):
     c = 0
     if command:
         from subprocess import check_output
@@ -139,7 +139,15 @@ def main():
                 print("Error: Unknown option \"{0}\".".format(sys.argv[index]), file=sys.stderr)
                 sys.exit(1)
 
-    _iterate(path, max_depth, min_depth, command, count, random, nodirs, nosymlinks, print_end)
+    _iterate(path=path,
+             max_depth=max_depth,
+             min_depth=min_depth,
+             command=command,
+             count=count,
+             random=random,
+             nodirs=nodirs,
+             nosymlinks=nosymlinks,
+             print_end=print_end)
 
 
 if __name__ == '__main__':  # for dev
