@@ -160,14 +160,14 @@ getdents_next(struct getdents_state *s)
 
         }
 
-        size_t size = index;
+        size_t size = index + 1;
         fprintf(stderr, "size: %d\n", size);
 
         struct shuffle_ctx ctx;
         shuffle_init(&ctx, size, 0xBAD5EEED);
 
         size_t i, j, k;
-        for (i = 0; i <= size; ++i) {
+        for (i = 0; i < size; ++i) {
                 j = shuffle_index(&ctx, i);
                 k = shuffle_index_invert(&ctx, j);
                 //k = 0;
