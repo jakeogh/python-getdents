@@ -221,6 +221,7 @@ getdents_next(struct getdents_state *s)
 
     // unsigned short  d->d_reclen  //always even
     s->bpos += d->d_reclen;
+    fprintf(stderr, "s->bpos: %d\n", s->bpos);
 
     return result;
 };
