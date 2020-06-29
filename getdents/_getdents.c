@@ -25,6 +25,7 @@ struct getdents_state {
     char  *buff;
     int    bpos;
     int    fd;
+    bool   random;
     int    nread;
     size_t buff_size;
     bool   ready_for_next_batch;
