@@ -11,6 +11,8 @@
 #include <sys/syscall.h>
 #include "shuffle.h"
 
+#define SHUFFLE_IMPLEMENTATION
+
 struct linux_dirent64 {
     uint64_t        d_ino;      /* 64-bit inode number */
     int64_t         d_off;      /* 64-bit offset to next structure */
@@ -159,6 +161,17 @@ getdents_next(struct getdents_state *s)
 
         }
 
+        size_t size = sizeof(dents)/sizeof(dents[0]);
+
+        struct shuffle_ctx ctx;
+        shuffle_init(&ctx, size, 0xBAD5EEED);
+
+        size_t i, j, k;
+        for (i = 0; i < size; ++i) {
+                j = shuffle_index(&ctx, i);
+                k = shuffle_index_invert(&ctx, j);
+                fprintf(stderr, "%2zu %6lu   %2zu %6lu\n", j, dents[j], k, dents[k]);
+        }
 
         free(buff);
         //free(dents);
