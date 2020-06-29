@@ -193,7 +193,9 @@ getdents_next(struct getdents_state *s)
                 bpos += dd->d_reclen;
                 fprintf(stderr, "bpos: %d\n", bpos);
             }
+            fprintf(stderr, "about to memcpy\n");
             memcpy(s->buff, &random_buff, s->nread);
+            fprintf(stderr, "after memcpy\n");
 
             free(random_buff);
             free(buff);
