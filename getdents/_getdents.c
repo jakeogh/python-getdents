@@ -190,6 +190,9 @@ getdents_next(struct getdents_state *s)
                 struct linux_dirent64 *dd = (struct linux_dirent64 *)(random_dents[idx]);
                 fprintf(stderr, "%lu %hu dd->name: %s\n", random_dents[idx], dd->d_reclen, dd->d_name);
                 memcpy(&random_buff + bpos, random_dents[idx], dd->d_reclen);
+                struct linux_dirent64 *dd = (struct linux_dirent64 *)(&random_buff + bpos);
+                fprintf(stderr, "%hu dd->name: %s\n", dd->d_reclen, dd->d_name);
+
                 bpos += dd->d_reclen;
                 fprintf(stderr, "bpos: %d\n", bpos);
             }
