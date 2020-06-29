@@ -36,7 +36,7 @@ class Reify():
         return val
 
 
-def getdents(path, buff_size=BUFF_SIZE, random=0):
+def getdents(path, buff_size=BUFF_SIZE, random=False):
     """Get directory entries.
 
     Wrapper around getdents_raw(), simulates ls behaviour: ignores deleted
@@ -60,6 +60,11 @@ def getdents(path, buff_size=BUFF_SIZE, random=0):
     """
 
     path_fd = os.open(path, O_GETDENTS)
+
+    if random is False:
+        random = 0
+    else:
+        random = 1
 
     try:
         for inode, dtype, name in getdents_raw(path_fd, buff_size, random):
@@ -157,7 +162,7 @@ class DentGen():
     min_depth: int = 0
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
-    random: int = 0  # bool is new in C99 and cpython tries to remain C90 compatible
+    random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
     verbose: bool = False
     #iters: int = 0
 
@@ -199,9 +204,20 @@ class DentGen():
 
 
 # TODO: it may be faster to filter in a function that this feeds
-def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names_only=False, max_depth=inf, min_depth=0) -> Dent:
+def paths(path,
+          *,
+          return_dirs=True,
+          return_files=True,
+          return_symlinks=True,
+          names_only=False,
+          max_depth=inf,
+          min_depth=0,
+          random=False) -> Dent:
     path = os.fsencode(path)
-    fiterator = DentGen(path=path, max_depth=max_depth, min_depth=min_depth)
+    fiterator = DentGen(path=path,
+                        max_depth=max_depth,
+                        min_depth=min_depth,
+                        random=random)
     for thing in fiterator:
         if not return_dirs:
             if thing.is_dir():
@@ -221,10 +237,24 @@ def paths(path, return_dirs=True, return_files=True, return_symlinks=True, names
     #print(fiterator.iters)
 
 
-def files(path, names_only=False, max_depth=inf, min_depth=0, max_size=inf, min_size=0) -> Dent:
+def files(path,
+          *,
+          names_only=False,
+          max_depth=inf,
+          min_depth=0,
+          max_size=inf,
+          min_size=0,
+          random=False) -> Dent:
     if max_size < 0:
         max_size = inf
-    for p in paths(path=path, return_dirs=False, return_symlinks=False, return_files=True, names_only=False, max_depth=max_depth, min_depth=min_depth):
+    for p in paths(path=path,
+                   return_dirs=False,
+                   return_symlinks=False,
+                   return_files=True,
+                   names_only=False,
+                   max_depth=max_depth,
+                   min_depth=min_depth,
+                   random=random):
         if min_size > 0 or max_size < inf:
             size = p.size()
             if size < min_size:
@@ -237,9 +267,33 @@ def files(path, names_only=False, max_depth=inf, min_depth=0, max_size=inf, min_
             yield p
 
 
-def links(path, names_only=False, max_depth=inf, min_depth=0) -> Dent:
-    return paths(path=path, return_dirs=False, return_symlinks=True, return_files=False, names_only=names_only, max_depth=max_depth, min_depth=min_depth)
+def links(path,
+          *,
+          names_only=False,
+          max_depth=inf,
+          min_depth=0,
+          random=False) -> Dent:
+    return paths(path=path,
+                 return_dirs=False,
+                 return_symlinks=True,
+                 return_files=False,
+                 names_only=names_only,
+                 max_depth=max_depth,
+                 min_depth=min_depth,
+                 random=random)
 
 
-def dirs(path, names_only=False, max_depth=inf, min_depth=0) -> Dent:
-    return paths(path=path, return_dirs=True, return_symlinks=False, return_files=False, names_only=names_only, max_depth=max_depth, min_depth=min_depth)
+def dirs(path,
+         *,
+         names_only=False,
+         max_depth=inf,
+         min_depth=0,
+         random=False) -> Dent:
+    return paths(path=path,
+                 return_dirs=True,
+                 return_symlinks=False,
+                 return_files=False,
+                 names_only=names_only,
+                 max_depth=max_depth,
+                 min_depth=min_depth,
+                 random=random)
