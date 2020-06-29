@@ -199,7 +199,8 @@ getdents_next(struct getdents_state *s)
 
             free(random_buff);
             free(buff);
-        };
+            fprintf(stderr, "after frees\n");
+        }
 
     }
 
