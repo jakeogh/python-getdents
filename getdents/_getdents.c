@@ -139,14 +139,18 @@ getdents_next(struct getdents_state *s)
         void *buff = malloc(s->buff_size);
         if (!buff)
             return PyErr_NoMemory();
+        void *random_buff = malloc(s->buff_size);
+        if (!random_buff)
+            return PyErr_NoMemory();
         // each struct linux_dirent64 in s->buff has a different d->d_reclen
+
         int bpos = 0;
         int index = 0;
         unsigned long *dents[s->nread/24];  // 24 appears the be the min linux_dirent64 size
         unsigned long *random_dents[s->nread/24];
         while(1) {
             struct linux_dirent64 *dd = (struct linux_dirent64 *)(s->buff + bpos);
-            fprintf(stderr, "%p %p %lu %hu dd->name: %s\n", &dd, s->buff + bpos, s->buff + bpos, dd->d_reclen, dd->d_name);
+            fprintf(stderr, "%p %p %lu %d %hu dd->name: %s\n", &dd, s->buff + bpos, s->buff + bpos, bpos, dd->d_reclen, dd->d_name);
             dents[index] = s->buff + bpos;
             //fprintf(stderr, "%lu\n", dents[index]);
             bpos += dd->d_reclen;
@@ -184,7 +188,7 @@ getdents_next(struct getdents_state *s)
         idx = 0;
         for (idx=0; idx<=index; idx++) {
             fprintf(stderr, "%d %lu\n", idx, random_dents[idx]);
-
+            //struct linux_dirent64 *dd = (struct linux_dirent64 *)(s->buff + );
         }
 
         free(buff);
