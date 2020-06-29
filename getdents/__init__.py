@@ -36,7 +36,7 @@ class Reify():
         return val
 
 
-def getdents(path, buff_size=BUFF_SIZE, random=False):
+def getdents(path, buff_size=BUFF_SIZE, random=0):
     """Get directory entries.
 
     Wrapper around getdents_raw(), simulates ls behaviour: ignores deleted
@@ -157,7 +157,7 @@ class DentGen():
     min_depth: int = 0
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
-    random: bool = False
+    random: int = 0  # bool is new in C99 and cpython tries to remain C90 compatible
     verbose: bool = False
     #iters: int = 0
 
