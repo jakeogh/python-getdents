@@ -66,7 +66,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
     int fd;
     bool random;
 
-    if (!PyArg_ParseTuple(args, "in", &fd, &buff_size, &random))
+    if (!PyArg_ParseTuple(args, "ini", &fd, &buff_size, &random))
         return NULL;
 
     if (!(fcntl(fd, F_GETFL) & O_DIRECTORY)) {
