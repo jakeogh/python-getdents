@@ -183,7 +183,7 @@ getdents_next(struct getdents_state *s)
                     random_dents[i] = dents[j];
             }
 
-            bpos = 0
+            bpos = 0;
             idx = 0;
             for (idx=0; idx<=index; idx++) {
                 //fprintf(stderr, "%d %lu\n", idx, random_dents[idx]);
