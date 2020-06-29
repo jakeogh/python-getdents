@@ -5,11 +5,11 @@ import sys
 from getdents import DentGen
 
 
-def _iterate(path, max_depth, min_depth, command, count, nodirs, nosymlinks, print_end):
+def _iterate(path, max_depth, min_depth, command, count, random, nodirs, nosymlinks, print_end):
     c = 0
     if command:
         from subprocess import check_output
-    dentgen = DentGen(path=path, max_depth=max_depth, min_depth=min_depth, verbose=False)
+    dentgen = DentGen(path=path, max_depth=max_depth, min_depth=min_depth, random=random, verbose=False)
 
     if count:
         for i, item in enumerate(dentgen):
@@ -44,6 +44,7 @@ Options:
     --min-depth INT   Return directories atleast (>= 0) levels below the starting-point.
     --exec CMD        Execute command for every printed result. Must be a single argument. Should produce a single line.
     --count           Print number of entries under PATH.
+    --random          Randomize output order.
     --nodirs          Do not print directories.
     --nosymlinks      Do not print symbolic links.
     --print0          Items are terminated by a null character.
@@ -120,6 +121,9 @@ def main():
             elif sys.argv[index] == '--count':
                 count = True
                 index += 1
+            elif sys.argv[index] == '--random':
+                random = True
+                index += 1
             elif sys.argv[index] == "--nodirs":
                 nodirs = True
                 index += 1
@@ -134,7 +138,7 @@ def main():
                 print("Error: Unknown option \"{0}\".".format(sys.argv[index]), file=sys.stderr)
                 sys.exit(1)
 
-    _iterate(path, max_depth, min_depth, command, count, nodirs, nosymlinks, print_end)
+    _iterate(path, max_depth, min_depth, command, count, random, nodirs, nosymlinks, print_end)
 
 
 if __name__ == '__main__':  # for dev
