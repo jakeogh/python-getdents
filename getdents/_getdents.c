@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <time.h>
 #include <sys/stat.h>
 #include <sys/syscall.h>
 
@@ -36,6 +37,25 @@ struct getdents_state {
 # define MIN_GETDENTS_BUFF_SIZE (MAXNAMLEN + sizeof(struct linux_dirent64))
 #endif
 
+int
+get_random(int n)
+{
+    // https://stackoverflow.com/questions/10984974/why-do-people-say-there-is-modulo-bias-when-using-a-random-number-generator
+    int x;
+
+    if n != 0 {
+        do {
+            x = rand();
+        } while (x > (RAND_MAX - ( ( ( RAND_MAX % n ) + 1 ) % n) ) );
+
+        x %= n;
+    } else {
+        x = rand();
+    }
+    return x;
+}
+
+
 static PyObject *
 getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
@@ -60,6 +80,8 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
         );
         return NULL;
     }
+
+    srand(time(NULL));
 
     struct getdents_state *state = (void *) type->tp_alloc(type, 0);
 
@@ -134,7 +156,12 @@ getdents_next(struct getdents_state *s)
         int i = 0;
         for (i=0; i<=index; i++) {
             fprintf(stderr, "%lu\n", dents[i]);
+
         }
+
+
+
+
         free(buff);
         //free(dents);
         //free(bpos);
