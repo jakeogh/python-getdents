@@ -191,6 +191,7 @@ getdents_next(struct getdents_state *s)
                 fprintf(stderr, "%lu %hu dd->name: %s\n", random_dents[idx], dd->d_reclen, dd->d_name);
                 memcpy(&random_buff + bpos, random_dents[idx], dd->d_reclen);
                 bpos += dd->d_reclen;
+                fprintf(stderr, "bpos: %d\n", bpos);
             }
             memcpy(s->buff, &random_buff, s->nread);
 
