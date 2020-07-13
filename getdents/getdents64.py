@@ -47,7 +47,7 @@ Options:
     --random          Randomize output order.
     --nodirs          Do not print directories.
     --nosymlinks      Do not print symbolic links.
-    --print0          Items are terminated by a null character.
+    --printn          Items are terminated by a newline instead of null character.
     '''
 
 
@@ -83,7 +83,7 @@ def main():
     random = 0
     nodirs = False
     nosymlinks = False
-    print_end = b'\n'
+    print_end = b'\x00'
     index = 2
     if args >= 2:
         while index <= args:
@@ -131,8 +131,8 @@ def main():
             elif sys.argv[index] == "--nosymlinks":
                 nosymlinks = True
                 index += 1
-            elif sys.argv[index] == "--print0":
-                print_end = b'\x00'
+            elif sys.argv[index] == "--printn":
+                print_end = b'\n'
                 index += 1
             else:
                 print(usage(), file=sys.stderr)
