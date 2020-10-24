@@ -108,6 +108,7 @@ Options:
     --count           Print number of entries under PATH.
     --random          Randomize output order.
     --nofiles         Do not print regular files.
+    --files           Print regular files.
     --nodirs          Do not print directories.
     --nosymlinks      Do not print symbolic links.
     --nochar          Do not print char devices.
