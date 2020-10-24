@@ -1,3 +1,5 @@
+# pylint: disable=C0111  # docstrings are always outdated and wrong
+
 import os
 import sys  # benchmark that
 from pathlib import Path
@@ -103,6 +105,9 @@ class Dent():
 
     #def __repr__(self):
     #    return repr(os.fsdecode(self.path))  # todo
+
+    def __hash__(self):
+        return self.path
 
     def __fspath__(self):
         return os.fsdecode(self.path)
