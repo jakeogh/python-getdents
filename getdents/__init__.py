@@ -77,7 +77,7 @@ def getdents(path, buff_size=BUFF_SIZE, random=False):
         os.close(path_fd)
 
 
-@attr.s(auto_attribs=True)
+@attr.s(auto_attribs=True, hash=False, cmp=False)
 class Dent():
     parent: bytes
     name: bytes
