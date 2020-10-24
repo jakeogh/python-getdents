@@ -5,26 +5,88 @@ import sys
 from getdents import DentGen
 
 
-def _iterate(*, path, max_depth, min_depth, command, count, random, nodirs, nosymlinks, print_end):
+def _filter(*,
+            item,
+            no_files,
+            no_dirs,
+            no_symlinks,
+            no_sockets,
+            no_block_devices,
+            no_char_devices,
+            no_fifos):
+
+    if no_dirs:
+        if item.is_dir():
+            return True
+    if no_symlinks:
+        if item.is_symlink():
+            return True
+    if no_files:
+        if item.is_file():
+            return True
+    if no_sockets:
+        if item.is_socket():
+            return True
+    if no_block_devices:
+        if item.is_block_device():
+            return True
+    if no_char_devices:
+        if item.is_char_device():
+            return True
+    if no_fifos:
+        if item.is_fifo():
+            return True
+    return False
+
+
+def _iterate(*,
+             path,
+             max_depth,
+             min_depth,
+             command,
+             count,
+             random,
+             no_files,
+             no_dirs,
+             no_symlinks,
+             no_sockets,
+             no_block_devices,
+             no_char_devices,
+             no_fifos,
+             print_end):
     c = 0
     if command:
         from subprocess import check_output
-    dentgen = DentGen(path=path, max_depth=max_depth, min_depth=min_depth, random=random, verbose=False)
+    dentgen = DentGen(path=path,
+                      max_depth=max_depth,
+                      min_depth=min_depth,
+                      random=random,
+                      verbose=False)
 
     if count:
         for i, item in enumerate(dentgen):
-            if nodirs and item.is_dir():
-                continue
-            if nosymlinks and item.is_symlink():
+            if _filter(item=item,
+                       no_files=no_files,
+                       no_dirs=no_dirs,
+                       no_symlinks=no_symlinks,
+                       no_block_devices=no_block_devices,
+                       no_char_devices=no_char_devices,
+                       no_fifos=no_fifos,
+                       no_sockets=no_sockets):
                 continue
             c += 1
         print(c)
     else:
         with open('/dev/stdout', mode='wb') as fd:
             for item in dentgen:
-                if nodirs and item.is_dir():
-                    continue
-                if nosymlinks and item.is_symlink():
+                if _filter(item=item,
+                           no_files=no_files,
+                           no_dirs=no_dirs,
+                           no_symlinks=no_symlinks,
+                           no_block_devices=no_block_devices,
+                           no_char_devices=no_char_devices,
+                           no_fifos=no_fifos,
+                           no_sockets=no_sockets):
                     continue
                 if command:
                     output = check_output([command, os.fsdecode(item.path)])
@@ -45,10 +107,15 @@ Options:
     --exec CMD        Execute command for every printed result. Must be a single argument. Should produce a single line.
     --count           Print number of entries under PATH.
     --random          Randomize output order.
+    --nofiles         Do not print regular files.
     --nodirs          Do not print directories.
     --nosymlinks      Do not print symbolic links.
+    --nochar          Do not print char devices.
+    --noblock         Do not print block devices.
+    --nofifo          Do not print fifos.
+    --nosockets       Do not print sockets.
     --printn          Items are terminated by a newline instead of null character.
-    '''
+'''
 
 
 def help_max_depth(max_depth=None):
@@ -81,8 +148,13 @@ def main():
         sys.exit(1)
     count = False
     random = 0
+    nofiles = False
     nodirs = False
     nosymlinks = False
+    nochar = False
+    noblock = False
+    nofifo = False
+    nosockets = False
     print_end = b'\x00'
     index = 2
     if args >= 2:
@@ -125,11 +197,26 @@ def main():
             elif sys.argv[index] == '--random':
                 random = 1
                 index += 1
+            elif sys.argv[index] == "--nofiles":
+                nofiles = True
+                index += 1
             elif sys.argv[index] == "--nodirs":
                 nodirs = True
                 index += 1
             elif sys.argv[index] == "--nosymlinks":
                 nosymlinks = True
+                index += 1
+            elif sys.argv[index] == "--nochar":
+                nochar = True
+                index += 1
+            elif sys.argv[index] == "--noblock":
+                noblock = True
+                index += 1
+            elif sys.argv[index] == "--nofifo":
+                nofifo = True
+                index += 1
+            elif sys.argv[index] == "--nosockets":
+                nosockets = True
                 index += 1
             elif sys.argv[index] == "--printn":
                 print_end = b'\n'
@@ -145,8 +232,13 @@ def main():
              command=command,
              count=count,
              random=random,
-             nodirs=nodirs,
-             nosymlinks=nosymlinks,
+             no_files=nofiles,
+             no_dirs=nodirs,
+             no_symlinks=nosymlinks,
+             no_char_devices=nochar,
+             no_block_devices=noblock,
+             no_fifos=nofifo,
+             no_sockets=nosockets,
              print_end=print_end)
 
 
