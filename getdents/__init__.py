@@ -107,7 +107,12 @@ class Dent():
     #    return repr(os.fsdecode(self.path))  # todo
 
     def __hash__(self):
-        return self.path
+        return int.from_bytes(self.path)
+
+    def __eq__(self, other):
+        if self.__hash__() == other.__hash__():
+            return True
+        return False
 
     def __fspath__(self):
         return os.fsdecode(self.path)
