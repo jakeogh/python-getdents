@@ -110,7 +110,32 @@ class Dent():
         return hash(self.path)
 
     def __eq__(self, other):
-        if self.path() == other.path():
+        if self.path == other.path:
+            return True
+        return False
+
+    def __ne__(self, other):
+        if self.path != other.path:
+            return True
+        return False
+
+    def __lt__(self, other):
+        if self.path < other.path:
+            return True
+        return False
+
+    def __le__(self, other):
+        if self.path <= other.path:
+            return True
+        return False
+
+    def __gt__(self, other):
+        if self.path > other.path:
+            return True
+        return False
+
+    def __ge__(self, other):
+        if self.path >= other.path:
             return True
         return False
 
