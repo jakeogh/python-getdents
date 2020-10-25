@@ -160,9 +160,11 @@ class Dent():
             return True
         return False
 
+    @Reify
     def depth(self):
         return len(self.pathlib.parts)
 
+    @Reify
     def size(self):
         return self.pathlib.stat().st_size
 
