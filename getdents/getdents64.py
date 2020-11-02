@@ -44,6 +44,7 @@ def _iterate(*,
              max_depth,
              min_depth,
              command,
+             namesonly,
              count,
              random,
              no_files,
@@ -95,7 +96,10 @@ def _iterate(*,
 
                     fd.write(output + b' ' + item.path + print_end)
                 else:
-                    fd.write(item.path + print_end)
+                    if namesonly:
+                        fd.write(item.name + print_end)
+                    else:
+                        fd.write(item.path + print_end)
 
 
 def usage():
@@ -105,6 +109,7 @@ Options:
     --max-depth INT   Descend at most levels (>= 0) of directories below the starting-point.
     --min-depth INT   Return directories atleast (>= 0) levels below the starting-point.
     --exec CMD        Execute command for every printed result. Must be a single argument. Should produce a single line.
+    --namesonly       Print PATH names only.
     --count           Print number of entries under PATH.
     --random          Randomize output order.
     --nofiles         Do not print regular files.
@@ -146,6 +151,7 @@ def main():
         print(usage(), file=sys.stderr)
         print("Error: A path is required.", file=sys.stderr)
         sys.exit(1)
+    namesonly = False
     count = False
     random = 0
     nofiles = False
@@ -191,6 +197,9 @@ def main():
                 index += 1
                 command = sys.argv[index]
                 index += 1
+            elif sys.argv[index] == '--namesonly':
+                namesonly = True
+                index += 1
             elif sys.argv[index] == '--count':
                 count = True
                 index += 1
@@ -231,6 +240,7 @@ def main():
              min_depth=min_depth,
              command=command,
              count=count,
+             namesonly=namesonly,
              random=random,
              no_files=nofiles,
              no_dirs=nodirs,
