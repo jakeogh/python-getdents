@@ -219,8 +219,13 @@ class DentGen():
     def __iter__(self, cur_depth=0):
         #print("cur_depth:", cur_depth)
         #self.iters += 1
+        if self.verbose:
+            print("min_depth:", self.min_depth, file=sys.stderr)
+            print("max_depth:", self.max_depth, file=sys.stderr)
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random):
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
+            if self.verbose:
+                print("dent:", dent, file=sys.stderr)
             if dent.path == self.path:
                 if self.min_depth:
                     if dent.depth < self.min_depth:
