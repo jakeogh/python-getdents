@@ -223,6 +223,8 @@ class DentGen():
             print("min_depth:", self.min_depth, file=sys.stderr)
             print("max_depth:", self.max_depth, file=sys.stderr)
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random):
+            if self.verbose:
+                print("name:", name, file=sys.stderr)
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             if self.verbose:
                 print("dent:", dent, file=sys.stderr)
