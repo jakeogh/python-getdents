@@ -54,7 +54,8 @@ def _iterate(*,
              no_block_devices,
              no_char_devices,
              no_fifos,
-             print_end):
+             print_end,
+             verbose,):
     c = 0
     if command:
         from subprocess import check_output
@@ -62,7 +63,7 @@ def _iterate(*,
                       max_depth=max_depth,
                       min_depth=min_depth,
                       random=random,
-                      verbose=False)
+                      verbose=verbose)
 
     if count:
         for i, item in enumerate(dentgen):
@@ -120,6 +121,7 @@ Options:
     --nofifo          Do not print fifos.
     --nosockets       Do not print sockets.
     --printn          Items are terminated by a newline instead of null character.
+    --verbose         Debugging output.
 '''
 
 
@@ -161,6 +163,7 @@ def main():
     noblock = False
     nofifo = False
     nosockets = False
+    verbose = False
     print_end = b'\x00'
     index = 2
     if args >= 2:
@@ -230,6 +233,9 @@ def main():
             elif sys.argv[index] == "--printn":
                 print_end = b'\n'
                 index += 1
+            elif sys.argv[index] == "--verbose":
+                verbose = True
+                index += 1
             else:
                 print(usage(), file=sys.stderr)
                 print("Error: Unknown option \"{0}\".".format(sys.argv[index]), file=sys.stderr)
@@ -249,7 +255,8 @@ def main():
              no_block_devices=noblock,
              no_fifos=nofifo,
              no_sockets=nosockets,
-             print_end=print_end)
+             print_end=print_end,
+             verbose=verbose,)
 
 
 if __name__ == '__main__':  # for dev
