@@ -33,8 +33,8 @@ setup(
     install_requires=[
         'setuptools',
     ],
-    setup_requires=['pytest-runner'],
-    tests_require=['pytest'],
+    setup_requires=[],
+    tests_require=[],
     entry_points={
         'console_scripts': [
             'getdents = getdents.getdents64:main',
