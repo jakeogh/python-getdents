@@ -199,6 +199,8 @@ class NameGen():
 
     def __iter__(self, cur_depth=0):
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random):
+            if name == b'.':
+                continue
             if self.verbose:
                 print("inode:", inode, file=sys.stderr)
                 print("dtype:", dtype, file=sys.stderr)
