@@ -2,27 +2,19 @@
 
 import os
 import sys  # benchmark that
-from pathlib import Path
 from functools import update_wrapper
 from math import inf
+from pathlib import Path
+
 import attr
+
 #from icecream import ic
 
 BUFF_SIZE = 4096 * 16  # 64k
 
-from ._getdents import (  # noqa: ignore=F401
-    DT_BLK,
-    DT_CHR,
-    DT_DIR,
-    DT_FIFO,
-    DT_LNK,
-    DT_REG,
-    DT_SOCK,
-    DT_UNKNOWN,
-    MIN_GETDENTS_BUFF_SIZE,
-    O_GETDENTS,
-    getdents_raw,
-)
+from ._getdents import (DT_BLK, DT_CHR, DT_DIR, DT_FIFO,  # noqa: ignore=F401
+                        DT_LNK, DT_REG, DT_SOCK, DT_UNKNOWN,
+                        MIN_GETDENTS_BUFF_SIZE, O_GETDENTS, getdents_raw)
 
 
 # https://raw.githubusercontent.com/Pylons/pyramid/master/src/pyramid/decorator.py
@@ -281,12 +273,12 @@ def paths(path,
             if thing.is_symlink():
                 continue
         if names_only:
-            yield thing.name    # this should still be a Dent,
+            yield thing.name    # on first glance it might seem that this should still be a Dent,
                                 # but it CANT BE, Dents reprsent real fs objects, and have parents
+                                # names are just bytes
                                 # so, unless one wants bytes, just return the Dents and use Dent.pathlib.name
         else:
             yield thing
-    #print(fiterator.iters)
 
 
 def files(path,
