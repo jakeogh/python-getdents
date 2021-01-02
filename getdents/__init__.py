@@ -8,13 +8,11 @@ from pathlib import Path
 
 import attr
 
-#from icecream import ic
-
-BUFF_SIZE = 4096 * 16  # 64k
-
 from ._getdents import (DT_BLK, DT_CHR, DT_DIR, DT_FIFO,  # noqa: ignore=F401
                         DT_LNK, DT_REG, DT_SOCK, DT_UNKNOWN,
                         MIN_GETDENTS_BUFF_SIZE, O_GETDENTS, getdents_raw)
+
+BUFF_SIZE = 4096 * 16  # 64k
 
 
 # https://raw.githubusercontent.com/Pylons/pyramid/master/src/pyramid/decorator.py
@@ -187,6 +185,28 @@ class Dent():
 
 
 @attr.s(auto_attribs=True)
+class NameGen():
+    path: bytes = attr.ib(converter=os.fsencode)
+    buff_size: int = BUFF_SIZE
+    random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
+    verbose: bool = False
+
+    def __attrs_post_init__(self):
+        if self.path[0] != b'/':
+            self.path = os.path.realpath(os.path.expanduser(self.path))
+        if self.verbose:
+            print("path:", self.path, file=sys.stderr)
+
+    def __iter__(self, cur_depth=0):
+        for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random):
+            if self.verbose:
+                print("inode:", inode, file=sys.stderr)
+                print("dtype:", dtype, file=sys.stderr)
+                print("name:", name, file=sys.stderr)
+            yield inode, dtype, name
+
+
+@attr.s(auto_attribs=True)
 class DentGen():
     path: bytes = attr.ib(converter=os.fsencode)
     min_depth: int = 0
@@ -219,6 +239,7 @@ class DentGen():
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random):
             if self.verbose:
                 print("inode:", inode, file=sys.stderr)
+                print("dtype:", dtype, file=sys.stderr)
                 print("name:", name, file=sys.stderr)
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             if self.verbose:
