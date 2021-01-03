@@ -206,7 +206,7 @@ class NameGen():
             if name == b'.':
                 continue
             if not self.names_only:
-                name = Path(self.path) / Path(os.fsdecode(name))
+                name = Path(os.fsdecode(self.path)) / Path(os.fsdecode(name))
             if self.debug:
                 print("NameGen __iter__() inode:", inode, file=sys.stderr)
                 print("NameGen __iter__() dtype:", dtype, file=sys.stderr)
