@@ -186,10 +186,12 @@ class Dent():
 
 @attr.s(auto_attribs=True)
 class NameGen():
+    verbose: bool
+    debug: bool
     path: bytes = attr.ib(converter=os.fsencode)
     buff_size: int = BUFF_SIZE
     random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
-    verbose: bool = False
+    names_only: bool = False
 
     def __attrs_post_init__(self):
         if self.path[0] != b'/':
@@ -201,6 +203,8 @@ class NameGen():
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random):
             if name == b'.':
                 continue
+            if not self.names_only:
+                name = Path(self.path) / Path(os.fsdecode(name))
             if self.verbose:
                 print("inode:", inode, file=sys.stderr)
                 print("dtype:", dtype, file=sys.stderr)
