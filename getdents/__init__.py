@@ -239,13 +239,14 @@ class DentGen():
             self.min_depth = self.min_depth + len(self.path.split(b'/'))
         if self.verbose:
             print("DentGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
+        if self.debug:
             print("DentGen() __attrs_post_init__() self.min_depth:", self.min_depth, file=sys.stderr)
             print("DentGen() __attrs_post_init__() self.max_depth:", self.max_depth, file=sys.stderr)
 
     def __iter__(self, cur_depth=0):
         #print("cur_depth:", cur_depth)
         #self.iters += 1
-        if self.verbose:
+        if self.debug:
             print("DentGen() __iter__() cur_depth:", cur_depth, file=sys.stderr)
             print("DentGen() __iter__() self.path:", self.path, file=sys.stderr)
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random):
