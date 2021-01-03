@@ -237,9 +237,8 @@ class DentGen():
             self.min_depth = 0
         else:
             self.min_depth = self.min_depth + len(self.path.split(b'/'))
-        if self.verbose:
-            print("DentGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
         if self.debug:
+            print("DentGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
             print("DentGen() __attrs_post_init__() self.min_depth:", self.min_depth, file=sys.stderr)
             print("DentGen() __attrs_post_init__() self.max_depth:", self.max_depth, file=sys.stderr)
 
