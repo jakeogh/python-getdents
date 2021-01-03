@@ -197,7 +197,7 @@ class NameGen():
         if self.path[0] != b'/':
             self.path = os.path.realpath(os.path.expanduser(self.path))
         if self.verbose:
-            print("path:", self.path, file=sys.stderr)
+            print("NameGen __attrs_post_init__() path:", self.path, file=sys.stderr)
 
     def __iter__(self, cur_depth=0):
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random):
@@ -205,10 +205,10 @@ class NameGen():
                 continue
             if not self.names_only:
                 name = Path(self.path) / Path(os.fsdecode(name))
-            if self.verbose:
-                print("inode:", inode, file=sys.stderr)
-                print("dtype:", dtype, file=sys.stderr)
-                print("name:", name, file=sys.stderr)
+            if self.debug:
+                print("NameGen __iter__() inode:", inode, file=sys.stderr)
+                print("NameGen __iter__() dtype:", dtype, file=sys.stderr)
+                print("NameGen __iter__() name:", name, file=sys.stderr)
             yield inode, dtype, name
 
 
