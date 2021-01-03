@@ -74,7 +74,8 @@ def _iterate(*,
              no_char_devices,
              no_fifos,
              print_end,
-             verbose,):
+             verbose: bool,
+             debug: bool,):
     c = 0
     if command:
         from subprocess import check_output
@@ -82,7 +83,8 @@ def _iterate(*,
                       max_depth=max_depth,
                       min_depth=min_depth,
                       random=random,
-                      verbose=verbose)
+                      verbose=verbose,
+                      debug=debug,)
 
     if count:
         for i, item in enumerate(dentgen):
@@ -275,7 +277,8 @@ def main():
              no_fifos=nofifo,
              no_sockets=nosockets,
              print_end=print_end,
-             verbose=verbose,)
+             verbose=verbose,
+             debug=debug,)
 
 
 if __name__ == '__main__':  # for dev
