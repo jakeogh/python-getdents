@@ -295,7 +295,8 @@ def paths(path,
                         max_depth=max_depth,
                         min_depth=min_depth,
                         random=random,
-                        verbose=verbose)
+                        verbose=verbose,
+                        debug=debug,)
     for thing in fiterator:
         if not return_dirs:
             if thing.is_dir():
