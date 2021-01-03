@@ -197,7 +197,9 @@ class NameGen():
         if self.path[0] != b'/':
             self.path = os.path.realpath(os.path.expanduser(self.path))
         if self.verbose:
-            print("NameGen __attrs_post_init__() path:", self.path, file=sys.stderr)
+            print("NameGen __attrs_post_init__() self.path:", self.path, file=sys.stderr)
+            print("NameGen __attrs_post_init__() self.names_only:", self.names_only, file=sys.stderr)
+            print("NameGen __attrs_post_init__() self.random:", self.random, file=sys.stderr)
 
     def __iter__(self, cur_depth=0):
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random):
