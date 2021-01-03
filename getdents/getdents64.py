@@ -185,6 +185,7 @@ def main():
     nofifo = False
     nosockets = False
     verbose = False
+    debug = False
     print_end = b'\x00'
     index = 2
     if args >= 2:
