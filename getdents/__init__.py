@@ -220,11 +220,12 @@ class NameGen():
 @attr.s(auto_attribs=True)
 class DentGen():
     path: bytes = attr.ib(converter=os.fsencode)
+    verbose: bool
+    debug: bool
     min_depth: int = 0
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
     random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
-    verbose: bool = False
     #iters: int = 0
 
     def __attrs_post_init__(self):
@@ -237,24 +238,24 @@ class DentGen():
         else:
             self.min_depth = self.min_depth + len(self.path.split(b'/'))
         if self.verbose:
-            print("path:", self.path, file=sys.stderr)
+            print("DentGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
+            print("DentGen() __attrs_post_init__() self.min_depth:", self.min_depth, file=sys.stderr)
+            print("DentGen() __attrs_post_init__() self.max_depth:", self.max_depth, file=sys.stderr)
 
     def __iter__(self, cur_depth=0):
         #print("cur_depth:", cur_depth)
         #self.iters += 1
         if self.verbose:
-            print("min_depth:", self.min_depth, file=sys.stderr)
-            print("max_depth:", self.max_depth, file=sys.stderr)
-            print("cur_depth:", cur_depth, file=sys.stderr)
-            print("self.path:", self.path, file=sys.stderr)
+            print("DentGen() __iter__() cur_depth:", cur_depth, file=sys.stderr)
+            print("DentGen() __iter__() self.path:", self.path, file=sys.stderr)
         for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random):
-            if self.verbose:
-                print("inode:", inode, file=sys.stderr)
-                print("dtype:", dtype, file=sys.stderr)
-                print("name:", name, file=sys.stderr)
+            if self.debug:
+                print("DentGen() __iter__() inode:", inode, file=sys.stderr)
+                print("DentGen() __iter__() dtype:", dtype, file=sys.stderr)
+                print("DentGen() __iter__() name:", name, file=sys.stderr)
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
-            if self.verbose:
-                print("dent:", dent, file=sys.stderr)
+            if self.debug:
+                print("DentGen() __iter__() dent:", dent, file=sys.stderr)
             if dent.path == self.path:
                 if self.min_depth:
                     if dent.depth < self.min_depth:
