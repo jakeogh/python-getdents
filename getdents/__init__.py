@@ -188,8 +188,8 @@ class Dent():
 class NameGen():
     verbose: bool
     debug: bool
-    very_debug: bool = False
     path: bytes = attr.ib(converter=os.fsencode)
+    very_debug: bool = False
     buff_size: int = BUFF_SIZE
     random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
     names_only: bool = False
