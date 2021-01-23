@@ -134,6 +134,7 @@ Options:
     --namesonly       Print PATH names only.
     --count           Print number of entries under PATH.
     --random          Randomize output order.
+    --name            Match name.
     --nofiles         Do not print regular files.
     --nodirs          Do not print directories.
     --nosymlinks      Do not print symbolic links.
@@ -177,6 +178,7 @@ def main():
     namesonly = False
     count = False
     random = 0
+    names = None
     nofiles = False
     nodirs = False
     nosymlinks = False
@@ -217,6 +219,15 @@ def main():
                 if min_depth < 0 or sys.argv[index].startswith('-'):
                     help_min_depth()
                     sys.exit(1)
+                index += 1
+            elif sys.argv[index] == '--name':
+                index += 1
+                try:
+                    names = sys.argv[index]
+                except IndexError as e:
+                    raise e
+                    #help_name()
+                    #sys.exit(1)
                 index += 1
             elif sys.argv[index] == '--exec':
                 index += 1
@@ -270,6 +281,7 @@ def main():
              count=count,
              namesonly=namesonly,
              random=random,
+             names=names,
              no_files=nofiles,
              no_dirs=nodirs,
              no_symlinks=nosymlinks,

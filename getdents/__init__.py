@@ -29,7 +29,7 @@ class Reify():
         return val
 
 
-def getdents(path, buff_size=BUFF_SIZE, random=False):
+def getdents(path, buff_size=BUFF_SIZE, random=False, names=None):
     """Get directory entries.
 
     Wrapper around getdents_raw(), simulates ls behaviour: ignores deleted
@@ -59,8 +59,11 @@ def getdents(path, buff_size=BUFF_SIZE, random=False):
     else:
         random = 1
 
+    if not names:
+        names = ''
+
     try:
-        for inode, dtype, name in getdents_raw(path_fd, buff_size, random):
+        for inode, dtype, name in getdents_raw(path_fd, buff_size, random, names):
             if name != b'..':
                 yield (inode, dtype, name)
     finally:
@@ -193,6 +196,7 @@ class NameGen():
     buff_size: int = BUFF_SIZE
     random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
     names_only: bool = False
+    names: str = None
 
     def __attrs_post_init__(self):
         if self.path[0] != b'/':
@@ -201,12 +205,13 @@ class NameGen():
             print("NameGen __attrs_post_init__() self.path:", self.path, file=sys.stderr)
             print("NameGen __attrs_post_init__() self.names_only:", self.names_only, file=sys.stderr)
             print("NameGen __attrs_post_init__() self.random:", self.random, file=sys.stderr)
+            print("NameGen __attrs_post_init__() self.names:", self.names, file=sys.stderr)
 
     def __iter__(self):
         if self.verbose:
             print("NameGen __iter__() self.path:", self.path, file=sys.stderr)
 
-        for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random):
+        for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random, names=self.names):
             if name == b'.':
                 continue
             if not self.names_only:
@@ -228,6 +233,7 @@ class DentGen():
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
     random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
+    names: str = None
     #iters: int = 0
 
     def __attrs_post_init__(self):
@@ -250,7 +256,7 @@ class DentGen():
         if self.very_debug:
             print("DentGen() __iter__() cur_depth:", cur_depth, file=sys.stderr)
             print("DentGen() __iter__() self.path:", self.path, file=sys.stderr)
-        for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random):
+        for inode, dtype, name in getdents(path=self.path, buff_size=self.buff_size, random=self.random, names=self.names):
             if self.very_debug:
                 print("DentGen() __iter__() inode:", inode, file=sys.stderr)
                 print("DentGen() __iter__() dtype:", dtype, file=sys.stderr)
@@ -291,12 +297,14 @@ def paths(path,
           names_only=False,
           max_depth=inf,
           min_depth=0,
-          random=False,) -> Dent:
+          random: bool = False,
+          names: str = None,) -> Dent:
     path = os.fsencode(path)
     fiterator = DentGen(path=path,
                         max_depth=max_depth,
                         min_depth=min_depth,
                         random=random,
+                        names=names,
                         verbose=verbose,
                         debug=debug,)
     for thing in fiterator:
@@ -327,7 +335,8 @@ def files(path,
           min_depth=0,
           max_size=inf,
           min_size=0,
-          random=False,) -> Dent:
+          random: bool = False,
+          names: str = None,) -> Dent:
     if max_size < 0:
         max_size = inf
     for p in paths(path=path,
@@ -338,6 +347,7 @@ def files(path,
                    max_depth=max_depth,
                    min_depth=min_depth,
                    random=random,
+                   names=names,
                    verbose=verbose,
                    debug=debug,):
         if min_size > 0 or max_size < inf:
@@ -359,7 +369,8 @@ def links(path,
           names_only: bool = False,
           max_depth=inf,
           min_depth=0,
-          random: bool = False,) -> Dent:
+          random: bool = False,
+          names: str = None,) -> Dent:
     return paths(path=path,
                  return_dirs=False,
                  return_symlinks=True,
@@ -368,6 +379,7 @@ def links(path,
                  max_depth=max_depth,
                  min_depth=min_depth,
                  random=random,
+                 names=names,
                  verbose=verbose,
                  debug=debug,)
 
@@ -379,7 +391,8 @@ def dirs(path,
          names_only: bool = False,
          max_depth=inf,
          min_depth=0,
-         random: bool = False,) -> Dent:
+         random: bool = False,
+         anmes: str = None,) -> Dent:
     return paths(path=path,
                  return_dirs=True,
                  return_symlinks=False,
@@ -388,5 +401,6 @@ def dirs(path,
                  max_depth=max_depth,
                  min_depth=min_depth,
                  random=random,
+                 names=names,
                  verbose=verbose,
                  debug=debug,)

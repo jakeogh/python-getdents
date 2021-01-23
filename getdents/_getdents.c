@@ -26,6 +26,7 @@ struct getdents_state {
     int    bpos;
     int    fd;
     int    rand;
+    char  *names;
     int    nread;
     size_t buff_size;
     bool   ready_for_next_batch;
@@ -46,9 +47,10 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
     size_t buff_size;
     int fd;
     int rand;
+    char *names;
 
     // https://docs.python.org/3/c-api/arg.html#c.PyArg_ParseTuple
-    if (!PyArg_ParseTuple(args, "ini", &fd, &buff_size, &rand))
+    if (!PyArg_ParseTuple(args, "ini", &fd, &buff_size, &rand, &names))
         return NULL;
 
     if (!(fcntl(fd, F_GETFL) & O_DIRECTORY)) {
@@ -90,6 +92,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
     state->buff_size = buff_size;
     state->fd = fd;
     state->rand = rand;
+    state->name = names;
     state->bpos = 0;
     state->nread = 0;
     state->ready_for_next_batch = true;
