@@ -136,9 +136,10 @@ getdents_next(struct getdents_state *s)
             return NULL;
         }
 
-        if (s->names) {
-            fprintf(stderr, "s->names: %s\n", s->names);
-        }
+        // TODO
+        //if (s->names) {
+        //    fprintf(stderr, "s->names: %s\n", s->names);
+        //}
 
         if (s->rand) {
             //void *buff = malloc(s->buff_size);
