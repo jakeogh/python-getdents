@@ -92,7 +92,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
     state->buff_size = buff_size;
     state->fd = fd;
     state->rand = rand;
-    state->name = names;
+    state->names = names;
     state->bpos = 0;
     state->nread = 0;
     state->ready_for_next_batch = true;
