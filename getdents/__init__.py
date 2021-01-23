@@ -63,10 +63,12 @@ def getdents(path,
         random = 1
 
     if not names:
-        names = b'\x00'
+        names = None
 
+    print(names)
     try:
-        for inode, dtype, name in getdents_raw(path_fd, buff_size, random, b''):
+        for inode, dtype, name in getdents_raw(path_fd, buff_size, random):
+        #for inode, dtype, name in getdents_raw(path_fd, buff_size, random, b''):
             if name != b'..':
                 if names:
                     if name != names:
@@ -202,7 +204,7 @@ class NameGen():
     buff_size: int = BUFF_SIZE
     random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
     names_only: bool = False
-    names: bytes = b'\x00'
+    names: bytes = None
 
     def __attrs_post_init__(self):
         if self.path[0] != b'/':
@@ -239,7 +241,7 @@ class DentGen():
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
     random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
-    names: bytes = b'\x00'
+    names: bytes = None
     #iters: int = 0
 
     def __attrs_post_init__(self):
@@ -304,7 +306,7 @@ def paths(path,
           max_depth=inf,
           min_depth=0,
           random: bool = False,
-          names: bytes = b'\x00',) -> Dent:
+          names: bytes = None,) -> Dent:
     path = os.fsencode(path)
     fiterator = DentGen(path=path,
                         max_depth=max_depth,
@@ -342,7 +344,7 @@ def files(path,
           max_size=inf,
           min_size=0,
           random: bool = False,
-          names: bytes = b'\x00',) -> Dent:
+          names: bytes = None,) -> Dent:
     if max_size < 0:
         max_size = inf
     for p in paths(path=path,
@@ -376,7 +378,7 @@ def links(path,
           max_depth=inf,
           min_depth=0,
           random: bool = False,
-          names: bytes = b'\x00',) -> Dent:
+          names: bytes = None,) -> Dent:
     return paths(path=path,
                  return_dirs=False,
                  return_symlinks=True,
@@ -398,7 +400,7 @@ def dirs(path,
          max_depth=inf,
          min_depth=0,
          random: bool = False,
-         names: bytes = b'\x00',) -> Dent:
+         names: bytes = None,) -> Dent:
     return paths(path=path,
                  return_dirs=True,
                  return_symlinks=False,
