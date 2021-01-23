@@ -63,7 +63,7 @@ def getdents(path,
         _random = 1
 
     try:
-        for inode, dtype, name in getdents_raw(path_fd, buff_size, random=_random):
+        for inode, dtype, name in getdents_raw(path_fd, buff_size, _random):
             if name != b'..':
                 yield (inode, dtype, name)
     finally:
