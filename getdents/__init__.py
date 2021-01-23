@@ -66,7 +66,7 @@ def getdents(path,
         names = b'\x00'
 
     try:
-        for inode, dtype, name in getdents_raw(path_fd, buff_size, random, None):
+        for inode, dtype, name in getdents_raw(path_fd, buff_size, random, b''):
             if name != b'..':
                 if names:
                     if name != names:
