@@ -196,7 +196,7 @@ class NameGen():
     buff_size: int = BUFF_SIZE
     random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
     names_only: bool = False
-    names: str = None
+    names: bytes = b'\x00'
 
     def __attrs_post_init__(self):
         if self.path[0] != b'/':
@@ -233,7 +233,7 @@ class DentGen():
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
     random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
-    names: str = None
+    names: bytes = b'\x00'
     #iters: int = 0
 
     def __attrs_post_init__(self):
@@ -298,7 +298,7 @@ def paths(path,
           max_depth=inf,
           min_depth=0,
           random: bool = False,
-          names: str = None,) -> Dent:
+          names: bytes = b'\x00',) -> Dent:
     path = os.fsencode(path)
     fiterator = DentGen(path=path,
                         max_depth=max_depth,
@@ -336,7 +336,7 @@ def files(path,
           max_size=inf,
           min_size=0,
           random: bool = False,
-          names: str = None,) -> Dent:
+          names: bytes = b'\x00',) -> Dent:
     if max_size < 0:
         max_size = inf
     for p in paths(path=path,
@@ -370,7 +370,7 @@ def links(path,
           max_depth=inf,
           min_depth=0,
           random: bool = False,
-          names: str = None,) -> Dent:
+          names: bytes = b'\x00',) -> Dent:
     return paths(path=path,
                  return_dirs=False,
                  return_symlinks=True,
@@ -392,7 +392,7 @@ def dirs(path,
          max_depth=inf,
          min_depth=0,
          random: bool = False,
-         anmes: str = None,) -> Dent:
+         names: bytes = b'\x00',) -> Dent:
     return paths(path=path,
                  return_dirs=True,
                  return_symlinks=False,
