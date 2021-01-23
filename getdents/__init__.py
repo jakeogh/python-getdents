@@ -301,7 +301,7 @@ def paths(path,
           random: bool = False,) -> Dent:
     path = os.fsencode(path)
     if debug:
-        print(path, "return_dirs:", return_dirs, "return_files:", return_files, "return_symlinks:", return_symlinks, max_depth, min_depth, out=sys.stderr)
+        print(path, "return_dirs:", return_dirs, "return_files:", return_files, "return_symlinks:", return_symlinks, max_depth, min_depth, file=sys.stderr)
     fiterator = DentGen(path=path,
                         max_depth=max_depth,
                         min_depth=min_depth,
