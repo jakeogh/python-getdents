@@ -5,6 +5,7 @@ import sys  # benchmark that
 from functools import update_wrapper
 from math import inf
 from pathlib import Path
+from typing import Sequence
 
 import attr
 
@@ -291,17 +292,24 @@ def paths(path,
           *,
           verbose: bool,
           debug: bool,
-          return_dirs=True,
-          return_files=True,
-          return_symlinks=True,
-          names_only=False,
-          names=None,
+          return_dirs: bool = True,
+          return_files: bool = True,
+          return_symlinks: bool = True,
+          names_only: bool = False,
+          names: Sequence[bytes] = None,
           max_depth=inf,
           min_depth=0,
           random: bool = False,) -> Dent:
     path = os.fsencode(path)
     if debug:
-        print(path, "return_dirs:", return_dirs, "return_files:", return_files, "return_symlinks:", return_symlinks, "max_depth:", max_depth, "min_depth:", min_depth, "names:", names, file=sys.stderr)
+        print(path,
+              "return_dirs:", return_dirs,
+              "return_files:", return_files,
+              "return_symlinks:", return_symlinks,
+              "max_depth:", max_depth,
+              "min_depth:", min_depth,
+              "names:", names,
+              file=sys.stderr)
     fiterator = DentGen(path=path,
                         max_depth=max_depth,
                         min_depth=min_depth,
@@ -310,6 +318,7 @@ def paths(path,
                         debug=debug,)
     for thing in fiterator:
         if names:
+            print(thing.name)
             if thing.name not in names:
                 continue
         if not return_dirs:
