@@ -375,6 +375,7 @@ def links(path,
           max_depth=inf,
           min_depth=0,
           random: bool = False,) -> Dent:
+    print("links():", path, file=sys.stderr)
     return paths(path=path,
                  return_dirs=False,
                  return_symlinks=True,
