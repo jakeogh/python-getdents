@@ -36,9 +36,8 @@ def _filter(*,
             no_fifos):
 
     if names:
-        if iten.name != names:
+        if item.name not in names:
             return True
-
     if no_dirs:
         if item.is_dir():
             return True
@@ -186,7 +185,7 @@ def main():
     namesonly = False
     count = False
     random = 0
-    names = None
+    names = []
     nofiles = False
     nodirs = False
     nosymlinks = False
@@ -231,7 +230,7 @@ def main():
             elif sys.argv[index] == '--name':
                 index += 1
                 try:
-                    names = os.fsencode(sys.argv[index])
+                    names.append(os.fsencode(sys.argv[index]))
                 except IndexError as e:
                     raise e
                     #help_name()
