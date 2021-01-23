@@ -296,7 +296,7 @@ def paths(path,
           return_files: bool = True,
           return_symlinks: bool = True,
           names_only: bool = False,
-          names: Sequence[bytes] = None,
+          names: Sequence[str] = None,
           max_depth=inf,
           min_depth=0,
           random: bool = False,) -> Generator:
@@ -317,12 +317,13 @@ def paths(path,
                         verbose=verbose,
                         debug=debug,)
     if names:
+        #names = [os.fsdecode(name) for name in names]
         for name in names:
-            assert isinstance(name, bytes)
+            assert isinstance(name, str)
     for thing in fiterator:
         if names:
             #print(thing.name)
-            if thing.name not in names:
+            if os.fsdecode(thing.name) not in names:
                 continue
         if not return_dirs:
             if thing.is_dir():
