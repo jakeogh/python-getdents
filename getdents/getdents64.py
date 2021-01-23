@@ -95,6 +95,7 @@ def _iterate(*,
     if count:
         for i, item in enumerate(dentgen):
             if _filter(item=item,
+                       names=names,
                        no_files=no_files,
                        no_dirs=no_dirs,
                        no_symlinks=no_symlinks,
