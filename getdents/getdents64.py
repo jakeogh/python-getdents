@@ -225,7 +225,7 @@ def main():
             elif sys.argv[index] == '--name':
                 index += 1
                 try:
-                    names = sys.argv[index]
+                    names = os.fsencode(sys.argv[index])
                 except IndexError as e:
                     raise e
                     #help_name()
