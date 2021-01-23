@@ -5,7 +5,7 @@ import sys  # benchmark that
 from functools import update_wrapper
 from math import inf
 from pathlib import Path
-from typing import Sequence
+from typing import Generator, Sequence
 
 import attr
 
@@ -58,12 +58,12 @@ def getdents(path,
     path_fd = os.open(path, O_GETDENTS)
 
     if random is False:
-        random = 0
+        _random = 0
     else:
-        random = 1
+        _random = 1
 
     try:
-        for inode, dtype, name in getdents_raw(path_fd, buff_size, random):
+        for inode, dtype, name in getdents_raw(path_fd, buff_size, random=_random):
             if name != b'..':
                 yield (inode, dtype, name)
     finally:
@@ -299,7 +299,7 @@ def paths(path,
           names: Sequence[bytes] = None,
           max_depth=inf,
           min_depth=0,
-          random: bool = False,) -> Dent:
+          random: bool = False,) -> Generator:
     path = os.fsencode(path)
     if debug:
         print(path,
@@ -343,13 +343,13 @@ def files(path,
           *,
           verbose: bool,
           debug: bool,
-          names_only=False,
+          names_only: bool = False,
           names=None,
           max_depth=inf,
-          min_depth=0,
+          min_depth: int = 0,
           max_size=inf,
-          min_size=0,
-          random: bool = False,) -> Dent:
+          min_size: int = 0,
+          random: bool = False,) -> Generator:
     if max_size < 0:
         max_size = inf
     for p in paths(path=path,
@@ -383,7 +383,7 @@ def links(path,
           names=None,
           max_depth=inf,
           min_depth=0,
-          random: bool = False,) -> Dent:
+          random: bool = False,) -> Generator:
     print("links():", path, file=sys.stderr)
     return paths(path=path,
                  return_dirs=False,
@@ -406,7 +406,7 @@ def dirs(path,
          names=None,
          max_depth=inf,
          min_depth=0,
-         random: bool = False,) -> Dent:
+         random: bool = False,) -> Generator:
     return paths(path=path,
                  return_dirs=True,
                  return_symlinks=False,
