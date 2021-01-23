@@ -141,7 +141,8 @@ Options:
     --namesonly       Print PATH names only.
     --count           Print number of entries under PATH.
     --random          Randomize output order.
-    --name            Match name.
+    --name            Match name. Can be specified multiple times.
+    --norecurse       Dont traverse paths. TODO lower --name to C in this case
     --nofiles         Do not print regular files.
     --nodirs          Do not print directories.
     --nosymlinks      Do not print symbolic links.
