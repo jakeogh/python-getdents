@@ -54,7 +54,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
     // n (int) [Py_ssize_t]: Convert a C Py_ssize_t to a Python integer.
     // y (bytes) [const char *]: This converts a C string to a Python bytes object. If the C string pointer is NULL, None is returned.
     //if (!PyArg_ParseTuple(args, "iniy", &fd, &buff_size, &rand, &names))
-    if (!PyArg_ParseTuple(args, "iniy", &fd, &buff_size, &rand))
+    if (!PyArg_ParseTuple(args, "ini", &fd, &buff_size, &rand))
         return NULL;
 
     if (!(fcntl(fd, F_GETFL) & O_DIRECTORY)) {
