@@ -65,15 +65,13 @@ def getdents(path,
     if not names:
         names = None
 
-    print(names)
     try:
         for inode, dtype, name in getdents_raw(path_fd, buff_size, random):
         #for inode, dtype, name in getdents_raw(path_fd, buff_size, random, b''):
-            print(name)
             if name != b'..':
-                if names:
-                    if name != names:
-                        continue
+                #if names:
+                #    if name != names:
+                #        continue
                 yield (inode, dtype, name)
     finally:
         os.close(path_fd)

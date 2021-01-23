@@ -26,6 +26,7 @@ from getdents import DentGen
 
 def _filter(*,
             item,
+            names,
             no_files,
             no_dirs,
             no_symlinks,
@@ -33,6 +34,10 @@ def _filter(*,
             no_block_devices,
             no_char_devices,
             no_fifos):
+
+    if names:
+        if iten.name != names:
+            return True
 
     if no_dirs:
         if item.is_dir():
@@ -105,6 +110,7 @@ def _iterate(*,
         with open('/dev/stdout', mode='wb') as fd:
             for item in dentgen:
                 if _filter(item=item,
+                           names=names,
                            no_files=no_files,
                            no_dirs=no_dirs,
                            no_symlinks=no_symlinks,
