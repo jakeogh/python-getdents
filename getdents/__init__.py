@@ -316,6 +316,9 @@ def paths(path,
                         random=random,
                         verbose=verbose,
                         debug=debug,)
+    if names:
+        for name in names:
+            assert isinstance(name, bytes)
     for thing in fiterator:
         if names:
             print(thing.name)
