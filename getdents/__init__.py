@@ -321,7 +321,7 @@ def paths(path,
             assert isinstance(name, bytes)
     for thing in fiterator:
         if names:
-            print(thing.name)
+            #print(thing.name)
             if thing.name not in names:
                 continue
         if not return_dirs:
