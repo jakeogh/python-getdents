@@ -88,12 +88,11 @@ def _iterate(*,
                       max_depth=max_depth,
                       min_depth=min_depth,
                       random=random,
-                      names=names,
                       verbose=verbose,
                       debug=debug,)
 
     if count:
-        for i, item in enumerate(dentgen):
+        for item in dentgen:
             if _filter(item=item,
                        names=names,
                        no_files=no_files,
