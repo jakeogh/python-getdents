@@ -5,13 +5,24 @@ import sys  # benchmark that
 from functools import update_wrapper
 from math import inf
 from pathlib import Path
-from typing import Generator, Sequence
+from typing import Generator
+from typing import Sequence
 
 import attr
 
-from ._getdents import (DT_BLK, DT_CHR, DT_DIR, DT_FIFO,  # noqa: ignore=F401
-                        DT_LNK, DT_REG, DT_SOCK, DT_UNKNOWN,
-                        MIN_GETDENTS_BUFF_SIZE, O_GETDENTS, getdents_raw)
+from ._getdents import O_GETDENTS  # pylint: disable=import-error
+from ._getdents import getdents_raw  # pylint: disable=import-error
+
+#from ._getdents import DT_BLK  # noqa: ignore=F401
+#from ._getdents import DT_CHR  # noqa: ignore=E0401
+#from ._getdents import DT_DIR
+#from ._getdents import DT_FIFO
+#from ._getdents import DT_LNK
+#from ._getdents import DT_REG
+#from ._getdents import DT_SOCK
+#from ._getdents import DT_UNKNOWN
+#from ._getdents import MIN_GETDENTS_BUFF_SIZE
+
 
 BUFF_SIZE = 4096 * 16  # 64k
 
@@ -180,11 +191,11 @@ class Dent():
 
     @Reify
     def depth(self):
-        return len(self.pathlib.parts)
+        return len(self.pathlib.parts)  # pylint: disable=no-member
 
     @Reify
     def size(self):
-        return self.pathlib.stat().st_size
+        return self.pathlib.stat().st_size  # pylint: disable=no-member
 
 
 @attr.s(auto_attribs=True)
@@ -302,7 +313,8 @@ def paths(path,
           random: bool = False,) -> Generator:
     path = os.fsencode(path)
     if debug:
-        print(path,
+        print('getdents/__init__.py',
+              path,
               "return_dirs:", return_dirs,
               "return_files:", return_files,
               "return_symlinks:", return_symlinks,
