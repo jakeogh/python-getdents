@@ -223,7 +223,7 @@ getdents_next(struct getdents_state *s)
     }
 
     struct linux_dirent64 *d = (struct linux_dirent64 *)(s->buff + s->bpos);
-    printf("nread: %d d_reclen: %d d->name: %s d->d_ino: %d\n", s->nread, d->d_reclen, d->d_name, d->d_ino);
+    printf("nread: %d d_reclen: %d d->name: %s d->d_ino: %d d->d_type: %d\n", s->nread, d->d_reclen, d->d_name, d->d_ino, d->d_type);
 
     PyObject *py_name = PyBytes_FromString(d->d_name);  // want bytes
 //  PyObject *py_name = PyUnicode_DecodeFSDefault(d->d_name);
