@@ -107,8 +107,13 @@ class Dent():
     def __iter__(self):
         return iter(self.path)
 
-    #def __repr__(self):
-    #    return repr(os.fsdecode(self.path))  # todo
+    def __repr__(self):
+        return 'Dent(parent={parent}, name={name}, inode={inode}, dtype={dtype}, path={path})'.format(parent=os.fsdecode(self.parent),
+                                                                                                      name=os.fsdecode(self.name),
+                                                                                                      inode=self.inode,
+                                                                                                      dtype=self.dtype,
+                                                                                                      path=os.fsdecode(self.path),
+                                                                                                      )
 
     def __hash__(self):
         return hash(self.path)
@@ -275,7 +280,7 @@ class DentGen():
                 print("DentGen() __iter__() name:", name, file=sys.stderr)
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             if self.very_debug or self.debug:
-                print("DentGen() __iter__() dent:", dent, file=sys.stderr)
+                print("DentGen() __iter__() dent:", repr(dent), file=sys.stderr)
             if dent.path == self.path:
                 if self.min_depth:
                     if dent.depth < self.min_depth:
