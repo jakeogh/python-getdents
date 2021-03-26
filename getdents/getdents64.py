@@ -78,7 +78,7 @@ def _iterate(*,
              no_block_devices,
              no_char_devices,
              no_fifos,
-             print_end,
+             end,
              verbose: bool,
              debug: bool,):
     c = 0
@@ -104,7 +104,7 @@ def _iterate(*,
                        no_sockets=no_sockets):
                 continue
             c += 1
-        print(c)
+        print(c, end=end)
     else:
         with open('/dev/stdout', mode='wb') as fd:
             for item in dentgen:
@@ -123,12 +123,12 @@ def _iterate(*,
                     if output.endswith(b'\n'):
                         output = output[:-1]
 
-                    fd.write(output + b' ' + item.path + print_end)
+                    fd.write(output + b' ' + item.path + end)
                 else:
                     if namesonly:
-                        fd.write(item.name + print_end)
+                        fd.write(item.name + end)
                     else:
-                        fd.write(item.path + print_end)
+                        fd.write(item.path + end)
 
 
 def usage():
@@ -152,6 +152,7 @@ Options:
     --nosockets       Do not print sockets.
     --printn          Items are terminated by a newline instead of null character.
     --verbose         Debugging output.
+    --debug           More debugging output.
 '''
 
 
@@ -196,7 +197,8 @@ def main():
     nosockets = False
     verbose = False
     debug = False
-    print_end = b'\x00'
+    printn = False
+    #print_end = b'\x00'
     index = 2
     if args >= 2:
         while index <= args:
@@ -272,15 +274,26 @@ def main():
                 nosockets = True
                 index += 1
             elif sys.argv[index] == "--printn":
-                print_end = b'\n'
+                #printn = b'\n'
+                printn = True
                 index += 1
             elif sys.argv[index] == "--verbose":
                 verbose = True
+                index += 1
+            elif sys.argv[index] == "--debug":
+                debug = True
                 index += 1
             else:
                 print(usage(), file=sys.stderr)
                 print("Error: Unknown option \"{0}\".".format(sys.argv[index]), file=sys.stderr)
                 sys.exit(1)
+
+            null = not printn
+            end = '\n'
+            if null:
+                end = '\x00'
+            if sys.stdout.isatty():
+                end = '\n'
 
     _iterate(path=path,
              max_depth=max_depth,
@@ -297,7 +310,7 @@ def main():
              no_block_devices=noblock,
              no_fifos=nofifo,
              no_sockets=nosockets,
-             print_end=print_end,
+             end=end,
              verbose=verbose,
              debug=debug,)
 
