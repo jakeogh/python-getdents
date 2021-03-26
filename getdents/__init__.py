@@ -274,7 +274,7 @@ class DentGen():
                 print("DentGen() __iter__() dtype:", dtype, file=sys.stderr)
                 print("DentGen() __iter__() name:", name, file=sys.stderr)
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
-            if self.very_debug:
+            if self.very_debug or self.debug:
                 print("DentGen() __iter__() dent:", dent, file=sys.stderr)
             if dent.path == self.path:
                 if self.min_depth:
