@@ -164,11 +164,21 @@ class Dent():
     def is_fifo(self):
         if self.dtype == 1:
             return True
+        elif self.is_unknown():
+            if not self.lstat:
+                self.lstat = os.lstat(self.path)
+            if stat.S_ISFIFO(self.lstat.st_mode):
+                return True
         return False
 
     def is_char_device(self):
         if self.dtype == 2:
             return True
+        elif self.is_unknown():
+            if not self.lstat:
+                self.lstat = os.lstat(self.path)
+            if stat.S_ISCHR(self.lstat.st_mode):
+                return True
         return False
 
     def is_dir(self):
@@ -184,21 +194,41 @@ class Dent():
     def is_block_device(self):
         if self.dtype == 6:
             return True
+        elif self.is_unknown():
+            if not self.lstat:
+                self.lstat = os.lstat(self.path)
+            if stat.S_ISBLK(self.lstat.st_mode):
+                return True
         return False
 
     def is_file(self):
-        if self.dtype in [8, 0]:  # temp
+        if self.dtype == 8:
             return True
+        elif self.is_unknown():
+            if not self.lstat:
+                self.lstat = os.lstat(self.path)
+            if stat.S_ISREG(self.lstat.st_mode):
+                return True
         return False
 
     def is_symlink(self):
         if self.dtype == 10:
             return True
+        elif self.is_unknown():
+            if not self.lstat:
+                self.lstat = os.lstat(self.path)
+            if stat.S_ISLNK(self.lstat.st_mode):
+                return True
         return False
 
     def is_socket(self):
         if self.dtype == 12:
             return True
+        elif self.is_unknown():
+            if not self.lstat:
+                self.lstat = os.lstat(self.path)
+            if stat.S_ISSOCK(self.lstat.st_mode):
+                return True
         return False
 
     @Reify
