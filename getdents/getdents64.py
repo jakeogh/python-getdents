@@ -289,11 +289,11 @@ def main():
                 sys.exit(1)
 
             null = not printn
-            end = '\n'
+            end = b'\n'
             if null:
-                end = '\x00'
+                end = b'\x00'
             if sys.stdout.isatty():
-                end = '\n'
+                end = b'\n'
 
     _iterate(path=path,
              max_depth=max_depth,
