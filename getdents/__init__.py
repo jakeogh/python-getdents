@@ -1,6 +1,7 @@
 # pylint: disable=C0111  # docstrings are always outdated and wrong
 
 import os
+import stat
 import sys  # benchmark that
 from functools import update_wrapper
 from math import inf
@@ -96,6 +97,7 @@ class Dent():
             del split_p
         self.path = b'/'.join((self.parent, self.name))
         #self.pathlib = Path(os.fsdecode(self.path))
+        self.lstat = None
 
     @Reify
     def pathlib(self):
@@ -172,6 +174,11 @@ class Dent():
     def is_dir(self):
         if self.dtype == 4:
             return True
+        elif self.is_unknown():
+            if not self.lstat:
+                self.lstat = os.lstat(self.path)
+            if stat.S_ISDIR(self.lstat.st_mode):
+                return True
         return False
 
     def is_block_device(self):
