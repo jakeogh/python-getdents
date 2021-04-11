@@ -288,12 +288,12 @@ def main():
                 print("Error: Unknown option \"{0}\".".format(sys.argv[index]), file=sys.stderr)
                 sys.exit(1)
 
-            null = not printn
-            end = b'\n'
-            if null:
-                end = b'\x00'
-            if sys.stdout.isatty():
-                end = b'\n'
+    null = not printn
+    end = b'\n'
+    if null:
+        end = b'\x00'
+    if sys.stdout.isatty():
+        end = b'\n'
 
     _iterate(path=path,
              max_depth=max_depth,
