@@ -243,7 +243,7 @@ def main():
                 index += 1
                 command = sys.argv[index]
                 index += 1
-            elif sys.argv[index] == '--namesonly':
+            elif sys.argv[index] in ["--namesonly", "--names-only"]:
                 namesonly = True
                 index += 1
             elif sys.argv[index] == '--count':
@@ -252,25 +252,25 @@ def main():
             elif sys.argv[index] == '--random':
                 random = 1
                 index += 1
-            elif sys.argv[index] == "--nofiles":
+            elif sys.argv[index] in ["--nofiles", "--no-files"]:
                 nofiles = True
                 index += 1
-            elif sys.argv[index] == "--nodirs":
+            elif sys.argv[index] in ["--nodirs", "--no-dirs"]:
                 nodirs = True
                 index += 1
-            elif sys.argv[index] == "--nosymlinks":
+            elif sys.argv[index] in ["--nosymlinks", "--no-symlinks"]:
                 nosymlinks = True
                 index += 1
-            elif sys.argv[index] == "--nochar":
+            elif sys.argv[index] in ["--nochar", "--no-char"]:
                 nochar = True
                 index += 1
-            elif sys.argv[index] == "--noblock":
+            elif sys.argv[index] in ["--noblock", "--no-block"]:
                 noblock = True
                 index += 1
-            elif sys.argv[index] == "--nofifo":
+            elif sys.argv[index] in ["--nofifo", "--no-fifo"]:
                 nofifo = True
                 index += 1
-            elif sys.argv[index] == "--nosockets":
+            elif sys.argv[index] in ["--nosockets", "--no-sockets"]:
                 nosockets = True
                 index += 1
             elif sys.argv[index] == "--printn":
