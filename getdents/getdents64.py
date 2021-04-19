@@ -104,7 +104,7 @@ def _iterate(*,
                        no_sockets=no_sockets):
                 continue
             c += 1
-        print(c, end=end)
+        print(c, end=end.decode('utf8'))
     else:
         with open('/dev/stdout', mode='wb') as fd:
             for item in dentgen:
