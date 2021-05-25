@@ -20,8 +20,13 @@
 
 import os
 import sys
+from signal import SIG_DFL
+from signal import SIGPIPE
+from signal import signal
 
 from getdents import DentGen
+
+signal(SIGPIPE, SIG_DFL)
 
 
 def _filter(*,
