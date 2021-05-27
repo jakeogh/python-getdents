@@ -2,7 +2,7 @@
 
 import os
 import stat
-import sys  # benchmark that
+import sys
 from functools import update_wrapper
 from math import inf
 from pathlib import Path
@@ -51,7 +51,8 @@ class Reify():
 
 def getdents(path,
              buff_size=BUFF_SIZE,
-             random: bool = False,):
+             random: bool = False,
+             ):
     """Get directory entries.
 
     Wrapper around getdents_raw(), simulates ls behaviour: ignores deleted
@@ -359,7 +360,8 @@ def paths(path,
           names: Sequence[str] = None,
           max_depth=inf,
           min_depth=0,
-          random: bool = False,) -> Generator:
+          random: bool = False,
+          ) -> Generator:
     path = os.fsencode(path)
     if debug:
         print('getdents/__init__.py',
@@ -414,7 +416,8 @@ def files(path,
           min_depth: int = 0,
           max_size=inf,
           min_size: int = 0,
-          random: bool = False,) -> Generator:
+          random: bool = False,
+          ) -> Generator:
     if max_size < 0:
         max_size = inf
     for p in paths(path=path,
@@ -448,7 +451,8 @@ def links(path,
           names=None,
           max_depth=inf,
           min_depth=0,
-          random: bool = False,) -> Generator:
+          random: bool = False,
+          ) -> Generator:
     return paths(path=path,
                  return_dirs=False,
                  return_symlinks=True,
@@ -470,7 +474,8 @@ def dirs(path,
          names=None,
          max_depth=inf,
          min_depth=0,
-         random: bool = False,) -> Generator:
+         random: bool = False,
+         ) -> Generator:
     return paths(path=path,
                  return_dirs=True,
                  return_symlinks=False,
