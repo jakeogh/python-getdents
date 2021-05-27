@@ -60,8 +60,8 @@ def getdents(path,
     files, skips .. entries.
 
     Note:
-       Default buffer size is 32k, it's a default allocation size of glibc's
-       readdir() implementation.
+       Default buffer size is 64k.
+       The default allocation size of glibc's readdir() implementation is 32k.
 
     Note:
        Larger buffer will result in a fewer syscalls, so for really large
