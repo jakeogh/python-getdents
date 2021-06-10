@@ -56,6 +56,7 @@ def getdents(path,
              skip_dotpaths,
              buff_size: int = BUFF_SIZE,
              ):
+    print("skip_dotpaths:", skip_dotpaths)
     """Get directory entries.
 
     Wrapper around getdents_raw(), simulates ls behaviour: ignores deleted
