@@ -303,7 +303,7 @@ def main():
                 nodotfiles = True
                 index += 1
             elif sys.argv[index] in ["--nodotpaths", "--no-dotpaths"]:
-                nodotfiles = True
+                nodotpaths = True
                 index += 1
             elif sys.argv[index] == "--printn":
                 #printn = b'\n'
