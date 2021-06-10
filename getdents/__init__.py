@@ -53,9 +53,10 @@ class Reify():
 
 def getdents(path,
              random: bool,
-             skip_dotpaths,
+             skip_dotpaths: bool,
              buff_size: int = BUFF_SIZE,
              ):
+    assert skip_dotpaths
     print("skip_dotpaths:", skip_dotpaths)
     """Get directory entries.
 
@@ -322,6 +323,8 @@ class DentGen():
             print("DentGen() __attrs_post_init__() self.min_depth:", self.min_depth, file=sys.stderr)
             print("DentGen() __attrs_post_init__() self.max_depth:", self.max_depth, file=sys.stderr)
             print("NameGen __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
+
+        assert self.skip_dotpaths
 
     def __iter__(self, cur_depth=0):
         #print("cur_depth:", cur_depth)
