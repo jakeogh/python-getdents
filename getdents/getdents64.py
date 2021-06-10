@@ -39,7 +39,7 @@ def _filter(*,
             no_block_devices,
             no_char_devices,
             no_fifos,
-            no_dotpaths,
+            no_dotfiles,
             ):
 
     if names:
@@ -66,32 +66,33 @@ def _filter(*,
     if no_fifos:
         if item.is_fifo():
             return True
-    if no_dotpaths:
+    if no_dotfiles:
         if item.name.startswith(b'.'):
             return True
     return False
 
 
 def _iterate(*,
-             path,
-             max_depth,
-             min_depth,
-             command,
-             namesonly,
-             count,
-             random,
-             names,
-             no_files,
-             no_dirs,
-             no_symlinks,
-             no_sockets,
-             no_block_devices,
-             no_char_devices,
-             no_fifos,
-             no_dotpaths,
+             path: str,
+             max_depth: int,
+             min_depth: int,
+             command: str,
+             namesonly: bool,
+             count: bool,
+             random: bool,
+             names: bool,
+             no_files: bool,
+             no_dirs: bool,
+             no_symlinks: bool,
+             no_sockets: bool,
+             no_block_devices: bool,
+             no_char_devices: bool,
+             no_fifos: bool,
+             no_dotfiles: bool,
              end,
              verbose: bool,
-             debug: bool,):
+             debug: bool,
+             ):
     c = 0
     if command:
         from subprocess import check_output
@@ -113,7 +114,7 @@ def _iterate(*,
                        no_char_devices=no_char_devices,
                        no_fifos=no_fifos,
                        no_sockets=no_sockets,
-                       no_dotpaths=no_dotpaths,
+                       no_dotfiles=no_dotfiles,
                        ):
                 continue
             c += 1
@@ -130,7 +131,7 @@ def _iterate(*,
                            no_char_devices=no_char_devices,
                            no_fifos=no_fifos,
                            no_sockets=no_sockets,
-                           no_dotpaths=no_dotpaths,
+                           no_dotfiles=no_dotfiles,
                            ):
                     continue
                 if command:
@@ -165,7 +166,7 @@ Options:
     --noblock         Do not print block devices.
     --nofifo          Do not print fifos.
     --nosockets       Do not print sockets.
-    --nodotpaths      Do not print or decend into paths that start with a dot.
+    --nodotfiles      Do not print names that start with a dot (dot paths are still decended into).
     --printn          Items are terminated by a newline instead of null character.
     --verbose         Debugging output.
     --debug           More debugging output.
@@ -211,7 +212,7 @@ def main():
     noblock = False
     nofifo = False
     nosockets = False
-    nodotpaths = False
+    nodotfiles = False
     verbose = False
     debug = False
     printn = False
@@ -290,8 +291,8 @@ def main():
             elif sys.argv[index] in ["--nosockets", "--no-sockets"]:
                 nosockets = True
                 index += 1
-            elif sys.argv[index] in ["--nodotpaths", "--no-dotpaths"]:
-                nodotpaths = True
+            elif sys.argv[index] in ["--nodotfiles", "--no-dotfiles"]:
+                nodotfiles = True
                 index += 1
             elif sys.argv[index] == "--printn":
                 #printn = b'\n'
@@ -330,7 +331,7 @@ def main():
              no_block_devices=noblock,
              no_fifos=nofifo,
              no_sockets=nosockets,
-             no_dotpaths=nodotpaths,
+             no_dotfiles=nodotfiles,
              end=end,
              verbose=verbose,
              debug=debug,)
