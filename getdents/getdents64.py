@@ -23,6 +23,7 @@ import sys
 from signal import SIG_DFL
 from signal import SIGPIPE
 from signal import signal
+from typing import List
 
 from getdents import Dent
 from getdents import DentGen
@@ -32,7 +33,7 @@ signal(SIGPIPE, SIG_DFL)
 
 def _filter(*,
             item: Dent,
-            names: bool,
+            names: List[bytes],
             no_files: bool,
             no_dirs: bool,
             no_symlinks: bool,
@@ -81,7 +82,7 @@ def _iterate(*,
              namesonly: bool,
              count: bool,
              random: bool,
-             names: bool,
+             names: List[bytes],
              no_files: bool,
              no_dirs: bool,
              no_symlinks: bool,
