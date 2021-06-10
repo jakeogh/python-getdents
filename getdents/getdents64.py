@@ -91,6 +91,7 @@ def _iterate(*,
              no_char_devices: bool,
              no_fifos: bool,
              no_dotfiles: bool,
+             no_dotpaths: bool,
              end,
              verbose: bool,
              debug: bool,
@@ -101,6 +102,7 @@ def _iterate(*,
     dentgen = DentGen(path=path,
                       max_depth=max_depth,
                       min_depth=min_depth,
+                      skip_dotpaths=no_dotpaths,
                       random=random,
                       verbose=verbose,
                       debug=debug,)
@@ -169,6 +171,7 @@ Options:
     --nofifo          Do not print fifos.
     --nosockets       Do not print sockets.
     --nodotfiles      Do not print names that start with a dot (dot paths are still decended into).
+    --nodotpaths      Do not print any paths that have a name that starts with a dot.
     --printn          Items are terminated by a newline instead of null character.
     --verbose         Debugging output.
     --debug           More debugging output.
@@ -215,6 +218,7 @@ def main():
     nofifo = False
     nosockets = False
     nodotfiles = False
+    nodotpaths = False
     verbose = False
     debug = False
     printn = False
@@ -296,6 +300,9 @@ def main():
             elif sys.argv[index] in ["--nodotfiles", "--no-dotfiles"]:
                 nodotfiles = True
                 index += 1
+            elif sys.argv[index] in ["--nodotpaths", "--no-dotpaths"]:
+                nodotfiles = True
+                index += 1
             elif sys.argv[index] == "--printn":
                 #printn = b'\n'
                 printn = True
@@ -334,6 +341,7 @@ def main():
              no_fifos=nofifo,
              no_sockets=nosockets,
              no_dotfiles=nodotfiles,
+             no_dotpaths=nodotpaths,
              end=end,
              verbose=verbose,
              debug=debug,)
