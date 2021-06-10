@@ -38,7 +38,9 @@ def _filter(*,
             no_sockets,
             no_block_devices,
             no_char_devices,
-            no_fifos):
+            no_fifos,
+            no_dotpaths,
+            ):
 
     if names:
         if item.name not in names:
@@ -64,6 +66,9 @@ def _filter(*,
     if no_fifos:
         if item.is_fifo():
             return True
+    if no_dotpaths:
+        if item.name.startswith(b'.'):
+            return True
     return False
 
 
@@ -83,6 +88,7 @@ def _iterate(*,
              no_block_devices,
              no_char_devices,
              no_fifos,
+             no_dotpaths,
              end,
              verbose: bool,
              debug: bool,):
@@ -106,7 +112,9 @@ def _iterate(*,
                        no_block_devices=no_block_devices,
                        no_char_devices=no_char_devices,
                        no_fifos=no_fifos,
-                       no_sockets=no_sockets):
+                       no_sockets=no_sockets,
+                       no_dotpaths=no_dotpaths,
+                       ):
                 continue
             c += 1
         print(c, end=end.decode('utf8'))
@@ -121,7 +129,9 @@ def _iterate(*,
                            no_block_devices=no_block_devices,
                            no_char_devices=no_char_devices,
                            no_fifos=no_fifos,
-                           no_sockets=no_sockets):
+                           no_sockets=no_sockets,
+                           no_dotpaths=no_dotpaths,
+                           ):
                     continue
                 if command:
                     output = check_output([command, os.fsdecode(item.path)])
@@ -155,6 +165,7 @@ Options:
     --noblock         Do not print block devices.
     --nofifo          Do not print fifos.
     --nosockets       Do not print sockets.
+    --nodotpaths      Do not print or decend into paths that start with a dot.
     --printn          Items are terminated by a newline instead of null character.
     --verbose         Debugging output.
     --debug           More debugging output.
@@ -200,6 +211,7 @@ def main():
     noblock = False
     nofifo = False
     nosockets = False
+    nodotpaths = False
     verbose = False
     debug = False
     printn = False
@@ -278,6 +290,9 @@ def main():
             elif sys.argv[index] in ["--nosockets", "--no-sockets"]:
                 nosockets = True
                 index += 1
+            elif sys.argv[index] in ["--nodotpaths", "--no-dotpaths"]:
+                nodotpaths = True
+                index += 1
             elif sys.argv[index] == "--printn":
                 #printn = b'\n'
                 printn = True
@@ -315,6 +330,7 @@ def main():
              no_block_devices=noblock,
              no_fifos=nofifo,
              no_sockets=nosockets,
+             no_dotpaths=nodotpaths,
              end=end,
              verbose=verbose,
              debug=debug,)
