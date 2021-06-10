@@ -302,7 +302,7 @@ def main():
             elif sys.argv[index] in ["--nodotfiles", "--no-dotfiles"]:
                 nodotfiles = True
                 index += 1
-            elif sys.argv[index] in ["--nodotpaths", "--no-dotpaths"]:
+            elif sys.argv[index] in ["--nodotpaths", "--no-dotpaths", '--skipdotpaths', '--skip-dotpaths']:
                 nodotpaths = True
                 index += 1
             elif sys.argv[index] == "--printn":
