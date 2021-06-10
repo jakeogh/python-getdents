@@ -258,8 +258,8 @@ class Dent():
 class NameGen():
     verbose: bool
     debug: bool
+    skip_dotpaths: bool
     path: bytes = attr.ib(converter=os.fsencode)
-    skip_dotpaths: bool = False
     very_debug: bool = False
     buff_size: int = BUFF_SIZE
     random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
@@ -299,8 +299,8 @@ class DentGen():
     path: bytes = attr.ib(converter=os.fsencode)
     verbose: bool
     debug: bool
+    skip_dotpaths: bool
     very_debug: bool = False
-    skip_dotpaths: bool = False
     min_depth: int = 0
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
