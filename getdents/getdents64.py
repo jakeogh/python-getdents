@@ -30,16 +30,16 @@ signal(SIGPIPE, SIG_DFL)
 
 
 def _filter(*,
-            item,
-            names,
-            no_files,
-            no_dirs,
-            no_symlinks,
-            no_sockets,
-            no_block_devices,
-            no_char_devices,
-            no_fifos,
-            no_dotfiles,
+            item: object,
+            names: bool,
+            no_files: bool,
+            no_dirs: bool,
+            no_symlinks: bool,
+            no_sockets: bool,
+            no_block_devices: bool,
+            no_char_devices: bool,
+            no_fifos: bool,
+            no_dotfiles: bool,
             ):
 
     if names:
