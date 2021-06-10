@@ -24,13 +24,14 @@ from signal import SIG_DFL
 from signal import SIGPIPE
 from signal import signal
 
+from getdents import Dent
 from getdents import DentGen
 
 signal(SIGPIPE, SIG_DFL)
 
 
 def _filter(*,
-            item: object,
+            item: Dent,
             names: bool,
             no_files: bool,
             no_dirs: bool,
@@ -73,7 +74,7 @@ def _filter(*,
 
 
 def _iterate(*,
-             path: str,
+             path: bytes,
              max_depth: int,
              min_depth: int,
              command: str,
