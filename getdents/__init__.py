@@ -8,6 +8,7 @@ from functools import update_wrapper
 from math import inf
 from pathlib import Path
 from typing import Generator
+from typing import List
 from typing import Sequence
 
 import attr
@@ -51,8 +52,9 @@ class Reify():
 
 
 def getdents(path,
-             buff_size=BUFF_SIZE,
-             random: bool = False,
+             random: bool,
+             skip_dotpaths,
+             buff_size: int = BUFF_SIZE,
              ):
     """Get directory entries.
 
@@ -85,6 +87,9 @@ def getdents(path,
 
     try:
         for inode, dtype, name in getdents_raw(path_fd, buff_size, _random):
+            if skip_dotpaths:
+                if name.startswith(b'.'):
+                    continue
             if name != b'..':
                 yield (inode, dtype, name)
     finally:
@@ -253,6 +258,7 @@ class Dent():
 class NameGen():
     verbose: bool
     debug: bool
+    skip_dotpaths: bool = False
     path: bytes = attr.ib(converter=os.fsencode)
     very_debug: bool = False
     buff_size: int = BUFF_SIZE
@@ -266,6 +272,7 @@ class NameGen():
             print("NameGen __attrs_post_init__() self.path:", self.path, file=sys.stderr)
             print("NameGen __attrs_post_init__() self.names_only:", self.names_only, file=sys.stderr)
             print("NameGen __attrs_post_init__() self.random:", self.random, file=sys.stderr)
+            print("NameGen __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
 
     def __iter__(self):
         if self.verbose:
@@ -273,7 +280,9 @@ class NameGen():
 
         for inode, dtype, name in getdents(path=self.path,
                                            buff_size=self.buff_size,
-                                           random=self.random,):
+                                           random=self.random,
+                                           skip_dotpaths=self.skip_dotpaths,
+                                           ):
             if name == b'.':
                 continue
             if not self.names_only:
@@ -291,6 +300,7 @@ class DentGen():
     verbose: bool
     debug: bool
     very_debug: bool = False
+    skip_dotpaths: bool = False
     min_depth: int = 0
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
@@ -310,6 +320,7 @@ class DentGen():
             print("DentGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
             print("DentGen() __attrs_post_init__() self.min_depth:", self.min_depth, file=sys.stderr)
             print("DentGen() __attrs_post_init__() self.max_depth:", self.max_depth, file=sys.stderr)
+            print("NameGen __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
 
     def __iter__(self, cur_depth=0):
         #print("cur_depth:", cur_depth)
@@ -319,7 +330,9 @@ class DentGen():
             print("DentGen() __iter__() self.path:", self.path, file=sys.stderr)
         for inode, dtype, name in getdents(path=self.path,
                                            buff_size=self.buff_size,
-                                           random=self.random,):
+                                           random=self.random,
+                                           skip_dotpaths=self.skip_dotpaths,
+                                           ):
             if self.very_debug:
                 print("DentGen() __iter__() inode:", inode, file=sys.stderr)
                 print("DentGen() __iter__() dtype:", dtype, file=sys.stderr)
@@ -354,6 +367,7 @@ def paths(path,
           *,
           verbose: bool,
           debug: bool,
+          skip_dotpaths: bool = False,
           return_dirs: bool = True,
           return_files: bool = True,
           return_symlinks: bool = True,
@@ -373,10 +387,12 @@ def paths(path,
               "max_depth:", max_depth,
               "min_depth:", min_depth,
               "names:", names,
-              file=sys.stderr)
+              "skip_dotpaths:", skip_dotpaths,
+              file=sys.stderr,)
     fiterator = DentGen(path=path,
                         max_depth=max_depth,
                         min_depth=min_depth,
+                        skip_dotpaths=skip_dotpaths,
                         random=random,
                         verbose=verbose,
                         debug=debug,)
@@ -412,7 +428,8 @@ def files(path,
           verbose: bool,
           debug: bool,
           names_only: bool = False,
-          names=None,
+          skip_dotpaths: bool = False,
+          names: List[bytes] = None,
           max_depth=inf,
           min_depth: int = 0,
           max_size=inf,
@@ -427,6 +444,7 @@ def files(path,
                    return_files=True,
                    names_only=False,
                    names=names,
+                   skip_dotpaths=skip_dotpaths,
                    max_depth=max_depth,
                    min_depth=min_depth,
                    random=random,
@@ -449,15 +467,17 @@ def links(path,
           verbose: bool,
           debug: bool,
           names_only: bool = False,
-          names=None,
+          skip_dotpaths: bool = False,
+          names: List[bytes] = None,
           max_depth=inf,
-          min_depth=0,
+          min_depth: int = 0,
           random: bool = False,
           ) -> Generator:
     return paths(path=path,
                  return_dirs=False,
                  return_symlinks=True,
                  return_files=False,
+                 skip_dotpaths=skip_dotpaths,
                  names_only=names_only,
                  names=names,
                  max_depth=max_depth,
@@ -472,15 +492,17 @@ def dirs(path,
          verbose: bool,
          debug: bool,
          names_only: bool = False,
-         names=None,
+         skip_dotpaths: bool = False,
+         names: List[bytes] = None,
          max_depth=inf,
-         min_depth=0,
+         min_depth: int = 0,
          random: bool = False,
          ) -> Generator:
     return paths(path=path,
                  return_dirs=True,
                  return_symlinks=False,
                  return_files=False,
+                 skip_dotpaths=skip_dotpaths,
                  names_only=names_only,
                  names=names,
                  max_depth=max_depth,
