@@ -56,8 +56,7 @@ def getdents(path,
              skip_dotpaths: bool,
              buff_size: int = BUFF_SIZE,
              ):
-    assert skip_dotpaths
-    print("skip_dotpaths:", skip_dotpaths)
+
     """Get directory entries.
 
     Wrapper around getdents_raw(), simulates ls behaviour: ignores deleted
@@ -324,8 +323,6 @@ class DentGen():
             print("DentGen() __attrs_post_init__() self.max_depth:", self.max_depth, file=sys.stderr)
             print("NameGen __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
 
-        assert self.skip_dotpaths
-
     def __iter__(self, cur_depth=0):
         #print("cur_depth:", cur_depth)
         #self.iters += 1
@@ -403,7 +400,7 @@ def paths(path,
     if names:
         #names = [os.fsdecode(name) for name in names]
         for name in names:
-            assert isinstance(name, str)
+            assert isinstance(name, str)  # fixme
     for thing in fiterator:
         if names:
             #print(thing.name)

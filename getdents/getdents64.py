@@ -100,7 +100,7 @@ def _iterate(*,
     if command:
         from subprocess import check_output
 
-    assert no_dotpaths
+    #assert no_dotpaths
     dentgen = DentGen(path=path,
                       max_depth=max_depth,
                       min_depth=min_depth,
