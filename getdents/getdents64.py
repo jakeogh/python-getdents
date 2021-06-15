@@ -276,7 +276,7 @@ def main():
                 count = True
                 index += 1
             elif sys.argv[index] == '--random':
-                random = 1
+                random = True
                 index += 1
             elif sys.argv[index] in ["--nofiles", "--no-files"]:
                 nofiles = True

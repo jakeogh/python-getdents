@@ -377,6 +377,7 @@ def paths(path,
           max_depth=inf,
           min_depth=0,
           random: bool = False,
+          pathlib: bool = False,
           ) -> Generator:
     path = os.fsencode(path)
     if debug:
@@ -388,6 +389,7 @@ def paths(path,
               "max_depth:", max_depth,
               "min_depth:", min_depth,
               "names:", names,
+              "pathlib:", pathlib,
               "skip_dotpaths:", skip_dotpaths,
               file=sys.stderr,)
     fiterator = DentGen(path=path,
@@ -420,6 +422,8 @@ def paths(path,
                                 # but it CANT BE, Dents reprsent real fs objects, and have parents
                                 # names are just bytes
                                 # so, unless one wants bytes, just return the Dents and use Dent.pathlib.name
+        if pathlib:
+            yield thing.pathlib
         else:
             yield thing
 
@@ -430,12 +434,13 @@ def files(path,
           debug: bool,
           names_only: bool = False,
           skip_dotpaths: bool = False,
-          names: List[bytes] = None,
+          names: List[bytes] = None,   # byggy
           max_depth=inf,
           min_depth: int = 0,
           max_size=inf,
           min_size: int = 0,
           random: bool = False,
+          pathlib: bool = False,
           ) -> Generator:
     if max_size < 0:
         max_size = inf
@@ -445,6 +450,7 @@ def files(path,
                    return_files=True,
                    names_only=False,
                    names=names,
+                   pathlib=pathlib,
                    skip_dotpaths=skip_dotpaths,
                    max_depth=max_depth,
                    min_depth=min_depth,
@@ -473,6 +479,7 @@ def links(path,
           max_depth=inf,
           min_depth: int = 0,
           random: bool = False,
+          pathlib: bool = False,
           ) -> Generator:
     return paths(path=path,
                  return_dirs=False,
@@ -481,6 +488,7 @@ def links(path,
                  skip_dotpaths=skip_dotpaths,
                  names_only=names_only,
                  names=names,
+                 pathlib=pathlib,
                  max_depth=max_depth,
                  min_depth=min_depth,
                  random=random,
@@ -498,6 +506,7 @@ def dirs(path,
          max_depth=inf,
          min_depth: int = 0,
          random: bool = False,
+         pathlib: bool = False,
          ) -> Generator:
     return paths(path=path,
                  return_dirs=True,
@@ -506,6 +515,7 @@ def dirs(path,
                  skip_dotpaths=skip_dotpaths,
                  names_only=names_only,
                  names=names,
+                 pathlib=pathlib,
                  max_depth=max_depth,
                  min_depth=min_depth,
                  random=random,
