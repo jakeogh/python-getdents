@@ -380,8 +380,8 @@ def paths(path,
           pathlib: bool = False,
           ) -> Generator:
 
-    if (names_only and pathlib):
-        raise ValueError('names_only and pathlib are mutually exclusive')
+    #if (names_only and pathlib):
+    #    raise ValueError('names_only and pathlib are mutually exclusive')
 
     path = os.fsencode(path)
     if debug:
@@ -407,6 +407,7 @@ def paths(path,
         #names = [os.fsdecode(name) for name in names]
         for name in names:
             assert isinstance(name, str)  # fixme
+
     for thing in fiterator:
         if names:
             #print(thing.name)
@@ -421,14 +422,16 @@ def paths(path,
         if not return_symlinks:
             if thing.is_symlink():
                 continue
+
+        # names_only overrules pathlib
         if names_only:
             yield thing.name    # on first glance it might seem that this should still be a Dent,
                                 # but it CANT BE, Dents reprsent real fs objects, and have parents
                                 # names are just bytes
                                 # so, unless one wants bytes, just return the Dents and use Dent.pathlib.name
-        if pathlib:
+        elif pathlib:
             yield thing.pathlib
-        else:
+        else:   # Dent
             yield thing
 
 
