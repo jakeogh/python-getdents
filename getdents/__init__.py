@@ -379,6 +379,10 @@ def paths(path,
           random: bool = False,
           pathlib: bool = False,
           ) -> Generator:
+
+    if (names_only and pathlib):
+        raise ValueError('names_only and pathlib are mutually exclusive')
+
     path = os.fsencode(path)
     if debug:
         print('getdents/__init__.py',
