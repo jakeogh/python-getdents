@@ -162,7 +162,7 @@ Options:
     --exec CMD        Execute command for every printed result. Must be a single argument. Should produce a single line.
     --namesonly       Print PATH names only.
     --count           Print number of entries under PATH.
-    --random          Randomize output order.
+    --random          Randomize output order of each getdents64() syscall.
     --name            Match name. Can be specified multiple times.
     --norecurse       Dont traverse paths. TODO lower --name to C in this case
     --nofiles         Do not print regular files.
@@ -173,7 +173,7 @@ Options:
     --nofifo          Do not print fifos.
     --nosockets       Do not print sockets.
     --nodotfiles      Do not print names that start with a dot (dot paths are still decended into).
-    --nodotpaths      Do not print any paths that have a name that starts with a dot.
+    --nodotpaths      Do not print any paths that have one or names that starts with a dot.
     --printn          Items are terminated by a newline instead of null character.
     --verbose         Debugging output.
     --debug           More debugging output.
