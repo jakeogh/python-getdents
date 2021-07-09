@@ -279,14 +279,15 @@ class NameGen():
         if self.path[0] != b'/':
             self.path = os.path.realpath(os.path.expanduser(self.path))
         if self.verbose:
-            print("NameGen __attrs_post_init__() self.path:", self.path, file=sys.stderr)
-            print("NameGen __attrs_post_init__() self.names_only:", self.names_only, file=sys.stderr)
-            print("NameGen __attrs_post_init__() self.random:", self.random, file=sys.stderr)
-            print("NameGen __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
+            print("NameGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
+            print("NameGen() __attrs_post_init__() self.names_only:", self.names_only, file=sys.stderr)
+            print("NameGen() __attrs_post_init__() self.random:", self.random, file=sys.stderr)
+            print("NameGen() __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
+            print("NameGen() __attrs_post_init__() self.skip_names:", self.skip_names, file=sys.stderr)
 
     def __iter__(self):
         if self.verbose:
-            print("NameGen __iter__() self.path:", self.path, file=sys.stderr)
+            print("NameGen() __iter__() self.path:", self.path, file=sys.stderr)
 
         for inode, dtype, name in getdents(path=self.path,
                                            buff_size=self.buff_size,
@@ -299,9 +300,9 @@ class NameGen():
             if not self.names_only:
                 name = Path(os.fsdecode(self.path)) / Path(os.fsdecode(name))
             if self.very_debug:
-                print("NameGen __iter__() inode:", inode, file=sys.stderr)
-                print("NameGen __iter__() dtype:", dtype, file=sys.stderr)
-                print("NameGen __iter__() name:", name, file=sys.stderr)
+                print("NameGen() __iter__() inode:", inode, file=sys.stderr)
+                print("NameGen() __iter__() dtype:", dtype, file=sys.stderr)
+                print("NameGen() __iter__() name:", name, file=sys.stderr)
             yield inode, dtype, name
 
 
@@ -312,7 +313,7 @@ class DentGen():
     debug: bool
     skip_dotpaths: bool
     skip_names: Optional[List[bytes]]
-    very_debug: bool = False
+    very_debug: bool = True
     min_depth: int = 0
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
@@ -332,8 +333,8 @@ class DentGen():
             print("DentGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
             print("DentGen() __attrs_post_init__() self.min_depth:", self.min_depth, file=sys.stderr)
             print("DentGen() __attrs_post_init__() self.max_depth:", self.max_depth, file=sys.stderr)
-            print("NameGen __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
-            print("NameGen __attrs_post_init__() self.skip_names:", self.skip_names, file=sys.stderr)
+            print("DentGen() __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
+            print("DentGen() __attrs_post_init__() self.skip_names:", self.skip_names, file=sys.stderr)
 
     def __iter__(self, cur_depth=0):
         #print("cur_depth:", cur_depth)
