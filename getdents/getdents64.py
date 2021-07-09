@@ -24,6 +24,7 @@ from signal import SIG_DFL
 from signal import SIGPIPE
 from signal import signal
 from typing import List
+from typing import Optional
 
 from getdents import Dent
 from getdents import DentGen
@@ -78,11 +79,12 @@ def _iterate(*,
              path: bytes,
              max_depth: int,
              min_depth: int,
-             command: str,
+             command: Optional[str],
              namesonly: bool,
              count: bool,
              random: bool,
              names: List[bytes],
+             skip_names: List[bytes],
              no_files: bool,
              no_dirs: bool,
              no_symlinks: bool,
@@ -105,6 +107,7 @@ def _iterate(*,
                       max_depth=max_depth,
                       min_depth=min_depth,
                       skip_dotpaths=no_dotpaths,
+                      skip_names=skip_names,
                       random=random,
                       verbose=verbose,
                       debug=debug,)
@@ -153,6 +156,7 @@ def _iterate(*,
                         fd.write(item.path + end)
 
 
+#    --norecurse       Dont traverse paths. TODO lower --name to C in this case
 def usage():
     return '''Usage: getdents PATH [OPTIONS]
 
@@ -163,8 +167,8 @@ Options:
     --namesonly       Print PATH names only.
     --count           Print number of entries under PATH.
     --random          Randomize output order of each getdents64() syscall.
-    --name            Match name. Can be specified multiple times.
-    --norecurse       Dont traverse paths. TODO lower --name to C in this case
+    --name      STR   Match name under PATH. Can be specified multiple times.
+    --skipname  STR   Dont traverse PATH past name. Can be specified multiple times.
     --nofiles         Do not print regular files.
     --nodirs          Do not print directories.
     --nosymlinks      Do not print symbolic links.
@@ -210,8 +214,9 @@ def main():
         sys.exit(1)
     namesonly = False
     count = False
-    random = 0
+    random = False
     names = []
+    skipnames = []
     nofiles = False
     nodirs = False
     nosymlinks = False
@@ -260,6 +265,15 @@ def main():
                 index += 1
                 try:
                     names.append(os.fsencode(sys.argv[index]))
+                except IndexError as e:
+                    raise e
+                    #help_name()
+                    #sys.exit(1)
+                index += 1
+            elif sys.argv[index] == '--skipname':
+                index += 1
+                try:
+                    skipnames.append(os.fsencode(sys.argv[index]))
                 except IndexError as e:
                     raise e
                     #help_name()
@@ -335,6 +349,7 @@ def main():
              namesonly=namesonly,
              random=random,
              names=names,
+             skip_names=skipnames,
              no_files=nofiles,
              no_dirs=nodirs,
              no_symlinks=nosymlinks,

@@ -9,6 +9,7 @@ from math import inf
 from pathlib import Path
 from typing import Generator
 from typing import List
+from typing import Optional
 from typing import Sequence
 
 import attr
@@ -54,6 +55,7 @@ class Reify():
 def getdents(path,
              random: bool,
              skip_dotpaths: bool,
+             skip_names: Optional[List[bytes]],
              buff_size: int = BUFF_SIZE,
              ):
 
@@ -91,6 +93,12 @@ def getdents(path,
             if skip_dotpaths:
                 if name.startswith(b'.'):
                     continue
+            if skip_names:
+                for skip_name in skip_names:
+                    assert isinstance(skip_name, bytes)
+                    if skip_name == name:
+                        continue
+
             if name != b'..':
                 yield (inode, dtype, name)
     finally:
@@ -260,6 +268,7 @@ class NameGen():
     verbose: bool
     debug: bool
     skip_dotpaths: bool
+    skip_names: Optional[List[bytes]]
     path: bytes = attr.ib(converter=os.fsencode)
     very_debug: bool = False
     buff_size: int = BUFF_SIZE
@@ -283,6 +292,7 @@ class NameGen():
                                            buff_size=self.buff_size,
                                            random=self.random,
                                            skip_dotpaths=self.skip_dotpaths,
+                                           skip_names=self.skip_names,
                                            ):
             if name == b'.':
                 continue
@@ -301,6 +311,7 @@ class DentGen():
     verbose: bool
     debug: bool
     skip_dotpaths: bool
+    skip_names: Optional[List[bytes]]
     very_debug: bool = False
     min_depth: int = 0
     max_depth: float = inf
@@ -322,6 +333,7 @@ class DentGen():
             print("DentGen() __attrs_post_init__() self.min_depth:", self.min_depth, file=sys.stderr)
             print("DentGen() __attrs_post_init__() self.max_depth:", self.max_depth, file=sys.stderr)
             print("NameGen __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
+            print("NameGen __attrs_post_init__() self.skip_names:", self.skip_names, file=sys.stderr)
 
     def __iter__(self, cur_depth=0):
         #print("cur_depth:", cur_depth)
@@ -333,6 +345,7 @@ class DentGen():
                                            buff_size=self.buff_size,
                                            random=self.random,
                                            skip_dotpaths=self.skip_dotpaths,
+                                           skip_names=self.skip_names,
                                            ):
             if self.very_debug:
                 print("DentGen() __iter__() inode:", inode, file=sys.stderr)
@@ -369,6 +382,7 @@ def paths(path,
           verbose: bool,
           debug: bool,
           skip_dotpaths: bool = False,
+          skip_names: Optional[List[bytes]] = None,
           return_dirs: bool = True,
           return_files: bool = True,
           return_symlinks: bool = True,
@@ -395,6 +409,7 @@ def paths(path,
               "names:", names,
               "pathlib:", pathlib,
               "skip_dotpaths:", skip_dotpaths,
+              "skip_names:", skip_names,
               file=sys.stderr,)
     fiterator = DentGen(path=path,
                         max_depth=max_depth,
