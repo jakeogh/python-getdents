@@ -13,7 +13,6 @@ from typing import Optional
 from typing import Sequence
 
 import attr
-from asserttool import ic
 
 from ._getdents import \
     DT_BLK  # noqa: ignore=F401 # pylint: disable=import-error
@@ -35,6 +34,9 @@ from ._getdents import \
     MIN_GETDENTS_BUFF_SIZE  # noqa: ignore=F401 # pylint: disable=import-error
 from ._getdents import O_GETDENTS  # pylint: disable=import-error
 from ._getdents import getdents_raw  # pylint: disable=import-error
+
+#from asserttool import ic
+
 
 BUFF_SIZE = 4096 * 16  # 64k
 
@@ -89,7 +91,7 @@ def getdents(path,
     else:
         _random = 1
 
-    ic(path, skip_names)
+    #ic(path, skip_names)
     try:
         for inode, dtype, name in getdents_raw(path_fd, buff_size, _random):
             if skip_dotpaths:
@@ -313,7 +315,7 @@ class DentGen():
     debug: bool
     skip_dotpaths: bool
     skip_names: Optional[List[bytes]]
-    very_debug: bool = True
+    very_debug: bool = False
     min_depth: int = 0
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
