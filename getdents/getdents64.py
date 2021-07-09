@@ -270,7 +270,7 @@ def main():
                     #help_name()
                     #sys.exit(1)
                 index += 1
-            elif sys.argv[index] == '--skipname':
+            elif sys.argv[index] in ['--skipname', '--skip-name']:
                 index += 1
                 try:
                     skipnames.append(os.fsencode(sys.argv[index]))
