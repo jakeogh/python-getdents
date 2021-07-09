@@ -96,12 +96,8 @@ def getdents(path,
                 if name.startswith(b'.'):
                     continue
             if skip_names:
-                for skip_name in skip_names:
-                    assert isinstance(skip_name, bytes)
-                    ic(skip_name, name)
-                    if skip_name == name:
-                        continue
-                    ic('after continue')
+                if name in skip_names:
+                    continue
 
             if name != b'..':
                 yield (inode, dtype, name)
