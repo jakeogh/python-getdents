@@ -13,6 +13,7 @@ from typing import Optional
 from typing import Sequence
 
 import attr
+from asserttool import ic
 
 from ._getdents import \
     DT_BLK  # noqa: ignore=F401 # pylint: disable=import-error
@@ -88,6 +89,7 @@ def getdents(path,
     else:
         _random = 1
 
+    ic(skip_names)
     try:
         for inode, dtype, name in getdents_raw(path_fd, buff_size, _random):
             if skip_dotpaths:
