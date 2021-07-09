@@ -89,7 +89,7 @@ def getdents(path,
     else:
         _random = 1
 
-    ic(skip_names)
+    ic(path, skip_names)
     try:
         for inode, dtype, name in getdents_raw(path_fd, buff_size, _random):
             if skip_dotpaths:
@@ -98,6 +98,7 @@ def getdents(path,
             if skip_names:
                 for skip_name in skip_names:
                     assert isinstance(skip_name, bytes)
+                    ic(skip_name, name)
                     if skip_name == name:
                         continue
 
