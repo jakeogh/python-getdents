@@ -418,6 +418,7 @@ def paths(path,
                         max_depth=max_depth,
                         min_depth=min_depth,
                         skip_dotpaths=skip_dotpaths,
+                        skip_names=skip_names,
                         random=random,
                         verbose=verbose,
                         debug=debug,)
