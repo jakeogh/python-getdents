@@ -101,6 +101,7 @@ def getdents(path,
                     ic(skip_name, name)
                     if skip_name == name:
                         continue
+                    ic('after continue')
 
             if name != b'..':
                 yield (inode, dtype, name)
