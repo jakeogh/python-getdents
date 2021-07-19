@@ -8,6 +8,7 @@ from functools import update_wrapper
 from math import inf
 from pathlib import Path
 from typing import Generator
+from typing import Iterator
 from typing import List
 from typing import Optional
 from typing import Sequence
@@ -395,7 +396,7 @@ def paths(path,
           min_depth=0,
           random: bool = False,
           pathlib: bool = False,
-          ) -> Generator:
+          ) -> Iterator[Dent]:
 
     #if (names_only and pathlib):
     #    raise ValueError('names_only and pathlib are mutually exclusive')
@@ -467,7 +468,7 @@ def files(path,
           min_size: int = 0,
           random: bool = False,
           pathlib: bool = False,
-          ) -> Generator:
+          ) -> Iterator[Dent]:
     if max_size < 0:
         max_size = inf
     for p in paths(path=path,
@@ -506,7 +507,7 @@ def links(path,
           min_depth: int = 0,
           random: bool = False,
           pathlib: bool = False,
-          ) -> Generator:
+          ) -> Iterator[Dent]:
     return paths(path=path,
                  return_dirs=False,
                  return_symlinks=True,
@@ -533,7 +534,7 @@ def dirs(path,
          min_depth: int = 0,
          random: bool = False,
          pathlib: bool = False,
-         ) -> Generator:
+         ) -> Iterator[Dent]:
     return paths(path=path,
                  return_dirs=True,
                  return_symlinks=False,
