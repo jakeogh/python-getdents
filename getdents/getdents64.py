@@ -172,6 +172,7 @@ Options:
     --nofiles         Do not print regular files.
     --nodirs          Do not print directories.
     --nosymlinks      Do not print symbolic links.
+    --nodevices       Do not print char or block devices.
     --nochar          Do not print char devices.
     --noblock         Do not print block devices.
     --nofifo          Do not print fifos.
@@ -301,10 +302,10 @@ def main():
             elif sys.argv[index] in ["--nosymlinks", "--no-symlinks"]:
                 nosymlinks = True
                 index += 1
-            elif sys.argv[index] in ["--nochar", "--no-char"]:
+            elif sys.argv[index] in ['--nochar', '--no-char', '--nodevices', '--no-devices',]:
                 nochar = True
                 index += 1
-            elif sys.argv[index] in ["--noblock", "--no-block"]:
+            elif sys.argv[index] in ["--noblock", "--no-block", '--nodevices', '--no-devices',]:
                 noblock = True
                 index += 1
             elif sys.argv[index] in ["--nofifo", "--no-fifo"]:
