@@ -15,6 +15,8 @@ from typing import Sequence
 
 import attr
 
+#from ._getdents import \
+#    MIN_GETDENTS_BUFF_SIZE  # noqa: ignore=F401 # pylint: disable=import-error
 from ._getdents import \
     DT_BLK  # noqa: ignore=F401 # pylint: disable=import-error
 from ._getdents import \
@@ -31,15 +33,13 @@ from ._getdents import \
     DT_SOCK  # noqa: ignore=F401 # pylint: disable=import-error
 from ._getdents import \
     DT_UNKNOWN  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import \
-    MIN_GETDENTS_BUFF_SIZE  # noqa: ignore=F401 # pylint: disable=import-error
 from ._getdents import O_GETDENTS  # pylint: disable=import-error
 from ._getdents import getdents_raw  # pylint: disable=import-error
 
 #from asserttool import ic
 
 
-BUFF_SIZE = 4096 * 16  # 64k
+BUFF_SIZE = 4096 * 32  # 128k
 
 
 # https://raw.githubusercontent.com/Pylons/pyramid/master/src/pyramid/decorator.py
