@@ -383,8 +383,6 @@ class DentGen():
 # TODO: it may be faster to filter in a function that this feeds
 def paths(path,
           *,
-          verbose: bool,
-          debug: bool,
           skip_dotpaths: bool = False,
           skip_names: Optional[list[bytes]] = None,
           return_dirs: bool = True,
@@ -396,6 +394,8 @@ def paths(path,
           min_depth=0,
           random: bool = False,
           pathlib: bool = False,
+          verbose: bool = False,
+          debug: bool = False,
           ) -> Iterator[Dent]:
 
     #if (names_only and pathlib):
@@ -457,8 +457,6 @@ def paths(path,
 
 def files(path,
           *,
-          verbose: bool,
-          debug: bool,
           names_only: bool = False,
           skip_dotpaths: bool = False,
           names: Optional[list[str]] = None,   # byggy
@@ -468,6 +466,8 @@ def files(path,
           min_size: int = 0,
           random: bool = False,
           pathlib: bool = False,
+          verbose: bool = False,
+          debug: bool = False,
           ) -> Iterator[Dent]:
     if max_size < 0:
         max_size = inf
@@ -498,8 +498,6 @@ def files(path,
 
 def links(path,
           *,
-          verbose: bool,
-          debug: bool,
           names_only: bool = False,
           skip_dotpaths: bool = False,
           names: Optional[list[str]] = None,
@@ -507,6 +505,8 @@ def links(path,
           min_depth: int = 0,
           random: bool = False,
           pathlib: bool = False,
+          verbose: bool = False,
+          debug: bool = False,
           ) -> Iterator[Dent]:
     return paths(path=path,
                  return_dirs=False,
@@ -525,8 +525,6 @@ def links(path,
 
 def dirs(path,
          *,
-         verbose: bool,
-         debug: bool,
          names_only: bool = False,
          skip_dotpaths: bool = False,
          names: Optional[list[str]] = None,
@@ -534,6 +532,8 @@ def dirs(path,
          min_depth: int = 0,
          random: bool = False,
          pathlib: bool = False,
+         verbose: bool = False,
+         debug: bool = False,
          ) -> Iterator[Dent]:
     return paths(path=path,
                  return_dirs=True,
