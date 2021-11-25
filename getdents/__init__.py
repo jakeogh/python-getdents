@@ -388,6 +388,10 @@ def paths(path,
           return_dirs: bool = True,
           return_files: bool = True,
           return_symlinks: bool = True,
+          return_sockets: bool = True,
+          return_fifos: bool = True,
+          return_block_devices: bool = True,
+          return_char_devices: bool = True,
           names_only: bool = False,
           names: Optional[list[str]] = None,
           max_depth=inf,
@@ -408,6 +412,10 @@ def paths(path,
               "return_dirs:", return_dirs,
               "return_files:", return_files,
               "return_symlinks:", return_symlinks,
+              "return_sockets:", return_symlinks,
+              "return_fifos:", return_symlinks,
+              "return_block_devices:", return_block_devices,
+              "return_char_devices:", return_char_devices,
               "max_depth:", max_depth,
               "min_depth:", min_depth,
               "names:", names,
@@ -442,6 +450,18 @@ def paths(path,
         if not return_symlinks:
             if thing.is_symlink():
                 continue
+        if not return_sockets:
+            if thing.is_socket():
+                continue
+        if not return_fifos:
+            if thing.is_fifo():
+                continue
+        if not return_char_devices:
+            if thing.is_char_device():
+                continue
+        if not return_block_devices:
+            if thing.is_block_device():
+                continue
 
         # names_only overrules pathlib
         if names_only:
@@ -474,6 +494,10 @@ def files(path,
     for p in paths(path=path,
                    return_dirs=False,
                    return_symlinks=False,
+                   return_fifos=False,
+                   return_sockets=False,
+                   return_block_devices=False,
+                   return_char_devices=False,
                    return_files=True,
                    names_only=False,
                    names=names,
@@ -512,6 +536,10 @@ def links(path,
                  return_dirs=False,
                  return_symlinks=True,
                  return_files=False,
+                 return_fifos=False,
+                 return_sockets=False,
+                 return_block_devices=False,
+                 return_char_devices=False,
                  skip_dotpaths=skip_dotpaths,
                  names_only=names_only,
                  names=names,
@@ -539,6 +567,10 @@ def dirs(path,
                  return_dirs=True,
                  return_symlinks=False,
                  return_files=False,
+                 return_fifos=False,
+                 return_sockets=False,
+                 return_block_devices=False,
+                 return_char_devices=False,
                  skip_dotpaths=skip_dotpaths,
                  names_only=names_only,
                  names=names,
