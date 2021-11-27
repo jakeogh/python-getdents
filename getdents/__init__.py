@@ -339,9 +339,7 @@ class DentGen():
             print("DentGen() __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
             print("DentGen() __attrs_post_init__() self.skip_names:", self.skip_names, file=sys.stderr)
 
-    def __iter__(self, cur_depth=0):
-        #print("cur_depth:", cur_depth)
-        #self.iters += 1
+    def __iter__(self, cur_depth: int = 0):
         if self.very_debug:
             print("DentGen() __iter__() cur_depth:", cur_depth, file=sys.stderr)
             print("DentGen() __iter__() self.path:", self.path, file=sys.stderr)
@@ -362,15 +360,12 @@ class DentGen():
                 if self.min_depth:
                     if dent.depth < self.min_depth:
                         continue
-                #print("yielding dent", dent.depth)
                 yield dent
             elif dent.is_dir():
                 self.path = dent.parent + b'/' + dent.name
                 if cur_depth < self.max_depth:
-                    #print(cur_depth, "<", self.max_depth)
                     yield from self.__iter__(cur_depth + 1)
                 elif cur_depth == self.max_depth:
-                    #print(cur_depth, "==", self.max_depth)
                     if self.min_depth:
                         if dent.depth < self.min_depth:
                             continue
