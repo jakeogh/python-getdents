@@ -1,5 +1,7 @@
+#!/usr/bin/env python3
+
 # pylint: disable=C0111  # docstrings are always outdated and wrong
-# pylint: disable=W0511  # todo is encouraged
+# pylint: disable=W0511  # todo encouraged
 
 import os
 import stat
@@ -85,7 +87,12 @@ def getdents(path,
         buff_size (int): Buffer size in bytes for getdents64 syscall.
     """
 
-    path_fd = os.open(path, O_GETDENTS)
+    try:
+        path_fd = os.open(path, O_GETDENTS)
+    except PermissionError:
+        sys.stderr.write('getdents: ‘{}’:'.format(os.fsencode(path)))
+        sys.stderr.flush()
+        return
 
     if random is False:
         _random = 0
