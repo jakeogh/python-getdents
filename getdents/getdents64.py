@@ -94,7 +94,7 @@ def _iterate(*,
              no_fifos: bool,
              no_dotfiles: bool,
              no_dotpaths: bool,
-             end,
+             end: bytes,
              verbose: bool,
              debug: bool,
              ):
@@ -108,6 +108,7 @@ def _iterate(*,
                       min_depth=min_depth,
                       skip_dotpaths=no_dotpaths,
                       skip_names=skip_names,
+                      supress_permissionerror=True,  # for CLI/script usage
                       random=random,
                       verbose=verbose,
                       debug=debug,)

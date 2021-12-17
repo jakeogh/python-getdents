@@ -63,6 +63,7 @@ def getdents(path,
              skip_dotpaths: bool,
              skip_names: Optional[List[bytes]],
              buff_size: int = BUFF_SIZE,
+             supress_permissionerror: bool = False,
              ):
 
     """Get directory entries.
@@ -87,12 +88,15 @@ def getdents(path,
         buff_size (int): Buffer size in bytes for getdents64 syscall.
     """
 
-    try:
+    if supress_permissionerror:
+        try:
+            path_fd = os.open(path, O_GETDENTS)
+        except PermissionError:
+            sys.stderr.write('getdents: ‘{}’: Permission denied\n'.format(os.fsencode(path)))
+            sys.stderr.flush()
+            return
+    else:
         path_fd = os.open(path, O_GETDENTS)
-    except PermissionError:
-        sys.stderr.write('getdents: ‘{}’: Permission denied\n'.format(os.fsencode(path)))
-        sys.stderr.flush()
-        return
 
     if random is False:
         _random = 0
@@ -284,6 +288,7 @@ class NameGen():
     buff_size: int = BUFF_SIZE
     random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
     names_only: bool = False
+    supress_permissionerror: bool = False
 
     def __attrs_post_init__(self):
         if self.path[0] != b'/':
@@ -304,6 +309,7 @@ class NameGen():
                                            random=self.random,
                                            skip_dotpaths=self.skip_dotpaths,
                                            skip_names=self.skip_names,
+                                           supress_permissionerror=self.supress_permissionerror,
                                            ):
             if name == b'.':
                 continue
@@ -328,6 +334,7 @@ class DentGen():
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
     random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
+    supress_permissionerror: bool = False
     #iters: int = 0
 
     def __attrs_post_init__(self):
@@ -355,6 +362,7 @@ class DentGen():
                                            random=self.random,
                                            skip_dotpaths=self.skip_dotpaths,
                                            skip_names=self.skip_names,
+                                           supress_permissionerror=self.supress_permissionerror,
                                            ):
             if self.very_debug:
                 print("DentGen() __iter__() inode:", inode, file=sys.stderr)
