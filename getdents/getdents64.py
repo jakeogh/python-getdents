@@ -301,13 +301,13 @@ def main():
             elif sys.argv[index] in ["--nofiles", "--no-files"]:
                 nofiles = True
                 index += 1
-            elif sys.argv[index] in ["--filesonly", "--files-only"]:
+            elif sys.argv[index] in ["--filesonly", "--files-only", "--files"]:
                 filesonly = True
                 index += 1
             elif sys.argv[index] in ["--nodirs", "--no-dirs"]:
                 nodirs = True
                 index += 1
-            elif sys.argv[index] in ["--dirsonly", "--dirs-only"]:
+            elif sys.argv[index] in ["--dirsonly", "--dirs-only", "--dirs"]:
                 dirsonly = True
                 index += 1
             elif sys.argv[index] in ["--nosymlinks", "--no-symlinks"]:
