@@ -90,7 +90,7 @@ def getdents(path,
     try:
         path_fd = os.open(path, O_GETDENTS)
     except PermissionError:
-        sys.stderr.write('getdents: ‘{}’:'.format(os.fsencode(path)))
+        sys.stderr.write('getdents: ‘{}’:\n'.format(os.fsencode(path)))
         sys.stderr.flush()
         return
 
