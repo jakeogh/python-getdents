@@ -169,6 +169,8 @@ Options:
     --random          Randomize output order of each getdents64() syscall.
     --name      STR   Match name under PATH. Can be specified multiple times.
     --skipname  STR   Dont traverse PATH past name. Can be specified multiple times.
+    --filesonly       Only print regular files.
+    --dirsonly        Only print directories.
     --nofiles         Do not print regular files.
     --nodirs          Do not print directories.
     --nosymlinks      Do not print symbolic links.
@@ -219,6 +221,8 @@ def main():
     names = []
     skipnames = []
     nofiles = False
+    filesonly = False
+    dirsonly = False
     nodirs = False
     nosymlinks = False
     nochar = False
@@ -296,8 +300,14 @@ def main():
             elif sys.argv[index] in ["--nofiles", "--no-files"]:
                 nofiles = True
                 index += 1
+            elif sys.argv[index] in ["--filesonly", "--files-only"]:
+                filesonly = True
+                index += 1
             elif sys.argv[index] in ["--nodirs", "--no-dirs"]:
                 nodirs = True
+                index += 1
+            elif sys.argv[index] in ["--dirsonly", "--dirs-only"]:
+                dirsonly = True
                 index += 1
             elif sys.argv[index] in ["--nosymlinks", "--no-symlinks"]:
                 nosymlinks = True
@@ -334,6 +344,35 @@ def main():
                 print(usage(), file=sys.stderr)
                 print("Error: Unknown option \"{0}\".".format(sys.argv[index]), file=sys.stderr)
                 sys.exit(1)
+
+    if nofiles:
+        if filesonly:
+            print("Error: --filesonly and --nofiles are mutually exclusive. Exiting.", file=sys.stderr)
+            sys.exit(1)
+    if nodirs:
+        if dirsonly:
+            print("Error: --dirsonly and --nodirs are mutually exclusive. Exiting.", file=sys.stderr)
+            sys.exit(1)
+    if filesonly:
+        if dirsonly:
+            print("Error: --dirsonly and --filesonly are mutually exclusive. Exiting.", file=sys.stderr)
+            sys.exit(1)
+
+    if filesonly:
+        nodirs = True
+        nosymlinks = True
+        nochar = True
+        noblock = True
+        nofifo = True
+        nosockets = True
+
+    if dirsonly:
+        nofiles = True
+        nosymlinks = True
+        nochar = True
+        noblock = True
+        nofifo = True
+        nosockets = True
 
     null = not printn
     end = b'\n'
