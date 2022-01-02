@@ -96,7 +96,6 @@ def _iterate(*,
              no_dotpaths: bool,
              end: bytes,
              verbose: bool,
-             debug: bool,
              ):
     c = 0
     if command:
@@ -111,7 +110,7 @@ def _iterate(*,
                       supress_permissionerror=True,  # for CLI/script usage
                       random=random,
                       verbose=verbose,
-                      debug=debug,)
+                      )
 
     if count:
         for item in dentgen:
@@ -402,7 +401,7 @@ def main():
              no_dotpaths=nodotpaths,
              end=end,
              verbose=verbose,
-             debug=debug,)
+             )
 
 
 if __name__ == '__main__':  # for dev

@@ -280,7 +280,6 @@ class Dent():
 @attr.s(auto_attribs=True)
 class NameGen():
     verbose: bool
-    debug: bool
     skip_dotpaths: bool
     skip_names: Optional[List[bytes]]
     path: bytes = attr.ib(converter=os.fsencode)
@@ -326,7 +325,6 @@ class NameGen():
 class DentGen():
     path: bytes = attr.ib(converter=os.fsencode)
     verbose: bool
-    debug: bool
     skip_dotpaths: bool
     skip_names: Optional[List[bytes]]
     very_debug: bool = False
@@ -409,14 +407,14 @@ def paths(path,
           random: bool = False,
           pathlib: bool = False,
           verbose: bool = False,
-          debug: bool = False,
+          very_debug: bool = False,
           ) -> Iterator[Dent]:
 
     #if (names_only and pathlib):
     #    raise ValueError('names_only and pathlib are mutually exclusive')
 
     path = os.fsencode(path)
-    if debug:
+    if very_debug:
         print('getdents/__init__.py',
               path,
               "return_dirs:", return_dirs,
@@ -440,7 +438,7 @@ def paths(path,
                         skip_names=skip_names,
                         random=random,
                         verbose=verbose,
-                        debug=debug,)
+                        )
     if names:
         #names = [os.fsdecode(name) for name in names]
         for name in names:
@@ -497,7 +495,6 @@ def files(path,
           random: bool = False,
           pathlib: bool = False,
           verbose: bool = False,
-          debug: bool = False,
           ) -> Iterator[Dent]:
     if max_size < 0:
         max_size = inf
@@ -517,7 +514,7 @@ def files(path,
                    min_depth=min_depth,
                    random=random,
                    verbose=verbose,
-                   debug=debug,):
+                   ):
         if min_size > 0 or max_size < inf:
             size = p.size()
             if size < min_size:
@@ -540,7 +537,6 @@ def links(path,
           random: bool = False,
           pathlib: bool = False,
           verbose: bool = False,
-          debug: bool = False,
           ) -> Iterator[Dent]:
     return paths(path=path,
                  return_dirs=False,
@@ -558,7 +554,7 @@ def links(path,
                  min_depth=min_depth,
                  random=random,
                  verbose=verbose,
-                 debug=debug,)
+                 )
 
 
 def dirs(path,
@@ -571,7 +567,6 @@ def dirs(path,
          random: bool = False,
          pathlib: bool = False,
          verbose: bool = False,
-         debug: bool = False,
          ) -> Iterator[Dent]:
     return paths(path=path,
                  return_dirs=True,
@@ -589,4 +584,4 @@ def dirs(path,
                  min_depth=min_depth,
                  random=random,
                  verbose=verbose,
-                 debug=debug,)
+                 )
