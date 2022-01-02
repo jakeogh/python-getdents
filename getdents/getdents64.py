@@ -26,6 +26,8 @@ from signal import signal
 from typing import List
 from typing import Optional
 
+import msgpack
+
 from getdents import Dent
 from getdents import DentGen
 
@@ -94,7 +96,7 @@ def _iterate(*,
              no_fifos: bool,
              no_dotfiles: bool,
              no_dotpaths: bool,
-             end: bytes,
+             tty: bool,
              verbose: bool,
              ):
     c = 0
@@ -127,8 +129,18 @@ def _iterate(*,
                        ):
                 continue
             c += 1
-        print(c, end=end.decode('utf8'))
+        if tty:
+            print(c)
+            return
+        sys.stdout.buffer.write(msgpack.packb(c))
+        sys.stdout.buffer.close()
+        return
+        #print(c, end=end.decode('utf8'))
     else:
+        end = b'\0'
+        if tty:
+            end = b'\n'
+
         with open('/dev/stdout', mode='wb') as fd:
             for item in dentgen:
                 if _filter(item=item,
@@ -144,15 +156,16 @@ def _iterate(*,
                            ):
                     continue
                 if command:
-                    output = check_output([command, os.fsdecode(item.path)])
-                    if output.endswith(b'\n'):
-                        output = output[:-1]
+                    command_output = check_output([command, os.fsdecode(item.path)])
+                    if command_output.endswith(b'\n'):
+                        command_output = command_output[:-1]
 
-                    fd.write(output + b' ' + item.path + end)
+                    fd.write(command_output + b' ' + item.path + end)
                 else:
                     if namesonly:
                         fd.write(item.name + end)
                     else:
+
                         fd.write(item.path + end)
 
 
@@ -375,11 +388,11 @@ def main():
         nosockets = True
 
     null = not printn
-    end = b'\n'
-    if null:
-        end = b'\x00'
-    if sys.stdout.isatty():
-        end = b'\n'
+    #end = b'\n'
+    #if null:
+    #    end = b'\x00'
+    tty = sys.stdout.isatty()
+    #    end = b'\n'
 
     _iterate(path=path,
              max_depth=max_depth,
@@ -399,7 +412,7 @@ def main():
              no_sockets=nosockets,
              no_dotfiles=nodotfiles,
              no_dotpaths=nodotpaths,
-             end=end,
+             tty=tty,
              verbose=verbose,
              )
 
