@@ -165,8 +165,10 @@ def _iterate(*,
                     if namesonly:
                         fd.write(item.name + end)
                     else:
-
-                        fd.write(item.path + end)
+                        if tty:
+                            fd.write(repr(item.path).encode('utf8') + end)
+                            continue
+                        fd.write(msgpack.packb(item.path))
 
 
 #    --norecurse       Dont traverse paths. TODO lower --name to C in this case
