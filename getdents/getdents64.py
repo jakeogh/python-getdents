@@ -196,7 +196,6 @@ Options:
     --nosockets       Do not print sockets.
     --nodotfiles      Do not print names that start with a dot (dot paths are still decended into).
     --nodotpaths      Do not print any paths that have one or names that starts with a dot.
-    --printn          Items are terminated by a newline instead of null character.
     --verbose         Debugging output.
     --debug           More debugging output.
 '''
@@ -248,7 +247,6 @@ def main():
     nodotpaths = False
     verbose = False
     debug = False
-    printn = False
     #print_end = b'\x00'
     index = 2
     if args >= 2:
@@ -345,10 +343,6 @@ def main():
             elif sys.argv[index] in ["--nodotpaths", "--no-dotpaths", '--skipdotpaths', '--skip-dotpaths']:
                 nodotpaths = True
                 index += 1
-            elif sys.argv[index] == "--printn":
-                #printn = b'\n'
-                printn = True
-                index += 1
             elif sys.argv[index] == "--verbose":
                 verbose = True
                 index += 1
@@ -389,12 +383,7 @@ def main():
         nofifo = True
         nosockets = True
 
-    null = not printn
-    #end = b'\n'
-    #if null:
-    #    end = b'\x00'
     tty = sys.stdout.isatty()
-    #    end = b'\n'
 
     _iterate(path=path,
              max_depth=max_depth,
