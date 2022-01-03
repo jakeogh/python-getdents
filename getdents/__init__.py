@@ -279,7 +279,7 @@ class Dent():
 
 @attr.s(auto_attribs=True)
 class NameGen():
-    verbose: bool
+    verbose: int
     skip_dotpaths: bool
     skip_names: Optional[List[bytes]]
     path: bytes = attr.ib(converter=os.fsencode)
@@ -324,7 +324,7 @@ class NameGen():
 @attr.s(auto_attribs=True)
 class DentGen():
     path: bytes = attr.ib(converter=os.fsencode)
-    verbose: bool
+    verbose: int
     skip_dotpaths: bool
     skip_names: Optional[List[bytes]]
     very_debug: bool = False
@@ -406,7 +406,7 @@ def paths(path,
           min_depth=0,
           random: bool = False,
           pathlib: bool = False,
-          verbose: bool = False,
+          verbose: int = False,
           very_debug: bool = False,
           ) -> Iterator[Dent]:
 
@@ -494,7 +494,7 @@ def files(path,
           min_size: int = 0,
           random: bool = False,
           pathlib: bool = False,
-          verbose: bool = False,
+          verbose: int = False,
           ) -> Iterator[Dent]:
     if max_size < 0:
         max_size = inf
@@ -536,7 +536,7 @@ def links(path,
           min_depth: int = 0,
           random: bool = False,
           pathlib: bool = False,
-          verbose: bool = False,
+          verbose: int = False,
           ) -> Iterator[Dent]:
     return paths(path=path,
                  return_dirs=False,
@@ -566,7 +566,7 @@ def dirs(path,
          min_depth: int = 0,
          random: bool = False,
          pathlib: bool = False,
-         verbose: bool = False,
+         verbose: int = False,
          ) -> Iterator[Dent]:
     return paths(path=path,
                  return_dirs=True,
