@@ -482,7 +482,7 @@ def ppaths(path,
            **kw,
            ) -> Iterator[Path]:
 
-    for dent in paths(**kw):
+    for dent in paths(path=path, **kw):
         yield dent.pathlib
 
 
