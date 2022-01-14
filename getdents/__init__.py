@@ -2,6 +2,9 @@
 
 # pylint: disable=C0111  # docstrings are always outdated and wrong
 # pylint: disable=W0511  # todo encouraged
+# pylint: disable=R0913  # too many arguments
+# pylint: disable=R0912  # too many branches
+
 
 import os
 import stat
@@ -9,11 +12,9 @@ import sys
 from functools import update_wrapper
 from math import inf
 from pathlib import Path
-from typing import Generator
 from typing import Iterator
 from typing import List
 from typing import Optional
-from typing import Sequence
 
 import attr
 
@@ -92,7 +93,7 @@ def getdents(path,
         try:
             path_fd = os.open(path, O_GETDENTS)
         except PermissionError:
-            sys.stderr.write('getdents: ‘{}’: Permission denied\n'.format(os.fsencode(path)))
+            sys.stderr.write(f'getdents: ‘{os.fsdecode(path)}’: Permission denied\n')
             sys.stderr.flush()
             return
     else:
@@ -477,10 +478,17 @@ def paths(path,
         yield thing
 
 
-def ppaths(path,
-           **kw,
-           ) -> Iterator[Path]:
+def paths_pathlib(path,
+                  **kw,
+                  ) -> Iterator[Path]:
+    for dent in paths(path=path, **kw):
+        yield dent.pathlib
 
+
+def paths_names(path,
+                **kw,
+                ) -> Iterator[Path]:
+    #for dent in paths(path=path, max_depth=0, **kw):
     for dent in paths(path=path, **kw):
         yield dent.pathlib
 
@@ -525,6 +533,21 @@ def files(path,
         yield p
 
 
+def files_pathlib(path,
+                  **kw,
+                  ) -> Iterator[Path]:
+    for dent in files(path=path, **kw):
+        yield dent.pathlib
+
+
+def files_names(path,
+                **kw,
+                ) -> Iterator[Path]:
+    for dent in paths(path=path, **kw):
+        yield dent.pathlib
+
+
+
 def links(path,
           *,
           skip_dotpaths: bool = False,
@@ -551,6 +574,20 @@ def links(path,
                  )
 
 
+def links_pathlib(path,
+                  **kw,
+                  ) -> Iterator[Path]:
+    for dent in files(path=path, **kw):
+        yield dent.pathlib
+
+
+def links_names(path,
+                **kw,
+                ) -> Iterator[Path]:
+    for dent in paths(path=path, **kw):
+        yield dent.pathlib
+
+
 def dirs(path,
          *,
          skip_dotpaths: bool = False,
@@ -575,3 +612,19 @@ def dirs(path,
                  random=random,
                  verbose=verbose,
                  )
+
+
+def dirs_pathlib(path,
+                 **kw,
+                 ) -> Iterator[Path]:
+    for dent in files(path=path, **kw):
+        yield dent.pathlib
+
+
+def dirs_names(path,
+               **kw,
+               ) -> Iterator[Path]:
+    for dent in paths(path=path, **kw):
+        yield dent.pathlib
+
+
