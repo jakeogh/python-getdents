@@ -405,7 +405,6 @@ def paths(path,
           max_depth=inf,
           min_depth=0,
           random: bool = False,
-          pathlib: bool = False,
           verbose: int = False,
           very_debug: bool = False,
           ) -> Iterator[Dent]:
@@ -427,7 +426,6 @@ def paths(path,
               "max_depth:", max_depth,
               "min_depth:", min_depth,
               "names:", names,
-              "pathlib:", pathlib,
               "skip_dotpaths:", skip_dotpaths,
               "skip_names:", skip_names,
               file=sys.stderr,)
@@ -477,10 +475,15 @@ def paths(path,
                                 # but it CANT BE, Dents reprsent real fs objects, and have parents
                                 # names are just bytes
                                 # so, unless one wants bytes, just return the Dents and use Dent.pathlib.name
-        elif pathlib:
-            yield thing.pathlib
-        else:   # Dent
-            yield thing
+        yield thing
+
+
+def ppaths(path,
+           **kw,
+           ) -> Iterator[Path]:
+
+    for dent in paths(**kw):
+        yield dent.pathlib
 
 
 def files(path,
@@ -493,7 +496,6 @@ def files(path,
           max_size=inf,
           min_size: int = 0,
           random: bool = False,
-          pathlib: bool = False,
           verbose: int = False,
           ) -> Iterator[Dent]:
     if max_size < 0:
@@ -508,7 +510,6 @@ def files(path,
                    return_files=True,
                    names_only=False,
                    names=names,
-                   pathlib=pathlib,
                    skip_dotpaths=skip_dotpaths,
                    max_depth=max_depth,
                    min_depth=min_depth,
@@ -535,7 +536,6 @@ def links(path,
           max_depth=inf,
           min_depth: int = 0,
           random: bool = False,
-          pathlib: bool = False,
           verbose: int = False,
           ) -> Iterator[Dent]:
     return paths(path=path,
@@ -549,7 +549,6 @@ def links(path,
                  skip_dotpaths=skip_dotpaths,
                  names_only=names_only,
                  names=names,
-                 pathlib=pathlib,
                  max_depth=max_depth,
                  min_depth=min_depth,
                  random=random,
@@ -565,7 +564,6 @@ def dirs(path,
          max_depth=inf,
          min_depth: int = 0,
          random: bool = False,
-         pathlib: bool = False,
          verbose: int = False,
          ) -> Iterator[Dent]:
     return paths(path=path,
@@ -579,7 +577,6 @@ def dirs(path,
                  skip_dotpaths=skip_dotpaths,
                  names_only=names_only,
                  names=names,
-                 pathlib=pathlib,
                  max_depth=max_depth,
                  min_depth=min_depth,
                  random=random,
