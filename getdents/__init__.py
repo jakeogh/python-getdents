@@ -400,7 +400,6 @@ def paths(path,
           return_fifos: bool = True,
           return_block_devices: bool = True,
           return_char_devices: bool = True,
-          names_only: bool = False,
           names: Optional[list[str]] = None,
           max_depth=inf,
           min_depth=0,
@@ -469,12 +468,12 @@ def paths(path,
             if thing.is_block_device():
                 continue
 
-        # names_only overrules pathlib
-        if names_only:
-            yield thing.name    # on first glance it might seem that this should still be a Dent,
-                                # but it CANT BE, Dents reprsent real fs objects, and have parents
-                                # names are just bytes
-                                # so, unless one wants bytes, just return the Dents and use Dent.pathlib.name
+        ## names_only overrules pathlib
+        #if names_only:
+        #    yield thing.name    # on first glance it might seem that this should still be a Dent,
+        #                        # but it CANT BE, Dents reprsent real fs objects, and have parents
+        #                        # names are just bytes
+        #                        # so, unless one wants bytes, just return the Dents and use Dent.pathlib.name
         yield thing
 
 
@@ -488,7 +487,6 @@ def ppaths(path,
 
 def files(path,
           *,
-          names_only: bool = False,
           skip_dotpaths: bool = False,
           names: Optional[list[str]] = None,   # byggy
           max_depth=inf,
@@ -508,7 +506,6 @@ def files(path,
                    return_block_devices=False,
                    return_char_devices=False,
                    return_files=True,
-                   names_only=False,
                    names=names,
                    skip_dotpaths=skip_dotpaths,
                    max_depth=max_depth,
@@ -522,15 +519,14 @@ def files(path,
                 continue
             if size > max_size:
                 continue
-        if names_only:
-            yield p.name
-        else:
-            yield p
+        #if names_only:
+        #    yield p.name
+        #else:
+        yield p
 
 
 def links(path,
           *,
-          names_only: bool = False,
           skip_dotpaths: bool = False,
           names: Optional[list[str]] = None,
           max_depth=inf,
@@ -547,7 +543,6 @@ def links(path,
                  return_block_devices=False,
                  return_char_devices=False,
                  skip_dotpaths=skip_dotpaths,
-                 names_only=names_only,
                  names=names,
                  max_depth=max_depth,
                  min_depth=min_depth,
@@ -558,7 +553,6 @@ def links(path,
 
 def dirs(path,
          *,
-         names_only: bool = False,
          skip_dotpaths: bool = False,
          names: Optional[list[str]] = None,
          max_depth=inf,
@@ -575,7 +569,6 @@ def dirs(path,
                  return_block_devices=False,
                  return_char_devices=False,
                  skip_dotpaths=skip_dotpaths,
-                 names_only=names_only,
                  names=names,
                  max_depth=max_depth,
                  min_depth=min_depth,
