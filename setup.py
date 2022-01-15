@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-from distutils.core import Extension
 
 from setuptools import setup
 
-#import fastentrypoints
+import fastentrypoints
+from distutils.core import Extension
 
 setup(
     name='getdents',
