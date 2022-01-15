@@ -3,7 +3,7 @@ from distutils.core import Extension
 
 from setuptools import setup
 
-import fastentrypoints
+#import fastentrypoints
 
 setup(
     name='getdents',
