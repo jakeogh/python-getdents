@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-import fastentrypoints
+from distutils.core import Extension
 
 from setuptools import setup
 
-from distutils.core import Extension
-
+import fastentrypoints
 
 setup(
     name='getdents',
@@ -38,6 +37,7 @@ setup(
     entry_points={
         'console_scripts': [
             'getdents = getdents.getdents64:main',
+            'gd = getdents.getdents64:main',
         ],
     },
 )
