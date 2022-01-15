@@ -36,7 +36,6 @@ setup(
     tests_require=[],
     entry_points={
         'console_scripts': [
-            'getdents = getdents.getdents64:main',
             'gd = getdents.getdents64:main',
         ],
     },
