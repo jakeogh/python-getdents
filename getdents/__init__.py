@@ -541,7 +541,7 @@ def files_pathlib(path,
 def files_names(path,
                 **kw,
                 ) -> Iterator[bytes]:
-    for dent in paths(path=path, **kw):
+    for dent in files(path=path, **kw):
         yield dent.name
 
 
@@ -575,15 +575,17 @@ def links(path,
 def links_pathlib(path,
                   **kw,
                   ) -> Iterator[Path]:
-    for dent in files(path=path, **kw):
+    for dent in links(path=path, **kw):
+        assert dent.dtype == 10
         yield dent.pathlib
 
 
 def links_names(path,
                 **kw,
                 ) -> Iterator[bytes]:
-    for dent in paths(path=path, **kw):
+    for dent in links(path=path, **kw):
         ic(dent)
+        assert dent.dtype == 10
         yield dent.name
 
 
@@ -616,14 +618,16 @@ def dirs(path,
 def dirs_pathlib(path,
                  **kw,
                  ) -> Iterator[Path]:
-    for dent in files(path=path, **kw):
+    for dent in dirs(path=path, **kw):
+        assert dent.dtype == 4
         yield dent.pathlib
 
 
 def dirs_names(path,
                **kw,
                ) -> Iterator[bytes]:
-    for dent in paths(path=path, **kw):
+    for dent in dirs(path=path, **kw):
+        assert dent.dtype == 4
         yield dent.name
 
 
