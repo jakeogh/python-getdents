@@ -176,8 +176,8 @@ def usage():
     return '''Usage: getdents PATH [OPTIONS]
 
 Options:
-    --max-depth INT   Descend at most levels (>= 0) of directories below the starting-point.
-    --min-depth INT   Return directories atleast (>= 0) levels below the starting-point.
+    --maxdepth INT    Descend at most levels (>= 0) of directories below the starting-point.
+    --mindepth INT    Return directories atleast (>= 0) levels below the starting-point.
     --exec CMD        Execute command for every printed result. Must be a single argument. Should produce a single line.
     --namesonly       Print PATH names only.
     --count           Print number of entries under PATH.
@@ -251,7 +251,7 @@ def main():
     index = 2
     if args >= 2:
         while index <= args:
-            if sys.argv[index] == '--max-depth':
+            if sys.argv[index] in ['--max-depth', '--maxdepth']:
                 index += 1
                 try:
                     max_depth = int(sys.argv[index])
@@ -265,7 +265,7 @@ def main():
                     help_max_depth()
                     sys.exit(1)
                 index += 1
-            elif sys.argv[index] == '--min-depth':
+            elif sys.argv[index] in ['--min-depth', '--mindepth']:
                 index += 1
                 try:
                     min_depth = int(sys.argv[index])
