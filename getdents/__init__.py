@@ -585,6 +585,7 @@ def links_names(path,
                 **kw,
                 ) -> Iterator[bytes]:
     for dent in paths(path=path, **kw):
+        ic(dent)
         yield dent.name
 
 
