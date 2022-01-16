@@ -17,6 +17,7 @@ from typing import List
 from typing import Optional
 
 import attr
+from asserttool import ic
 
 #from ._getdents import \
 #    MIN_GETDENTS_BUFF_SIZE  # noqa: ignore=F401 # pylint: disable=import-error
@@ -38,9 +39,6 @@ from ._getdents import \
     DT_UNKNOWN  # noqa: ignore=F401 # pylint: disable=import-error
 from ._getdents import O_GETDENTS  # pylint: disable=import-error
 from ._getdents import getdents_raw  # pylint: disable=import-error
-
-#from asserttool import ic
-
 
 BUFF_SIZE = 4096 * 32  # 128k
 
