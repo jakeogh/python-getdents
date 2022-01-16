@@ -584,7 +584,7 @@ def links_names(path,
                 **kw,
                 ) -> Iterator[bytes]:
     for dent in links(path=path, **kw):
-        ic(dent)
+        #ic(dent)
         assert dent.dtype == 10
         yield dent.name
 
