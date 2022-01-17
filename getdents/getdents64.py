@@ -27,6 +27,7 @@ from typing import List
 from typing import Optional
 
 import msgpack
+from unmp import unmp
 
 from getdents import Dent
 from getdents import DentGen
@@ -223,12 +224,12 @@ def main():
     min_depth = -1
     command = None
     args = len(sys.argv) - 1
-    if args >= 1:
-        path = os.fsencode(sys.argv[1])
-    else:
-        print(usage(), file=sys.stderr)
-        print("Error: A path is required.", file=sys.stderr)
-        sys.exit(1)
+    #if args >= 1:
+    #    path = os.fsencode(sys.argv[1])
+    #else:
+    #    print(usage(), file=sys.stderr)
+    #    print("Error: A path is required.", file=sys.stderr)
+    #    sys.exit(1)
     namesonly = False
     count = False
     random = False
@@ -248,8 +249,8 @@ def main():
     verbose = False
     debug = False
     #print_end = b'\x00'
-    index = 2
-    if args >= 2:
+    index = 1
+    if args >= 1:
         while index <= args:
             if sys.argv[index] in ['--max-depth', '--maxdepth']:
                 index += 1
@@ -385,27 +386,28 @@ def main():
 
     tty = sys.stdout.isatty()
 
-    _iterate(path=path,
-             max_depth=max_depth,
-             min_depth=min_depth,
-             command=command,
-             count=count,
-             namesonly=namesonly,
-             random=random,
-             names=names,
-             skip_names=skipnames,
-             no_files=nofiles,
-             no_dirs=nodirs,
-             no_symlinks=nosymlinks,
-             no_char_devices=nochar,
-             no_block_devices=noblock,
-             no_fifos=nofifo,
-             no_sockets=nosockets,
-             no_dotfiles=nodotfiles,
-             no_dotpaths=nodotpaths,
-             tty=tty,
-             verbose=verbose,
-             )
+    for path in unmp(valid_types=[bytes,], verbose=verbose,):
+        _iterate(path=path,
+                 max_depth=max_depth,
+                 min_depth=min_depth,
+                 command=command,
+                 count=count,
+                 namesonly=namesonly,
+                 random=random,
+                 names=names,
+                 skip_names=skipnames,
+                 no_files=nofiles,
+                 no_dirs=nodirs,
+                 no_symlinks=nosymlinks,
+                 no_char_devices=nochar,
+                 no_block_devices=noblock,
+                 no_fifos=nofifo,
+                 no_sockets=nosockets,
+                 no_dotfiles=nodotfiles,
+                 no_dotpaths=nodotpaths,
+                 tty=tty,
+                 verbose=verbose,
+                 )
 
 
 if __name__ == '__main__':  # for dev
