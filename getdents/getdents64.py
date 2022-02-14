@@ -25,6 +25,7 @@ from signal import SIGPIPE
 from signal import signal
 from typing import List
 from typing import Optional
+from typing import Union
 
 import msgpack
 from unmp import unmp
@@ -98,7 +99,7 @@ def _iterate(*,
              no_dotfiles: bool,
              no_dotpaths: bool,
              tty: bool,
-             verbose: bool,
+             verbose: Union[bool, int, float],
              ):
     c = 0
     if command:
@@ -136,7 +137,6 @@ def _iterate(*,
         sys.stdout.buffer.write(msgpack.packb(c))
         sys.stdout.buffer.close()
         return
-        #print(c, end=end.decode('utf8'))
     else:
         end = b'\0'
         if tty:

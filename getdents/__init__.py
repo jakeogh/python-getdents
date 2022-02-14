@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Iterator
 from typing import List
 from typing import Optional
+from typing import Union
 
 import attr
 from asserttool import ic
@@ -278,11 +279,10 @@ class Dent():
 
 @attr.s(auto_attribs=True)
 class NameGen():
-    verbose: int
+    verbose: Union[bool, int, float]
     skip_dotpaths: bool
     skip_names: Optional[List[bytes]]
     path: bytes = attr.ib(converter=os.fsencode)
-    very_debug: bool = False
     buff_size: int = BUFF_SIZE
     random: bool = False  # bool is new in C99 and cpython tries to remain C90 compatible
     names_only: bool = False
@@ -291,16 +291,16 @@ class NameGen():
     def __attrs_post_init__(self):
         if self.path[0] != b'/':
             self.path = os.path.realpath(os.path.expanduser(self.path))
-        if self.verbose:
-            print("NameGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
-            print("NameGen() __attrs_post_init__() self.names_only:", self.names_only, file=sys.stderr)
-            print("NameGen() __attrs_post_init__() self.random:", self.random, file=sys.stderr)
-            print("NameGen() __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
-            print("NameGen() __attrs_post_init__() self.skip_names:", self.skip_names, file=sys.stderr)
+        #if self.verbose == inf:
+        #    print("NameGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
+        #    print("NameGen() __attrs_post_init__() self.names_only:", self.names_only, file=sys.stderr)
+        #    print("NameGen() __attrs_post_init__() self.random:", self.random, file=sys.stderr)
+        #    print("NameGen() __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
+        #    print("NameGen() __attrs_post_init__() self.skip_names:", self.skip_names, file=sys.stderr)
 
     def __iter__(self):
-        if self.verbose:
-            print("NameGen() __iter__() self.path:", self.path, file=sys.stderr)
+        #if self.verbose == inf:
+        #    print("NameGen() __iter__() self.path:", self.path, file=sys.stderr)
 
         for inode, dtype, name in getdents(path=self.path,
                                            buff_size=self.buff_size,
@@ -313,20 +313,19 @@ class NameGen():
                 continue
             if not self.names_only:
                 name = Path(os.fsdecode(self.path)) / Path(os.fsdecode(name))
-            if self.very_debug:
-                print("NameGen() __iter__() inode:", inode, file=sys.stderr)
-                print("NameGen() __iter__() dtype:", dtype, file=sys.stderr)
-                print("NameGen() __iter__() name:", name, file=sys.stderr)
+            #if self.verbose == inf:
+            #    print("NameGen() __iter__() inode:", inode, file=sys.stderr)
+            #    print("NameGen() __iter__() dtype:", dtype, file=sys.stderr)
+            #    print("NameGen() __iter__() name:", name, file=sys.stderr)
             yield inode, dtype, name
 
 
 @attr.s(auto_attribs=True)
 class DentGen():
     path: bytes = attr.ib(converter=os.fsencode)
-    verbose: int
+    verbose: Union[bool, int, float]
     skip_dotpaths: bool
     skip_names: Optional[List[bytes]]
-    very_debug: bool = False
     min_depth: int = 0
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
@@ -343,17 +342,17 @@ class DentGen():
             self.min_depth = 0
         else:
             self.min_depth = self.min_depth + len(self.path.split(b'/'))
-        if self.very_debug:
-            print("DentGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
-            print("DentGen() __attrs_post_init__() self.min_depth:", self.min_depth, file=sys.stderr)
-            print("DentGen() __attrs_post_init__() self.max_depth:", self.max_depth, file=sys.stderr)
-            print("DentGen() __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
-            print("DentGen() __attrs_post_init__() self.skip_names:", self.skip_names, file=sys.stderr)
+        #if self.verbose == inf:
+        #    print("DentGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
+        #    print("DentGen() __attrs_post_init__() self.min_depth:", self.min_depth, file=sys.stderr)
+        #    print("DentGen() __attrs_post_init__() self.max_depth:", self.max_depth, file=sys.stderr)
+        #    print("DentGen() __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
+        #    print("DentGen() __attrs_post_init__() self.skip_names:", self.skip_names, file=sys.stderr)
 
     def __iter__(self, cur_depth: int = 0):
-        if self.very_debug:
-            print("DentGen() __iter__() cur_depth:", cur_depth, file=sys.stderr)
-            print("DentGen() __iter__() self.path:", self.path, file=sys.stderr)
+        #if self.verbose == inf:
+        #    print("DentGen() __iter__() cur_depth:", cur_depth, file=sys.stderr)
+        #    print("DentGen() __iter__() self.path:", self.path, file=sys.stderr)
         for inode, dtype, name in getdents(path=self.path,
                                            buff_size=self.buff_size,
                                            random=self.random,
@@ -361,13 +360,13 @@ class DentGen():
                                            skip_names=self.skip_names,
                                            supress_permissionerror=self.supress_permissionerror,
                                            ):
-            if self.very_debug:
-                print("DentGen() __iter__() inode:", inode, file=sys.stderr)
-                print("DentGen() __iter__() dtype:", dtype, file=sys.stderr)
-                print("DentGen() __iter__() name:", name, file=sys.stderr)
+            #if self.verbose == inf:
+            #    print("DentGen() __iter__() inode:", inode, file=sys.stderr)
+            #    print("DentGen() __iter__() dtype:", dtype, file=sys.stderr)
+            #    print("DentGen() __iter__() name:", name, file=sys.stderr)
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
-            if self.very_debug:
-                print("DentGen() __iter__() dent:", repr(dent), file=sys.stderr)
+            #if self.verbose == inf:
+            #    print("DentGen() __iter__() dent:", repr(dent), file=sys.stderr)
             if dent.path == self.path:
                 if self.min_depth:
                     if dent.depth < self.min_depth:
@@ -404,29 +403,28 @@ def paths(path,
           min_depth=0,
           random: bool = False,
           verbose: int = False,
-          very_debug: bool = False,
           ) -> Iterator[Dent]:
 
     #if (names_only and pathlib):
     #    raise ValueError('names_only and pathlib are mutually exclusive')
 
     path = os.fsencode(path)
-    if very_debug:
-        print('getdents/__init__.py',
-              path,
-              "return_dirs:", return_dirs,
-              "return_files:", return_files,
-              "return_symlinks:", return_symlinks,
-              "return_sockets:", return_symlinks,
-              "return_fifos:", return_symlinks,
-              "return_block_devices:", return_block_devices,
-              "return_char_devices:", return_char_devices,
-              "max_depth:", max_depth,
-              "min_depth:", min_depth,
-              "names:", names,
-              "skip_dotpaths:", skip_dotpaths,
-              "skip_names:", skip_names,
-              file=sys.stderr,)
+    #if verbose == inf:
+    #    print('getdents/__init__.py',
+    #          path,
+    #          "return_dirs:", return_dirs,
+    #          "return_files:", return_files,
+    #          "return_symlinks:", return_symlinks,
+    #          "return_sockets:", return_symlinks,
+    #          "return_fifos:", return_symlinks,
+    #          "return_block_devices:", return_block_devices,
+    #          "return_char_devices:", return_char_devices,
+    #          "max_depth:", max_depth,
+    #          "min_depth:", min_depth,
+    #          "names:", names,
+    #          "skip_dotpaths:", skip_dotpaths,
+    #          "skip_names:", skip_names,
+    #          file=sys.stderr,)
     fiterator = DentGen(path=path,
                         max_depth=max_depth,
                         min_depth=min_depth,
