@@ -402,7 +402,7 @@ def paths(path,
           max_depth=inf,
           min_depth=0,
           random: bool = False,
-          verbose: int = False,
+          verbose: Union[bool, int, float],
           ) -> Iterator[Dent]:
 
     #if (names_only and pathlib):
@@ -475,17 +475,19 @@ def paths(path,
 
 
 def paths_pathlib(path,
+                  verbose: Union[bool, int, float],
                   **kw,
                   ) -> Iterator[Path]:
-    for dent in paths(path=path, **kw):
+    for dent in paths(path=path, verbose=verbose, **kw):
         yield dent.pathlib
 
 
 def paths_names(path,
+                verbose: Union[bool, int, float],
                 **kw,
                 ) -> Iterator[bytes]:
     #for dent in paths(path=path, max_depth=0, **kw):
-    for dent in paths(path=path, **kw):
+    for dent in paths(path=path, verbose=verbose, **kw):
         yield dent.name
 
 
@@ -498,7 +500,7 @@ def files(path,
           max_size=inf,
           min_size: int = 0,
           random: bool = False,
-          verbose: int = False,
+          verbose: Union[bool, int, float],
           ) -> Iterator[Dent]:
     if max_size < 0:
         max_size = inf
@@ -530,18 +532,19 @@ def files(path,
 
 
 def files_pathlib(path,
+                  verbose: Union[bool, int, float],
                   **kw,
                   ) -> Iterator[Path]:
-    for dent in files(path=path, **kw):
+    for dent in files(path=path, verbose=verbose, **kw):
         yield dent.pathlib
 
 
 def files_names(path,
+                verbose: Union[bool, int, float],
                 **kw,
                 ) -> Iterator[bytes]:
-    for dent in files(path=path, **kw):
+    for dent in files(path=path, verbose=verbose, **kw):
         yield dent.name
-
 
 
 def links(path,
@@ -551,7 +554,7 @@ def links(path,
           max_depth=inf,
           min_depth: int = 0,
           random: bool = False,
-          verbose: int = False,
+          verbose: Union[bool, int, float],
           ) -> Iterator[Dent]:
     return paths(path=path,
                  return_dirs=False,
@@ -571,17 +574,19 @@ def links(path,
 
 
 def links_pathlib(path,
+                  verbose: Union[bool, int, float],
                   **kw,
                   ) -> Iterator[Path]:
-    for dent in links(path=path, **kw):
+    for dent in links(path=path, verbose=verbose, **kw):
         assert dent.dtype == 10
         yield dent.pathlib
 
 
 def links_names(path,
+                verbose: Union[bool, int, float],
                 **kw,
                 ) -> Iterator[bytes]:
-    for dent in links(path=path, **kw):
+    for dent in links(path=path, verbose=verbose, **kw):
         #ic(dent)
         assert dent.dtype == 10
         yield dent.name
@@ -594,7 +599,7 @@ def dirs(path,
          max_depth=inf,
          min_depth: int = 0,
          random: bool = False,
-         verbose: int = False,
+         verbose: Union[bool, int, float],
          ) -> Iterator[Dent]:
     return paths(path=path,
                  return_dirs=True,
@@ -614,18 +619,19 @@ def dirs(path,
 
 
 def dirs_pathlib(path,
+                 verbose: Union[bool, int, float],
                  **kw,
                  ) -> Iterator[Path]:
-    for dent in dirs(path=path, **kw):
+    for dent in dirs(path=path, verbose=verbose, **kw):
         assert dent.dtype == 4
         yield dent.pathlib
 
 
 def dirs_names(path,
+               verbose: Union[bool, int, float],
                **kw,
                ) -> Iterator[bytes]:
-    for dent in dirs(path=path, **kw):
+    for dent in dirs(path=path, verbose=verbose, **kw):
         assert dent.dtype == 4
         yield dent.name
-
 
