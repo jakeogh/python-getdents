@@ -28,7 +28,7 @@ from typing import Optional
 from typing import Union
 
 import msgpack
-from unmp import unmp
+from mptool import unmp
 
 from getdents import Dent
 from getdents import DentGen
@@ -36,18 +36,19 @@ from getdents import DentGen
 signal(SIGPIPE, SIG_DFL)
 
 
-def _filter(*,
-            item: Dent,
-            names: List[bytes],
-            no_files: bool,
-            no_dirs: bool,
-            no_symlinks: bool,
-            no_sockets: bool,
-            no_block_devices: bool,
-            no_char_devices: bool,
-            no_fifos: bool,
-            no_dotfiles: bool,
-            ):
+def _filter(
+    *,
+    item: Dent,
+    names: List[bytes],
+    no_files: bool,
+    no_dirs: bool,
+    no_symlinks: bool,
+    no_sockets: bool,
+    no_block_devices: bool,
+    no_char_devices: bool,
+    no_fifos: bool,
+    no_dotfiles: bool,
+):
 
     if names:
         if item.name not in names:
@@ -74,61 +75,64 @@ def _filter(*,
         if item.is_fifo():
             return True
     if no_dotfiles:
-        if item.name.startswith(b'.'):
+        if item.name.startswith(b"."):
             return True
     return False
 
 
-def _iterate(*,
-             path: bytes,
-             max_depth: int,
-             min_depth: int,
-             command: Optional[str],
-             namesonly: bool,
-             count: bool,
-             random: bool,
-             names: List[bytes],
-             skip_names: List[bytes],
-             no_files: bool,
-             no_dirs: bool,
-             no_symlinks: bool,
-             no_sockets: bool,
-             no_block_devices: bool,
-             no_char_devices: bool,
-             no_fifos: bool,
-             no_dotfiles: bool,
-             no_dotpaths: bool,
-             tty: bool,
-             verbose: Union[bool, int, float],
-             ):
+def _iterate(
+    *,
+    path: bytes,
+    max_depth: int,
+    min_depth: int,
+    command: Optional[str],
+    namesonly: bool,
+    count: bool,
+    random: bool,
+    names: List[bytes],
+    skip_names: List[bytes],
+    no_files: bool,
+    no_dirs: bool,
+    no_symlinks: bool,
+    no_sockets: bool,
+    no_block_devices: bool,
+    no_char_devices: bool,
+    no_fifos: bool,
+    no_dotfiles: bool,
+    no_dotpaths: bool,
+    tty: bool,
+    verbose: Union[bool, int, float],
+):
     c = 0
     if command:
         from subprocess import check_output
 
-    #assert no_dotpaths
-    dentgen = DentGen(path=path,
-                      max_depth=max_depth,
-                      min_depth=min_depth,
-                      skip_dotpaths=no_dotpaths,
-                      skip_names=skip_names,
-                      supress_permissionerror=True,  # for CLI/script usage
-                      random=random,
-                      verbose=verbose,
-                      )
+    # assert no_dotpaths
+    dentgen = DentGen(
+        path=path,
+        max_depth=max_depth,
+        min_depth=min_depth,
+        skip_dotpaths=no_dotpaths,
+        skip_names=skip_names,
+        supress_permissionerror=True,  # for CLI/script usage
+        random=random,
+        verbose=verbose,
+    )
 
     if count:
         for item in dentgen:
-            if _filter(item=item,
-                       names=names,
-                       no_files=no_files,
-                       no_dirs=no_dirs,
-                       no_symlinks=no_symlinks,
-                       no_block_devices=no_block_devices,
-                       no_char_devices=no_char_devices,
-                       no_fifos=no_fifos,
-                       no_sockets=no_sockets,
-                       no_dotfiles=no_dotfiles,
-                       ):
+            if _filter(
+                item=item,
+                names=names,
+                no_files=no_files,
+                no_dirs=no_dirs,
+                no_symlinks=no_symlinks,
+                no_block_devices=no_block_devices,
+                no_char_devices=no_char_devices,
+                no_fifos=no_fifos,
+                no_sockets=no_sockets,
+                no_dotfiles=no_dotfiles,
+            ):
                 continue
             c += 1
         if tty:
@@ -138,43 +142,44 @@ def _iterate(*,
         sys.stdout.buffer.close()
         return
     else:
-        end = b'\0'
+        end = b"\0"
         if tty:
-            end = b'\n'
+            end = b"\n"
 
-        with open('/dev/stdout', mode='wb') as fd:
+        with open("/dev/stdout", mode="wb") as fd:
             for item in dentgen:
-                if _filter(item=item,
-                           names=names,
-                           no_files=no_files,
-                           no_dirs=no_dirs,
-                           no_symlinks=no_symlinks,
-                           no_block_devices=no_block_devices,
-                           no_char_devices=no_char_devices,
-                           no_fifos=no_fifos,
-                           no_sockets=no_sockets,
-                           no_dotfiles=no_dotfiles,
-                           ):
+                if _filter(
+                    item=item,
+                    names=names,
+                    no_files=no_files,
+                    no_dirs=no_dirs,
+                    no_symlinks=no_symlinks,
+                    no_block_devices=no_block_devices,
+                    no_char_devices=no_char_devices,
+                    no_fifos=no_fifos,
+                    no_sockets=no_sockets,
+                    no_dotfiles=no_dotfiles,
+                ):
                     continue
                 if command:
                     command_output = check_output([command, os.fsdecode(item.path)])
-                    if command_output.endswith(b'\n'):
+                    if command_output.endswith(b"\n"):
                         command_output = command_output[:-1]
 
-                    fd.write(command_output + b' ' + item.path + end)
+                    fd.write(command_output + b" " + item.path + end)
                 else:
                     if namesonly:
                         fd.write(item.name + end)
                     else:
                         if tty:
-                            fd.write(repr(item.path).encode('utf8') + end)
+                            fd.write(repr(item.path).encode("utf8") + end)
                             continue
                         fd.write(msgpack.packb(item.path))
 
 
 #    --norecurse       Dont traverse paths. TODO lower --name to C in this case
 def usage():
-    return '''Usage: getdents PATH [OPTIONS]
+    return """Usage: getdents PATH [OPTIONS]
 
 Options:
     --maxdepth INT    Descend at most levels (>= 0) of directories below the starting-point.
@@ -199,13 +204,16 @@ Options:
     --nodotpaths      Do not print any paths that have one or names that starts with a dot.
     --verbose         Debugging output.
     --debug           More debugging output.
-'''
+"""
 
 
 def help_max_depth(max_depth=None):
     print(usage(), file=sys.stderr)
     if max_depth:
-        print("Error: --max-depth requires a integer >= 0, not \"{0}\".".format(max_depth), file=sys.stderr)
+        print(
+            'Error: --max-depth requires a integer >= 0, not "{0}".'.format(max_depth),
+            file=sys.stderr,
+        )
         return
     print("Error: --max-depth requires a integer >= 0.", file=sys.stderr)
 
@@ -213,7 +221,10 @@ def help_max_depth(max_depth=None):
 def help_min_depth(min_depth=None):
     print(usage(), file=sys.stderr)
     if min_depth:
-        print("Error: --min-depth requires a integer >= 0, not \"{0}\".".format(min_depth), file=sys.stderr)
+        print(
+            'Error: --min-depth requires a integer >= 0, not "{0}".'.format(min_depth),
+            file=sys.stderr,
+        )
         return
     print("Error: --min-depth requires a integer >= 0.", file=sys.stderr)
 
@@ -224,9 +235,9 @@ def main():
     min_depth = -1
     command = None
     args = len(sys.argv) - 1
-    #if args >= 1:
+    # if args >= 1:
     #    path = os.fsencode(sys.argv[1])
-    #else:
+    # else:
     #    print(usage(), file=sys.stderr)
     #    print("Error: A path is required.", file=sys.stderr)
     #    sys.exit(1)
@@ -248,11 +259,11 @@ def main():
     nodotpaths = False
     verbose = False
     debug = False
-    #print_end = b'\x00'
+    # print_end = b'\x00'
     index = 1
     if args >= 1:
         while index <= args:
-            if sys.argv[index] in ['--max-depth', '--maxdepth']:
+            if sys.argv[index] in ["--max-depth", "--maxdepth"]:
                 index += 1
                 try:
                     max_depth = int(sys.argv[index])
@@ -262,11 +273,11 @@ def main():
                 except ValueError:
                     help_max_depth(sys.argv[index])
                     sys.exit(1)
-                if max_depth < 0 or sys.argv[index].startswith('-'):
+                if max_depth < 0 or sys.argv[index].startswith("-"):
                     help_max_depth()
                     sys.exit(1)
                 index += 1
-            elif sys.argv[index] in ['--min-depth', '--mindepth']:
+            elif sys.argv[index] in ["--min-depth", "--mindepth"]:
                 index += 1
                 try:
                     min_depth = int(sys.argv[index])
@@ -276,39 +287,39 @@ def main():
                 except ValueError:
                     help_min_depth(sys.argv[index])
                     sys.exit(1)
-                if min_depth < 0 or sys.argv[index].startswith('-'):
+                if min_depth < 0 or sys.argv[index].startswith("-"):
                     help_min_depth()
                     sys.exit(1)
                 index += 1
-            elif sys.argv[index] == '--name':
+            elif sys.argv[index] == "--name":
                 index += 1
                 try:
                     names.append(os.fsencode(sys.argv[index]))
                 except IndexError as e:
                     raise e
-                    #help_name()
-                    #sys.exit(1)
+                    # help_name()
+                    # sys.exit(1)
                 index += 1
-            elif sys.argv[index] in ['--skipname', '--skip-name']:
+            elif sys.argv[index] in ["--skipname", "--skip-name"]:
                 index += 1
                 try:
                     skipnames.append(os.fsencode(sys.argv[index]))
                 except IndexError as e:
                     raise e
-                    #help_name()
-                    #sys.exit(1)
+                    # help_name()
+                    # sys.exit(1)
                 index += 1
-            elif sys.argv[index] == '--exec':
+            elif sys.argv[index] == "--exec":
                 index += 1
                 command = sys.argv[index]
                 index += 1
             elif sys.argv[index] in ["--namesonly", "--names-only"]:
                 namesonly = True
                 index += 1
-            elif sys.argv[index] == '--count':
+            elif sys.argv[index] == "--count":
                 count = True
                 index += 1
-            elif sys.argv[index] == '--random':
+            elif sys.argv[index] == "--random":
                 random = True
                 index += 1
             elif sys.argv[index] in ["--nofiles", "--no-files"]:
@@ -320,16 +331,31 @@ def main():
             elif sys.argv[index] in ["--nodirs", "--no-dirs"]:
                 nodirs = True
                 index += 1
-            elif sys.argv[index] in ["--dirsonly", "--dirs-only", "--dirs"]:
+            elif sys.argv[index] in [
+                "--dirsonly",
+                "--dirs-only",
+                "--dirs",
+                "--directories",
+            ]:
                 dirsonly = True
                 index += 1
             elif sys.argv[index] in ["--nosymlinks", "--no-symlinks"]:
                 nosymlinks = True
                 index += 1
-            elif sys.argv[index] in ['--nochar', '--no-char', '--nodevices', '--no-devices',]:
+            elif sys.argv[index] in [
+                "--nochar",
+                "--no-char",
+                "--nodevices",
+                "--no-devices",
+            ]:
                 nochar = True
                 index += 1
-            elif sys.argv[index] in ["--noblock", "--no-block", '--nodevices', '--no-devices',]:
+            elif sys.argv[index] in [
+                "--noblock",
+                "--no-block",
+                "--nodevices",
+                "--no-devices",
+            ]:
                 noblock = True
                 index += 1
             elif sys.argv[index] in ["--nofifo", "--no-fifo"]:
@@ -341,7 +367,12 @@ def main():
             elif sys.argv[index] in ["--nodotfiles", "--no-dotfiles"]:
                 nodotfiles = True
                 index += 1
-            elif sys.argv[index] in ["--nodotpaths", "--no-dotpaths", '--skipdotpaths', '--skip-dotpaths']:
+            elif sys.argv[index] in [
+                "--nodotpaths",
+                "--no-dotpaths",
+                "--skipdotpaths",
+                "--skip-dotpaths",
+            ]:
                 nodotpaths = True
                 index += 1
             elif sys.argv[index] == "--verbose":
@@ -352,20 +383,32 @@ def main():
                 index += 1
             else:
                 print(usage(), file=sys.stderr)
-                print("Error: Unknown option \"{0}\".".format(sys.argv[index]), file=sys.stderr)
+                print(
+                    'Error: Unknown option "{0}".'.format(sys.argv[index]),
+                    file=sys.stderr,
+                )
                 sys.exit(1)
 
     if nofiles:
         if filesonly:
-            print("Error: --filesonly and --nofiles are mutually exclusive. Exiting.", file=sys.stderr)
+            print(
+                "Error: --filesonly and --nofiles are mutually exclusive. Exiting.",
+                file=sys.stderr,
+            )
             sys.exit(1)
     if nodirs:
         if dirsonly:
-            print("Error: --dirsonly and --nodirs are mutually exclusive. Exiting.", file=sys.stderr)
+            print(
+                "Error: --dirsonly and --nodirs are mutually exclusive. Exiting.",
+                file=sys.stderr,
+            )
             sys.exit(1)
     if filesonly:
         if dirsonly:
-            print("Error: --dirsonly and --filesonly are mutually exclusive. Exiting.", file=sys.stderr)
+            print(
+                "Error: --dirsonly and --filesonly are mutually exclusive. Exiting.",
+                file=sys.stderr,
+            )
             sys.exit(1)
 
     if filesonly:
@@ -386,29 +429,35 @@ def main():
 
     tty = sys.stdout.isatty()
 
-    for path in unmp(valid_types=[bytes,], verbose=verbose,):
-        _iterate(path=path,
-                 max_depth=max_depth,
-                 min_depth=min_depth,
-                 command=command,
-                 count=count,
-                 namesonly=namesonly,
-                 random=random,
-                 names=names,
-                 skip_names=skipnames,
-                 no_files=nofiles,
-                 no_dirs=nodirs,
-                 no_symlinks=nosymlinks,
-                 no_char_devices=nochar,
-                 no_block_devices=noblock,
-                 no_fifos=nofifo,
-                 no_sockets=nosockets,
-                 no_dotfiles=nodotfiles,
-                 no_dotpaths=nodotpaths,
-                 tty=tty,
-                 verbose=verbose,
-                 )
+    for path in unmp(
+        valid_types=[
+            bytes,
+        ],
+        verbose=verbose,
+    ):
+        _iterate(
+            path=path,
+            max_depth=max_depth,
+            min_depth=min_depth,
+            command=command,
+            count=count,
+            namesonly=namesonly,
+            random=random,
+            names=names,
+            skip_names=skipnames,
+            no_files=nofiles,
+            no_dirs=nodirs,
+            no_symlinks=nosymlinks,
+            no_char_devices=nochar,
+            no_block_devices=noblock,
+            no_fifos=nofifo,
+            no_sockets=nosockets,
+            no_dotfiles=nodotfiles,
+            no_dotpaths=nodotpaths,
+            tty=tty,
+            verbose=verbose,
+        )
 
 
-if __name__ == '__main__':  # for dev
+if __name__ == "__main__":  # for dev
     main()
