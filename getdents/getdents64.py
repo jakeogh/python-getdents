@@ -146,7 +146,7 @@ def _iterate(
         if tty:
             end = b"\n"
 
-        with open("/dev/stdout", mode="wb") as fd:
+        with open("/dev/stdout", mode="ab") as fd:
             for item in dentgen:
                 if _filter(
                     item=item,
