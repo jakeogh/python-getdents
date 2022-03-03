@@ -139,7 +139,7 @@ class Dent:
 
     @Reify
     def pathlib(self):
-        return Path(os.fsdecode(self.path)).resolve()
+        return Path(os.fsdecode(self.path)).resolve()  # resolve() might be a mistake
 
     def __str__(self):
         return os.fsdecode(self.path)
