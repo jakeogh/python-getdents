@@ -417,6 +417,25 @@ def paths(
     # if (names_only and pathlib):
     #    raise ValueError('names_only and pathlib are mutually exclusive')
 
+    if verbose == inf:
+        ic(
+            path,
+            skip_dotpaths,
+            skip_names,
+            return_dirs,
+            return_files,
+            return_symlinks,
+            return_sockets,
+            return_fifos,
+            return_block_devices,
+            return_char_devices,
+            names,
+            max_depth,
+            min_depth,
+            random,
+            verbose,
+        )
+
     path = os.fsencode(path)
     # if verbose == inf:
     #    print('getdents/__init__.py',
