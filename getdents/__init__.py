@@ -19,6 +19,7 @@ from typing import Union
 
 import attr
 from asserttool import ic
+from eprint import eprint
 
 # from ._getdents import \
 #    MIN_GETDENTS_BUFF_SIZE  # noqa: ignore=F401 # pylint: disable=import-error
@@ -349,17 +350,35 @@ class DentGen:
             self.min_depth = 0
         else:
             self.min_depth = self.min_depth + len(self.path.split(b"/"))
-        # if self.verbose == inf:
-        #    print("DentGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
-        #    print("DentGen() __attrs_post_init__() self.min_depth:", self.min_depth, file=sys.stderr)
-        #    print("DentGen() __attrs_post_init__() self.max_depth:", self.max_depth, file=sys.stderr)
-        #    print("DentGen() __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
-        #    print("DentGen() __attrs_post_init__() self.skip_names:", self.skip_names, file=sys.stderr)
+        if self.verbose == inf:
+            eprint(
+                "DentGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr
+            )
+            eprint(
+                "DentGen() __attrs_post_init__() self.min_depth:",
+                self.min_depth,
+                file=sys.stderr,
+            )
+            eprint(
+                "DentGen() __attrs_post_init__() self.max_depth:",
+                self.max_depth,
+                file=sys.stderr,
+            )
+            eprint(
+                "DentGen() __attrs_post_init__() self.skip_dotpaths:",
+                self.skip_dotpaths,
+                file=sys.stderr,
+            )
+            eprint(
+                "DentGen() __attrs_post_init__() self.skip_names:",
+                self.skip_names,
+                file=sys.stderr,
+            )
 
     def __iter__(self, cur_depth: int = 0):
-        # if self.verbose == inf:
-        #    print("DentGen() __iter__() cur_depth:", cur_depth, file=sys.stderr)
-        #    print("DentGen() __iter__() self.path:", self.path, file=sys.stderr)
+        if self.verbose == inf:
+            eprint("DentGen() __iter__() cur_depth:", cur_depth, file=sys.stderr)
+            eprint("DentGen() __iter__() self.path:", self.path, file=sys.stderr)
         for inode, dtype, name in getdents(
             path=self.path,
             buff_size=self.buff_size,
@@ -368,13 +387,13 @@ class DentGen:
             skip_names=self.skip_names,
             supress_permissionerror=self.supress_permissionerror,
         ):
-            # if self.verbose == inf:
-            #    print("DentGen() __iter__() inode:", inode, file=sys.stderr)
-            #    print("DentGen() __iter__() dtype:", dtype, file=sys.stderr)
-            #    print("DentGen() __iter__() name:", name, file=sys.stderr)
+            if self.verbose == inf:
+                eprint("DentGen() __iter__() inode:", inode, file=sys.stderr)
+                eprint("DentGen() __iter__() dtype:", dtype, file=sys.stderr)
+                eprint("DentGen() __iter__() name:", name, file=sys.stderr)
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
-            # if self.verbose == inf:
-            #    print("DentGen() __iter__() dent:", repr(dent), file=sys.stderr)
+            if self.verbose == inf:
+                eprint("DentGen() __iter__() dent:", repr(dent), file=sys.stderr)
             if dent.path == self.path:
                 if self.min_depth:
                     if dent.depth < self.min_depth:
