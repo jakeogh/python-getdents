@@ -18,7 +18,6 @@ from typing import Optional
 from typing import Union
 
 import attr
-from asserttool import ic
 from eprint import eprint
 from epprint import epprint
 
