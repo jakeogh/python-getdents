@@ -20,6 +20,7 @@ from typing import Union
 import attr
 from asserttool import ic
 from eprint import eprint
+from epprint import epprint
 
 # from ._getdents import \
 #    MIN_GETDENTS_BUFF_SIZE  # noqa: ignore=F401 # pylint: disable=import-error
@@ -105,7 +106,6 @@ def getdents(
     else:
         _random = 1
 
-    # ic(path, skip_names)
     try:
         for inode, dtype, name in getdents_raw(path_fd, buff_size, _random):
             if skip_dotpaths:
@@ -416,7 +416,7 @@ def paths(
     #    raise ValueError('names_only and pathlib are mutually exclusive')
 
     if verbose == inf:
-        ic(
+        epprint(
             path,
             skip_dotpaths,
             skip_names,
@@ -624,7 +624,6 @@ def links_names(
     **kw,
 ) -> Iterator[bytes]:
     for dent in links(path=path, verbose=verbose, **kw):
-        # ic(dent)
         assert dent.dtype == 10
         yield dent.name
 
