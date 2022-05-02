@@ -18,8 +18,8 @@ from typing import Optional
 from typing import Union
 
 import attr
-from eprint import eprint
 from epprint import epprint
+from eprint import eprint
 
 # from ._getdents import \
 #    MIN_GETDENTS_BUFF_SIZE  # noqa: ignore=F401 # pylint: disable=import-error
@@ -139,7 +139,8 @@ class Dent:
 
     @Reify
     def pathlib(self):
-        return Path(os.fsdecode(self.path)).resolve()  # resolve() might be a mistake
+        # return Path(os.fsdecode(self.path)).resolve()  # resolve() might be a mistake
+        return Path(os.fsdecode(self.path))  # resolve() is a mistake
 
     def __str__(self):
         return os.fsdecode(self.path)
