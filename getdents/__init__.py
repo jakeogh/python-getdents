@@ -4,6 +4,7 @@
 # pylint: disable=W0511  # todo encouraged
 # pylint: disable=R0913  # too many arguments
 # pylint: disable=R0912  # too many branches
+# pylint: disable=R0903  # too few public methods
 
 
 import os
@@ -149,13 +150,7 @@ class Dent:
         return iter(self.path)
 
     def __repr__(self):
-        return "Dent(parent={parent}, name={name}, inode={inode}, dtype={dtype}, path={path})".format(
-            parent=os.fsdecode(self.parent),
-            name=os.fsdecode(self.name),
-            inode=self.inode,
-            dtype=self.dtype,
-            path=os.fsdecode(self.path),
-        )
+        return f"Dent(parent={os.fsdecode(self.parent)}, name={os.fsdecode(self.name)}, inode={self.inode}, dtype={self.dtype}, path={os.fsdecode(self.path)})"
 
     def __hash__(self):
         return hash(self.path)
@@ -357,7 +352,9 @@ class DentGen:
 
     def __iter__(self, cur_depth: int = 0):
         if self.verbose == inf:
-            eprint("DentGen() __iter__() cur_depth: {cur_depth} self.path: {self.path}")
+            eprint(
+                f"DentGen() __iter__() cur_depth: {cur_depth} self.path: {self.path!r}"
+            )
         for inode, dtype, name in getdents(
             path=self.path,
             buff_size=self.buff_size,
@@ -368,7 +365,7 @@ class DentGen:
         ):
             if self.verbose == inf:
                 eprint(
-                    "\nDentGen() __iter__() inode: {inode} dtype: {dtype} name: {name}"
+                    f"\nDentGen() __iter__() inode: {inode} dtype: {dtype} name: {name}"
                 )
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             if self.verbose == inf:
