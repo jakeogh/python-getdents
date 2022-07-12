@@ -179,7 +179,7 @@ def _iterate(
 
 #    --norecurse       Dont traverse paths. TODO lower --name to C in this case
 def usage():
-    return """Usage: getdents PATH [OPTIONS]
+    return """Usage: mpp "path" | getdents [OPTIONS]
 
 Options:
     --maxdepth INT    Descend at most levels (>= 0) of directories below the starting-point.
