@@ -18,8 +18,6 @@ from math import inf
 from pathlib import Path
 from typing import Iterator
 from typing import List
-from typing import Optional
-from typing import Union
 
 import attr
 from epprint import epprint
@@ -67,7 +65,7 @@ def getdents(
     path,
     random: bool,
     skip_dotpaths: bool,
-    skip_names: None | List[bytes],
+    skip_names: None | list[bytes],
     buff_size: int = BUFF_SIZE,
     supress_permissionerror: bool = False,
 ):
@@ -192,7 +190,8 @@ class Dent:
         return os.fsdecode(self.path)
 
     def relative_to(self, path):  # temp dont keep
-        return self.path.split(path)[-1]
+        # return self.path.split(path)[-1]
+        return self.path.rsplit(path, maxsplit=1)[-1]
 
     def is_unknown(self):
         if self.dtype == 0:
@@ -282,7 +281,7 @@ class Dent:
 class NameGen:
     verbose: bool | int | float
     skip_dotpaths: bool
-    skip_names: None | List[bytes]
+    skip_names: None | list[bytes]
     path: bytes = attr.ib(converter=os.fsencode)
     buff_size: int = BUFF_SIZE
     random: bool = (
@@ -329,7 +328,7 @@ class DentGen:
     path: bytes = attr.ib(converter=os.fsencode)
     verbose: bool | int | float
     skip_dotpaths: bool
-    skip_names: None | List[bytes]
+    skip_names: None | list[bytes]
     min_depth: int = 0
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
