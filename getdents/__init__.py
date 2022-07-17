@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
+# pylint: disable=useless-suppression             # [I0021]
 # pylint: disable=missing-docstring               # [C0111] docstrings are always outdated and wrong
-# pylint: disable=W0511  # todo encouraged
+# pylint: disable=fixme                           # [W0511] todo is encouraged
 # pylint: disable=too-many-arguments              # [R0913]
 # pylint: disable=too-many-branches               # [R0912]
 # pylint: disable=too-few-public-methods          # [R0903]
+# pylint: disable=missing-param-doc               # [W9015]
 
+from __future__ import annotations
 
 import os
 import stat
@@ -581,11 +584,11 @@ def links(
     path,
     *,
     skip_dotpaths: bool = False,
-    names: Optional[list[str]] = None,
+    names: None | list[str] = None,
     max_depth=inf,
     min_depth: int = 0,
     random: bool = False,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
 ) -> Iterator[Dent]:
     return paths(
         path=path,
