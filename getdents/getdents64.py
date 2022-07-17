@@ -6,10 +6,10 @@
 # pylint: disable=too-many-instance-attributes  # [R0902]
 # pylint: disable=too-many-lines     # [C0302] too many lines in module
 # pylint: disable=invalid-name       # [C0103] single letter var names, func name too descriptive
-# pylint: disable=R0911  # too many return statements
-# pylint: disable=R0912  # too many branches
-# pylint: disable=R0915  # too many statements
-# pylint: disable=R0913  # too many arguments
+# pylint: disable=too-many-return-statements    # [R0911]
+# pylint: disable=too-many-branches             # [R0912]
+# pylint: disable=too-many-statements           # [R0915]
+# pylint: disable=too-many-arguments            # [R0913]
 # pylint: disable=R1702  # too many nested blocks
 # pylint: disable=R0914  # too many local variables
 # pylint: disable=R0903  # too few public methods
