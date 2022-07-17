@@ -280,9 +280,9 @@ class Dent:
 
 @attr.s(auto_attribs=True)
 class NameGen:
-    verbose: Union[bool, int, float]
+    verbose: bool | int | float
     skip_dotpaths: bool
-    skip_names: Optional[List[bytes]]
+    skip_names: None | List[bytes]
     path: bytes = attr.ib(converter=os.fsencode)
     buff_size: int = BUFF_SIZE
     random: bool = (
@@ -327,9 +327,9 @@ class NameGen:
 @attr.s(auto_attribs=True)
 class DentGen:
     path: bytes = attr.ib(converter=os.fsencode)
-    verbose: Union[bool, int, float]
+    verbose: bool | int | float
     skip_dotpaths: bool
-    skip_names: Optional[List[bytes]]
+    skip_names: None | List[bytes]
     min_depth: int = 0
     max_depth: float = inf
     buff_size: int = BUFF_SIZE
@@ -397,7 +397,7 @@ def paths(
     path,
     *,
     skip_dotpaths: bool = False,
-    skip_names: Optional[list[bytes]] = None,
+    skip_names: None | list[bytes] = None,
     return_dirs: bool = True,
     return_files: bool = True,
     return_symlinks: bool = True,
