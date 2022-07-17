@@ -405,7 +405,7 @@ def paths(
     return_fifos: bool = True,
     return_block_devices: bool = True,
     return_char_devices: bool = True,
-    names: Optional[list[str]] = None,
+    names: None | list[str] = None,
     max_depth=inf,
     min_depth=0,
     random: bool = False,
@@ -524,7 +524,7 @@ def files(
     path,
     *,
     skip_dotpaths: bool = False,
-    names: Optional[list[str]] = None,  # byggy
+    names: None | list[str] = None,  # byggy
     max_depth=inf,
     min_depth: int = 0,
     max_size=inf,
@@ -632,7 +632,7 @@ def dirs(
     path,
     *,
     skip_dotpaths: bool = False,
-    names: Optional[list[str]] = None,
+    names: None | list[str] = None,
     max_depth=inf,
     min_depth: int = 0,
     random: bool = False,
