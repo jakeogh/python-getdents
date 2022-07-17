@@ -409,7 +409,7 @@ def paths(
     max_depth=inf,
     min_depth=0,
     random: bool = False,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
 ) -> Iterator[Dent]:
 
     # if (names_only and pathlib):
@@ -503,7 +503,7 @@ def paths(
 
 def paths_pathlib(
     path,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     **kw,
 ) -> Iterator[Path]:
     for dent in paths(path=path, verbose=verbose, **kw):
@@ -512,7 +512,7 @@ def paths_pathlib(
 
 def paths_names(
     path,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     **kw,
 ) -> Iterator[bytes]:
     # for dent in paths(path=path, max_depth=0, **kw):
@@ -530,7 +530,7 @@ def files(
     max_size=inf,
     min_size: int = 0,
     random: bool = False,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
 ) -> Iterator[Dent]:
     if max_size < 0:
         max_size = inf
@@ -564,7 +564,7 @@ def files(
 
 def files_pathlib(
     path,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     **kw,
 ) -> Iterator[Path]:
     for dent in files(path=path, verbose=verbose, **kw):
@@ -573,7 +573,7 @@ def files_pathlib(
 
 def files_names(
     path,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     **kw,
 ) -> Iterator[bytes]:
     for dent in files(path=path, verbose=verbose, **kw):
@@ -610,7 +610,7 @@ def links(
 
 def links_pathlib(
     path,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     **kw,
 ) -> Iterator[Path]:
     for dent in links(path=path, verbose=verbose, **kw):
@@ -620,7 +620,7 @@ def links_pathlib(
 
 def links_names(
     path,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     **kw,
 ) -> Iterator[bytes]:
     for dent in links(path=path, verbose=verbose, **kw):
@@ -636,7 +636,7 @@ def dirs(
     max_depth=inf,
     min_depth: int = 0,
     random: bool = False,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
 ) -> Iterator[Dent]:
     return paths(
         path=path,
@@ -658,7 +658,7 @@ def dirs(
 
 def dirs_pathlib(
     path,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     **kw,
 ) -> Iterator[Path]:
     for dent in dirs(path=path, verbose=verbose, **kw):
@@ -668,7 +668,7 @@ def dirs_pathlib(
 
 def dirs_names(
     path,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
     **kw,
 ) -> Iterator[bytes]:
     for dent in dirs(path=path, verbose=verbose, **kw):
