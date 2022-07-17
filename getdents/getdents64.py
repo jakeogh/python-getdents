@@ -3,9 +3,9 @@
 # pylint: disable=missing-docstring  # [C0111] docstrings are always outdated and wrong
 # pylint: disable=fixme              # [W0511] todo is encouraged
 # pylint: disable=line-too-long      # [C0301] line too long
-# pylint: disable=R0902  # too many instance attributes
-# pylint: disable=C0302  # too many lines in module
-# pylint: disable=C0103  # single letter var names, func name too descriptive
+# pylint: disable=too-many-instance-attributes  # [R0902]
+# pylint: disable=too-many-lines     # [C0302] too many lines in module
+# pylint: disable=invalid-name       # [C0103] single letter var names, func name too descriptive
 # pylint: disable=R0911  # too many return statements
 # pylint: disable=R0912  # too many branches
 # pylint: disable=R0915  # too many statements
