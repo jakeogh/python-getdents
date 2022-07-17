@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-# pylint: disable=C0111  # docstrings are always outdated and wrong
+# pylint: disable=missing-docstring               # [C0111] docstrings are always outdated and wrong
 # pylint: disable=W0511  # todo encouraged
-# pylint: disable=R0913  # too many arguments
-# pylint: disable=R0912  # too many branches
-# pylint: disable=R0903  # too few public methods
+# pylint: disable=too-many-arguments              # [R0913]
+# pylint: disable=too-many-branches               # [R0912]
+# pylint: disable=too-few-public-methods          # [R0903]
 
 
 import os
