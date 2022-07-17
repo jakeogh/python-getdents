@@ -1,18 +1,18 @@
 #!/usr/bin/python3
 
-# pylint: disable=missing-docstring  # [C0111] docstrings are always outdated and wrong
-# pylint: disable=fixme              # [W0511] todo is encouraged
-# pylint: disable=line-too-long      # [C0301] line too long
+# pylint: disable=missing-docstring             # [C0111] docstrings are always outdated and wrong
+# pylint: disable=fixme                         # [W0511] todo is encouraged
+# pylint: disable=line-too-long                 # [C0301]
 # pylint: disable=too-many-instance-attributes  # [R0902]
-# pylint: disable=too-many-lines     # [C0302] too many lines in module
-# pylint: disable=invalid-name       # [C0103] single letter var names, func name too descriptive
+# pylint: disable=too-many-lines                # [C0302] too many lines in module
+# pylint: disable=invalid-name                  # [C0103] single letter var names, func name too descriptive
 # pylint: disable=too-many-return-statements    # [R0911]
 # pylint: disable=too-many-branches             # [R0912]
 # pylint: disable=too-many-statements           # [R0915]
 # pylint: disable=too-many-arguments            # [R0913]
-# pylint: disable=R1702  # too many nested blocks
-# pylint: disable=R0914  # too many local variables
-# pylint: disable=R0903  # too few public methods
+# pylint: disable=too-many-nested-blocks        # [R1702]
+# pylint: disable=too-many-locals               # [R0914]
+# pylint: disable=too-few-public-methods        # [R0903]
 # pylint: disable=E1101  # no member for base
 # pylint: disable=W0201  # attribute defined outside __init__
 # pylint: disable=R0916  # Too many boolean expressions in if statement
