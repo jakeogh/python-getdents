@@ -67,7 +67,7 @@ def getdents(
     path,
     random: bool,
     skip_dotpaths: bool,
-    skip_names: Optional[List[bytes]],
+    skip_names: None | List[bytes],
     buff_size: int = BUFF_SIZE,
     supress_permissionerror: bool = False,
 ):
@@ -492,7 +492,7 @@ def paths(
             if thing.is_block_device():
                 continue
 
-        ## names_only overrules pathlib
+        # # names_only overrules pathlib
         # if names_only:
         #    yield thing.name    # on first glance it might seem that this should still be a Dent,
         #                        # but it CANT BE, Dents reprsent real fs objects, and have parents
