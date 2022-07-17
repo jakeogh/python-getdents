@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # pylint: disable=missing-docstring  # [C0111] docstrings are always outdated and wrong
-# pylint: disable=fixme  # [W0511] todo is encouraged
+# pylint: disable=fixme              # [W0511] todo is encouraged
 # pylint: disable=C0301  # line too long
 # pylint: disable=R0902  # too many instance attributes
 # pylint: disable=C0302  # too many lines in module
