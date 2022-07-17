@@ -13,11 +13,10 @@ from __future__ import annotations
 import os
 import stat
 import sys
+from collections.abc import Iterator
 from functools import update_wrapper
 from math import inf
 from pathlib import Path
-from typing import Iterator
-from typing import List
 
 import attr
 from epprint import epprint
