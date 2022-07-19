@@ -16,19 +16,16 @@
 # pylint: disable=no-member                       # [E1101] no member for base
 # pylint: disable=attribute-defined-outside-init  # [W0201]
 # pylint: disable=too-many-boolean-expressions    # [R0916] in if statement
-
+from __future__ import annotations
 
 import os
 import sys
 from signal import SIG_DFL
 from signal import SIGPIPE
 from signal import signal
-from typing import List
-from typing import Optional
-from typing import Union
 
 import msgpack
-from mptool import unmp
+from unmp import unmp
 
 from getdents import Dent
 from getdents import DentGen
@@ -39,7 +36,7 @@ signal(SIGPIPE, SIG_DFL)
 def _filter(
     *,
     item: Dent,
-    names: List[bytes],
+    names: list[bytes],
     no_files: bool,
     no_dirs: bool,
     no_symlinks: bool,
@@ -85,12 +82,12 @@ def _iterate(
     path: bytes,
     max_depth: int,
     min_depth: int,
-    command: Optional[str],
+    command: None | str,
     namesonly: bool,
     count: bool,
     random: bool,
-    names: List[bytes],
-    skip_names: List[bytes],
+    names: list[bytes],
+    skip_names: list[bytes],
     no_files: bool,
     no_dirs: bool,
     no_symlinks: bool,
@@ -101,7 +98,7 @@ def _iterate(
     no_dotfiles: bool,
     no_dotpaths: bool,
     tty: bool,
-    verbose: Union[bool, int, float],
+    verbose: bool | int | float,
 ):
     c = 0
     if command:
