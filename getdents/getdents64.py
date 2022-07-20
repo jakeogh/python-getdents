@@ -138,40 +138,40 @@ def _iterate(
         sys.stdout.buffer.write(msgpack.packb(c))
         sys.stdout.buffer.close()
         return
-    else:
-        end = b"\0"
-        if tty:
-            end = b"\n"
 
-        with open("/dev/stdout", mode="ab") as fd:
-            for item in dentgen:
-                if _filter(
-                    item=item,
-                    names=names,
-                    no_files=no_files,
-                    no_dirs=no_dirs,
-                    no_symlinks=no_symlinks,
-                    no_block_devices=no_block_devices,
-                    no_char_devices=no_char_devices,
-                    no_fifos=no_fifos,
-                    no_sockets=no_sockets,
-                    no_dotfiles=no_dotfiles,
-                ):
-                    continue
-                if command:
-                    command_output = check_output([command, os.fsdecode(item.path)])
-                    if command_output.endswith(b"\n"):
-                        command_output = command_output[:-1]
+    end = b"\0"
+    if tty:
+        end = b"\n"
 
-                    fd.write(command_output + b" " + item.path + end)
+    with open("/dev/stdout", mode="ab") as fd:
+        for item in dentgen:
+            if _filter(
+                item=item,
+                names=names,
+                no_files=no_files,
+                no_dirs=no_dirs,
+                no_symlinks=no_symlinks,
+                no_block_devices=no_block_devices,
+                no_char_devices=no_char_devices,
+                no_fifos=no_fifos,
+                no_sockets=no_sockets,
+                no_dotfiles=no_dotfiles,
+            ):
+                continue
+            if command:
+                command_output = check_output([command, os.fsdecode(item.path)])
+                if command_output.endswith(b"\n"):
+                    command_output = command_output[:-1]
+
+                fd.write(command_output + b" " + item.path + end)
+            else:
+                if namesonly:
+                    fd.write(item.name + end)
                 else:
-                    if namesonly:
-                        fd.write(item.name + end)
-                    else:
-                        if tty:
-                            fd.write(repr(item.path).encode("utf8") + end)
-                            continue
-                        fd.write(msgpack.packb(item.path))
+                    if tty:
+                        fd.write(repr(item.path).encode("utf8") + end)
+                        continue
+                    fd.write(msgpack.packb(item.path))
 
 
 #    --norecurse       Dont traverse paths. TODO lower --name to C in this case
@@ -208,7 +208,7 @@ def help_max_depth(max_depth=None):
     print(usage(), file=sys.stderr)
     if max_depth:
         print(
-            'Error: --max-depth requires a integer >= 0, not "{0}".'.format(max_depth),
+            f'Error: --max-depth requires a integer >= 0, not "{max_depth}".',
             file=sys.stderr,
         )
         return
@@ -219,7 +219,7 @@ def help_min_depth(min_depth=None):
     print(usage(), file=sys.stderr)
     if min_depth:
         print(
-            'Error: --min-depth requires a integer >= 0, not "{0}".'.format(min_depth),
+            f'Error: --min-depth requires a integer >= 0, not "{min_depth}".',
             file=sys.stderr,
         )
         return
@@ -260,7 +260,7 @@ def main():
     index = 1
     if args >= 1:
         while index <= args:
-            if sys.argv[index] in ["--max-depth", "--maxdepth"]:
+            if sys.argv[index] in {"--max-depth", "--maxdepth"}:
                 index += 1
                 try:
                     max_depth = int(sys.argv[index])
@@ -274,7 +274,7 @@ def main():
                     help_max_depth()
                     sys.exit(1)
                 index += 1
-            elif sys.argv[index] in ["--min-depth", "--mindepth"]:
+            elif sys.argv[index] in {"--min-depth", "--mindepth"}:
                 index += 1
                 try:
                     min_depth = int(sys.argv[index])
@@ -297,7 +297,7 @@ def main():
                     # help_name()
                     # sys.exit(1)
                 index += 1
-            elif sys.argv[index] in ["--skipname", "--skip-name"]:
+            elif sys.argv[index] in {"--skipname", "--skip-name"}:
                 index += 1
                 try:
                     skipnames.append(os.fsencode(sys.argv[index]))
@@ -310,7 +310,7 @@ def main():
                 index += 1
                 command = sys.argv[index]
                 index += 1
-            elif sys.argv[index] in ["--namesonly", "--names-only"]:
+            elif sys.argv[index] in {"--namesonly", "--names-only"}:
                 namesonly = True
                 index += 1
             elif sys.argv[index] == "--count":
@@ -319,57 +319,57 @@ def main():
             elif sys.argv[index] == "--random":
                 random = True
                 index += 1
-            elif sys.argv[index] in ["--nofiles", "--no-files"]:
+            elif sys.argv[index] in {"--nofiles", "--no-files"}:
                 nofiles = True
                 index += 1
-            elif sys.argv[index] in ["--filesonly", "--files-only", "--files"]:
+            elif sys.argv[index] in {"--filesonly", "--files-only", "--files"}:
                 filesonly = True
                 index += 1
-            elif sys.argv[index] in ["--nodirs", "--no-dirs"]:
+            elif sys.argv[index] in {"--nodirs", "--no-dirs"}:
                 nodirs = True
                 index += 1
-            elif sys.argv[index] in [
+            elif sys.argv[index] in {
                 "--dirsonly",
                 "--dirs-only",
                 "--dirs",
                 "--directories",
-            ]:
+            }:
                 dirsonly = True
                 index += 1
-            elif sys.argv[index] in ["--nosymlinks", "--no-symlinks"]:
+            elif sys.argv[index] in {"--nosymlinks", "--no-symlinks"}:
                 nosymlinks = True
                 index += 1
-            elif sys.argv[index] in [
+            elif sys.argv[index] in {
                 "--nochar",
                 "--no-char",
                 "--nodevices",
                 "--no-devices",
-            ]:
+            }:
                 nochar = True
                 index += 1
-            elif sys.argv[index] in [
+            elif sys.argv[index] in {
                 "--noblock",
                 "--no-block",
                 "--nodevices",
                 "--no-devices",
-            ]:
+            }:
                 noblock = True
                 index += 1
-            elif sys.argv[index] in ["--nofifo", "--no-fifo"]:
+            elif sys.argv[index] in {"--nofifo", "--no-fifo"}:
                 nofifo = True
                 index += 1
-            elif sys.argv[index] in ["--nosockets", "--no-sockets"]:
+            elif sys.argv[index] in {"--nosockets", "--no-sockets"}:
                 nosockets = True
                 index += 1
-            elif sys.argv[index] in ["--nodotfiles", "--no-dotfiles"]:
+            elif sys.argv[index] in {"--nodotfiles", "--no-dotfiles"}:
                 nodotfiles = True
                 index += 1
-            elif sys.argv[index] in [
+            elif sys.argv[index] in {
                 "--nodotpaths",
                 "--no-dotpaths",
                 "--skipdotpaths",
                 "--skip-dotpaths",
-            ]:
+            }:
                 nodotpaths = True
                 index += 1
             elif sys.argv[index] == "--verbose":
@@ -381,7 +381,7 @@ def main():
             else:
                 print(usage(), file=sys.stderr)
                 print(
-                    'Error: Unknown option "{0}".'.format(sys.argv[index]),
+                    f'Error: Unknown option "{sys.argv[index]}".',
                     file=sys.stderr,
                 )
                 sys.exit(1)
