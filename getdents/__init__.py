@@ -432,7 +432,9 @@ def paths(
             verbose,
         )
 
+    eprint(f"{path}=")
     path = os.fsencode(path)
+
     # if verbose == inf:
     #    print('getdents/__init__.py',
     #          path,
