@@ -432,7 +432,7 @@ def paths(
             verbose,
         )
 
-    eprint(f"{path=}")
+    # eprint(f"{path=}")
     path = os.fsencode(path)
 
     # if verbose == inf:
