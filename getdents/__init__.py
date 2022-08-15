@@ -90,7 +90,7 @@ def getdents(
         path (str): Location of the directory.
         buff_size (int): Buffer size in bytes for getdents64 syscall.
     """
-    eprint("getdents() path:", path)
+    # eprint("getdents() path:", path)
     if supress_permissionerror:
         try:
             path_fd = os.open(path, O_GETDENTS)
