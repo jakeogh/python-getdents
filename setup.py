@@ -4,6 +4,7 @@ from distutils.core import Extension
 
 from setuptools import setup
 
+# dont change order
 import fastentrypoints
 
 setup(
