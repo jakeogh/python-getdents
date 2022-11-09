@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-
-from distutils.core import Extension
+# isort: skip_file
 
 from setuptools import setup
+from distutils.core import Extension
 
-# dont change order
 import fastentrypoints
 
 setup(
