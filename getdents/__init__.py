@@ -348,14 +348,12 @@ class DentGen:
             self.min_depth = self.min_depth + len(self.path.split(b"/"))
         if self.verbose == inf:
             eprint(
-                f"DentGen() __attrs_post_init__() self.path: {self.path!r} DentGen() __attrs_post_init__() self.min_depth: {self.min_depth} self.max_depth: {self.max_depth} self.skip_dotpaths: {self.skip_dotpaths} self.skip_names: {self.skip_names}",
+                f"DentGen() __attrs_post_init__() {self.path=!r} DentGen() __attrs_post_init__() {self.min_depth=} {self.max_depth=} {self.skip_dotpaths=} {self.skip_names=}",
             )
 
     def __iter__(self, cur_depth: int = 0):
         if self.verbose == inf:
-            eprint(
-                f"DentGen() __iter__() cur_depth: {cur_depth} self.path: {self.path!r}"
-            )
+            eprint(f"DentGen() __iter__() {cur_depth=} {self.path=!r}")
         for inode, dtype, name in getdents(
             path=self.path,
             buff_size=self.buff_size,
@@ -365,9 +363,7 @@ class DentGen:
             supress_permissionerror=self.supress_permissionerror,
         ):
             if self.verbose == inf:
-                eprint(
-                    f"\nDentGen() __iter__() inode: {inode} dtype: {dtype} name: {name}"
-                )
+                eprint(f"\nDentGen() __iter__() {inode=} {dtype=} {name=}")
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             if self.verbose == inf:
                 eprint("DentGen() __iter__() dent:", repr(dent))
@@ -409,9 +405,6 @@ def paths(
     random: bool = False,
     verbose: bool | int | float,
 ) -> Iterator[Dent]:
-
-    # if (names_only and pathlib):
-    #    raise ValueError('names_only and pathlib are mutually exclusive')
 
     if verbose == inf:
         epprint(
