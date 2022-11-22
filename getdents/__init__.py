@@ -136,7 +136,7 @@ class Dent:
 
         if self.name == b".":
             split_p = self.parent.split(b"/")
-            eprint("Dent __init__() {self.name=} {split_p=}")
+            eprint(f"Dent       __init__() {self.name=} {split_p=}")
             self.name = split_p[-1]
             self.parent = b"/".join(split_p[:-1])
             del split_p
