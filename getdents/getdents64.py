@@ -146,7 +146,7 @@ def _iterate(
 
     with open("/dev/stdout", mode="ab") as fd:
         for item in dentgen:
-            eprint(f"{item=}")
+            # eprint(f"{item=}")
             if _filter(
                 item=item,
                 names=names,
