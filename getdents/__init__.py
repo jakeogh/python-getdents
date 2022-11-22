@@ -423,7 +423,7 @@ class DentGen:
                     ic("yielding", dent)
                     yield dent
                 ic("setting", self.path, "to", dent.parent)
-                assert False
+                #assert False
                 self.path = dent.parent
             else:
 
