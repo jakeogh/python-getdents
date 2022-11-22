@@ -419,6 +419,7 @@ class DentGen:
                     ic(self.max_depth, cur_depth + 1)
                     yield from self.__iter__(cur_depth + 1)  # hmmm
                 elif cur_depth == self.max_depth:
+                    ic(cur_depth, self.max_depth, self.min_depth, dent.depth(), dent)
                     if self.min_depth:
                         if dent.depth() < self.min_depth:
                             continue
