@@ -376,7 +376,7 @@ class DentGen:
             self.min_depth = self.min_depth + len(self.path.split(b"/"))
         if self.verbose:
             eprint(
-                f"DentGen() __attrs_post_init__() {self.path=!r} DentGen() __attrs_post_init__() {self.min_depth=} {self.max_depth=} {self.skip_dotpaths=} {self.skip_names=}",
+                f"DentGen() __init__() {self.path=!r} {self.min_depth=} {self.max_depth=} {self.skip_dotpaths=} {self.skip_names=}",
             )
 
     def __iter__(self, cur_depth: int = 0):
@@ -398,6 +398,7 @@ class DentGen:
             eprint(f"{_test_path=}")
             eprint(f"{self.path=}")
             assert _test_path.exists()
+            assert (_test_path / Path(os.fsdecode(name))).exists()
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             if self.verbose:
                 eprint("DentGen() __iter__() dent:", repr(dent))
