@@ -267,7 +267,7 @@ class Dent:
                 return True
         return False
 
-    @Reify
+    # @Reify
     def depth(self):
         return len(self.pathlib.parts)  # pylint: disable=no-member
 
@@ -346,13 +346,13 @@ class DentGen:
             self.min_depth = 0
         else:
             self.min_depth = self.min_depth + len(self.path.split(b"/"))
-        if self.verbose == inf:
+        if self.verbose:
             eprint(
                 f"DentGen() __attrs_post_init__() {self.path=!r} DentGen() __attrs_post_init__() {self.min_depth=} {self.max_depth=} {self.skip_dotpaths=} {self.skip_names=}",
             )
 
     def __iter__(self, cur_depth: int = 0):
-        if self.verbose == inf:
+        if self.verbose:
             eprint(f"DentGen() __iter__() {cur_depth=} {self.path=!r}")
         for inode, dtype, name in getdents(
             path=self.path,
@@ -362,14 +362,14 @@ class DentGen:
             skip_names=self.skip_names,
             supress_permissionerror=self.supress_permissionerror,
         ):
-            if self.verbose == inf:
+            if self.verbose:
                 eprint(f"\nDentGen() __iter__() {inode=} {dtype=} {name=}")
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
-            if self.verbose == inf:
+            if self.verbose:
                 eprint("DentGen() __iter__() dent:", repr(dent))
             if dent.path == self.path:
                 if self.min_depth:
-                    if dent.depth < self.min_depth:
+                    if dent.depth() < self.min_depth:
                         continue
                 yield dent
             elif dent.is_dir():
@@ -378,7 +378,7 @@ class DentGen:
                     yield from self.__iter__(cur_depth + 1)
                 elif cur_depth == self.max_depth:
                     if self.min_depth:
-                        if dent.depth < self.min_depth:
+                        if dent.depth() < self.min_depth:
                             continue
                     yield dent
                 self.path = dent.parent
