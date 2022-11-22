@@ -141,6 +141,7 @@ class Dent:
             self.parent = b"/".join(split_p[:-1])
             # del split_p
         self.path = b"/".join((self.parent, self.name))
+        assert Path(os.fsdecode(self.path)).exists()
         eprint(
             f"Dent      __init__() {self.path=!r} {self.name=} {split_p=} {self.parent=!r} {self.path=!r}"
         )
