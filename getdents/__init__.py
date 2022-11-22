@@ -18,7 +18,6 @@ from functools import update_wrapper
 from math import inf
 from pathlib import Path
 
-import attr
 from asserttool import ic
 from epprint import epprint
 from eprint import eprint
@@ -395,6 +394,7 @@ class DentGen:
             skip_names=self.skip_names,
             supress_permissionerror=self.supress_permissionerror,
         ):
+            ic(self.parent)
             if self.verbose:
                 eprint(f"DentGen() __iter__() {index=} {inode=} {dtype=} {name=}")
             index += 1
@@ -404,8 +404,7 @@ class DentGen:
             assert _test_path.exists()
             assert (_test_path / Path(os.fsdecode(name))).exists()
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
-            if self.verbose:
-                eprint("DentGen() __iter__() dent:", repr(dent))
+            ic(dent)
             if dent.path == self.path:
                 if self.min_depth:
                     if dent.depth() < self.min_depth:
@@ -427,6 +426,7 @@ class DentGen:
                     assert False
                     ic("yielding", dent)
                     yield dent
+                ic("setting", self.path, "to", dent.parent)
                 self.path = dent.parent
             else:
 
