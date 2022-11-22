@@ -134,6 +134,7 @@ class Dent:
         self.inode = inode
         self.dtype = dtype
 
+        eprint(f"Dent      __init__() {self.inode=} {self.name=} {self.parent=!r}")
         split_p = None
         if self.name == b".":
             split_p = self.parent.split(b"/")
@@ -143,7 +144,7 @@ class Dent:
             # del split_p
         self.path = b"/".join((self.parent, self.name))
         eprint(
-            f"Dent      __init__() {self.path=!r} {self.name=} {split_p=} {self.parent=!r} {self.path=!r}"
+            f"Dent      __init__() {self.inode=} {self.name=} {split_p=} {self.parent=!r} {self.path=!r}"
         )
         assert Path(os.fsdecode(self.path)).exists()
         # self.pathlib = Path(os.fsdecode(self.path))
