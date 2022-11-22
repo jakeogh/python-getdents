@@ -108,7 +108,7 @@ def getdents(
 
     try:
         for inode, dtype, name in getdents_raw(path_fd, buff_size, _random):
-            eprint(f"{inode=}", f"{dtype=}", f"{name=!r}")
+            eprint(f"getdents() {inode=}", f"{dtype=}", f"{name=!r}")
             if skip_dotpaths:
                 if name.startswith(b"."):
                     continue
