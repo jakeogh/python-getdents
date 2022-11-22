@@ -133,7 +133,7 @@ class Dent:
         self.inode = inode
         self.dtype = dtype
 
-        eprint(f"Dent      __init__() {self.inode=} {self.name=} {self.parent=!r}")
+        ic(self.inode, self.name, self.parent)
         split_p = None
         if self.name == b".":
             split_p = self.parent.split(b"/")
@@ -142,9 +142,7 @@ class Dent:
             self.parent = b"/".join(split_p[:-1])
             # del split_p
         self.path = b"/".join((self.parent, self.name))
-        eprint(
-            f"Dent      __init__() {self.inode=} {self.name=} {split_p=} {self.parent=!r} {self.path=!r}"
-        )
+        ic(self.inode, self.name, split_p, self.parent, self.path)
         assert Path(os.fsdecode(self.path)).exists()
         # self.pathlib = Path(os.fsdecode(self.path))
         self.lstat = None
@@ -320,8 +318,7 @@ class NameGen:
         #    print("NameGen() __attrs_post_init__() self.skip_names:", self.skip_names, file=sys.stderr)
 
     def __iter__(self):
-        if self.verbose == inf:
-            print("NameGen() __iter__() {self.path=!r}", file=sys.stderr)
+        ic(self.path)
 
         for inode, dtype, name in getdents(
             path=self.path,
@@ -383,8 +380,8 @@ class DentGen:
     # def __iter__(self, cur_depth: int = 0):
     # def __iter__(self, cur_depth: int):
     def __iter__(self, cur_depth: int = 0):
-        ic(cur_depth, self.path)
         index = 0
+        ic(index, cur_depth, self.path)
         for inode, dtype, name in getdents(
             path=self.path,
             buff_size=self.buff_size,
@@ -394,7 +391,7 @@ class DentGen:
             supress_permissionerror=self.supress_permissionerror,
         ):
             ic(self.path)
-            ic(index, inode, dtype, name)
+            ic(index, cur_depth, inode, dtype, name, self.path)
             index += 1
             _test_path = Path(os.fsdecode(self.path))
             ic(_test_path)
