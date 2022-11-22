@@ -399,8 +399,8 @@ class DentGen:
                 eprint(f"DentGen() __iter__() {index=} {inode=} {dtype=} {name=}")
             index += 1
             _test_path = Path(os.fsdecode(self.path))
-            eprint(f"{_test_path=}")
-            eprint(f"{self.path=}")
+            ic(_test_path)
+            ic(self.path)
             assert _test_path.exists()
             assert (_test_path / Path(os.fsdecode(name))).exists()
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
