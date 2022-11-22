@@ -19,6 +19,7 @@ from math import inf
 from pathlib import Path
 
 import attr
+from asserttool import ic
 from epprint import epprint
 from eprint import eprint
 
@@ -414,6 +415,7 @@ class DentGen:
                 eprint(f"{self.path=!r}")
                 assert Path(os.fsdecode(self.path)).exists()
                 if cur_depth < self.max_depth:
+                    ic(cur_depth + 1)
                     yield from self.__iter__(cur_depth + 1)  # hmmm
                 elif cur_depth == self.max_depth:
                     if self.min_depth:
