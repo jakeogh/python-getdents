@@ -143,7 +143,7 @@ class Dent:
             # del split_p
         self.path = b"/".join((self.parent, self.name))
         #ic(self.inode, self.name, split_p, self.parent, self.path)
-        assert Path(os.fsdecode(self.path)).exists()
+        #assert Path(os.fsdecode(self.path)).exists() # good test, but fails for broken symlinks
         # self.pathlib = Path(os.fsdecode(self.path))
         self.lstat = None
 
