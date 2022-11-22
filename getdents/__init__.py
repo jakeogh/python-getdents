@@ -396,8 +396,8 @@ class DentGen:
             _test_path = Path(os.fsdecode(self.path))
             #ic(_test_path)
             #ic(self.path)
-            assert _test_path.exists()
-            assert (_test_path / Path(os.fsdecode(name))).exists()
+            #assert _test_path.exists()
+            #assert (_test_path / Path(os.fsdecode(name))).exists()
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
             #ic(dent)
             if dent.path == self.path:
