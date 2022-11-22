@@ -142,7 +142,7 @@ class Dent:
             # del split_p
         self.path = b"/".join((self.parent, self.name))
         eprint(
-            f"Dent       __init__() {self.path=!r} {self.name=} {split_p=} {self.parent=!r} {self.path=!r}"
+            f"Dent      __init__() {self.path=!r} {self.name=} {split_p=} {self.parent=!r} {self.path=!r}"
         )
         # self.pathlib = Path(os.fsdecode(self.path))
         self.lstat = None
