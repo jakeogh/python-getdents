@@ -413,7 +413,7 @@ class DentGen:
                 yield dent
             elif dent.is_dir():
                 self.path = dent.parent + b"/" + dent.name
-                eprint(f"{self.path=!r}")
+                ic(dent.parent, self.path)
                 assert Path(os.fsdecode(self.path)).exists()
                 if cur_depth < self.max_depth:
                     ic("about to yield from", self.max_depth, cur_depth + 1)
@@ -428,6 +428,8 @@ class DentGen:
                     yield dent
                 self.path = dent.parent
             else:
+
+                ic("else (not dir) yielding", dent)
                 yield dent
 
 
