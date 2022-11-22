@@ -133,13 +133,17 @@ class Dent:
         self.inode = inode
         self.dtype = dtype
 
+        split_p = None
         if self.name == b".":
             split_p = self.parent.split(b"/")
-            eprint(f"Dent       __init__() {self.name=} {split_p=}")
+            # eprint(f"Dent       __init__() {self.name=} {split_p=}")
             self.name = split_p[-1]
             self.parent = b"/".join(split_p[:-1])
-            del split_p
+            # del split_p
         self.path = b"/".join((self.parent, self.name))
+        eprint(
+            f"Dent       __init__() {self.path=!r} {self.name=} {split_p=} {self.parent=!r} {self.path=!r}"
+        )
         # self.pathlib = Path(os.fsdecode(self.path))
         self.lstat = None
 
