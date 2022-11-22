@@ -416,7 +416,7 @@ class DentGen:
                 eprint(f"{self.path=!r}")
                 assert Path(os.fsdecode(self.path)).exists()
                 if cur_depth < self.max_depth:
-                    ic(self.max_depth, cur_depth + 1)
+                    ic("about to yield from", self.max_depth, cur_depth + 1)
                     yield from self.__iter__(cur_depth + 1)  # hmmm
                 elif cur_depth == self.max_depth:
                     ic(cur_depth, self.max_depth, self.min_depth, dent.depth(), dent)
