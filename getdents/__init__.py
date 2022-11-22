@@ -424,6 +424,7 @@ class DentGen:
                         if dent.depth() < self.min_depth:
                             ic(dent.depth() < self.min_depth, "continueing")
                             continue
+                    ic("yielding", dent)
                     yield dent
                 self.path = dent.parent
             else:
