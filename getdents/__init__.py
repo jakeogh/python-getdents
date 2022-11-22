@@ -394,7 +394,7 @@ class DentGen:
             skip_names=self.skip_names,
             supress_permissionerror=self.supress_permissionerror,
         ):
-            ic(self.parent)
+            ic(self.path)
             if self.verbose:
                 eprint(f"DentGen() __iter__() {index=} {inode=} {dtype=} {name=}")
             index += 1
