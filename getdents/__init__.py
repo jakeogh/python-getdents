@@ -126,16 +126,17 @@ def getdents(
         os.close(path_fd)
 
 
-@attr.s(auto_attribs=True, hash=False, cmp=False)
+# @attr.s(auto_attribs=True, hash=False, cmp=False)
 class Dent:
-    parent: bytes
-    name: bytes
-    inode: int
-    dtype: int
+    def __init__(self, parent: bytes, name: bytes, inode: int, dtype: int):
+        self.parent = parent
+        self.name = name
+        self.inode = inode
+        self.dtype = dtype
 
-    def __attrs_post_init__(self):
         if self.name == b".":
             split_p = self.parent.split(b"/")
+            eprint("Dent __init__() {self.name=} {split_p=}")
             self.name = split_p[-1]
             self.parent = b"/".join(split_p[:-1])
             del split_p
