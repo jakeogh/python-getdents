@@ -90,7 +90,7 @@ def getdents(
         path (str): Location of the directory.
         buff_size (int): Buffer size in bytes for getdents64 syscall.
     """
-    eprint(f"getdents() {path=!r}")
+    eprint(f"getdents()          {path=!r}")
     if supress_permissionerror:
         try:
             path_fd = os.open(path, O_GETDENTS)
@@ -109,7 +109,9 @@ def getdents(
     gdindex = 0
     try:
         for inode, dtype, name in getdents_raw(path_fd, buff_size, _random):
-            eprint(f"getdents() {gdindex=} {inode=}", f"{dtype=}", f"{name=!r}")
+            eprint(
+                f"getdents()           {gdindex=} {inode=}", f"{dtype=}", f"{name=!r}"
+            )
             gdindex += 1
             if skip_dotpaths:
                 if name.startswith(b"."):
