@@ -419,7 +419,7 @@ class DentGen:
                             #ic(dent.depth() < self.min_depth, "continueing")
                             self.path = dent.parent
                             continue
-                    assert False
+                    #assert False
                     #ic("yielding", dent)
                     yield dent
                 #ic("setting", self.path, "to", dent.parent)
