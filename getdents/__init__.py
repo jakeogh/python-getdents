@@ -379,6 +379,8 @@ class DentGen:
                 f"DentGen() __init__() {self.path=!r} {self.min_depth=} {self.max_depth=} {self.skip_dotpaths=} {self.skip_names=}",
             )
 
+    # def __iter__(self, cur_depth: int = 0):
+    # def __iter__(self, cur_depth: int):
     def __iter__(self, cur_depth: int = 0):
         if self.verbose:
             eprint(f"\nDentGen() __iter__() {cur_depth=} {self.path=!r}")
@@ -409,8 +411,9 @@ class DentGen:
                 yield dent
             elif dent.is_dir():
                 self.path = dent.parent + b"/" + dent.name
+                assert Path(os.fsdecode(self.path)).exists()
                 if cur_depth < self.max_depth:
-                    yield from self.__iter__(cur_depth + 1)
+                    yield from self.__iter__(cur_depth + 1)  # hmmm
                 elif cur_depth == self.max_depth:
                     if self.min_depth:
                         if dent.depth() < self.min_depth:
