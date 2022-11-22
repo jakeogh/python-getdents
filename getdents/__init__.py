@@ -383,8 +383,7 @@ class DentGen:
     # def __iter__(self, cur_depth: int = 0):
     # def __iter__(self, cur_depth: int):
     def __iter__(self, cur_depth: int = 0):
-        if self.verbose:
-            eprint(f"\nDentGen() __iter__() {cur_depth=} {self.path=!r}")
+        ic(cur_depth, self.path)
         index = 0
         for inode, dtype, name in getdents(
             path=self.path,
@@ -395,8 +394,7 @@ class DentGen:
             supress_permissionerror=self.supress_permissionerror,
         ):
             ic(self.path)
-            if self.verbose:
-                eprint(f"DentGen() __iter__() {index=} {inode=} {dtype=} {name=}")
+            ic(index, inode, dtype, name)
             index += 1
             _test_path = Path(os.fsdecode(self.path))
             ic(_test_path)
