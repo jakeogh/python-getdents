@@ -90,7 +90,7 @@ def getdents(
         path (str): Location of the directory.
         buff_size (int): Buffer size in bytes for getdents64 syscall.
     """
-    #eprint(f"getdents()          {path=!r}")
+    # eprint(f"getdents()          {path=!r}")
     if supress_permissionerror:
         try:
             path_fd = os.open(path, O_GETDENTS)
@@ -109,9 +109,9 @@ def getdents(
     gdindex = 0
     try:
         for inode, dtype, name in getdents_raw(path_fd, buff_size, _random):
-            #eprint(
+            # eprint(
             #    f"getdents()           {gdindex=} {inode=}", f"{dtype=}", f"{name=!r}"
-            #)
+            # )
             gdindex += 1
             if skip_dotpaths:
                 if name.startswith(b"."):
@@ -133,7 +133,7 @@ class Dent:
         self.inode = inode
         self.dtype = dtype
 
-        #ic(self.inode, self.name, self.parent)
+        # ic(self.inode, self.name, self.parent)
         split_p = None
         if self.name == b".":
             split_p = self.parent.split(b"/")
@@ -142,8 +142,8 @@ class Dent:
             self.parent = b"/".join(split_p[:-1])
             # del split_p
         self.path = b"/".join((self.parent, self.name))
-        #ic(self.inode, self.name, split_p, self.parent, self.path)
-        #assert Path(os.fsdecode(self.path)).exists() # good test, but fails for broken symlinks
+        # ic(self.inode, self.name, split_p, self.parent, self.path)
+        # assert Path(os.fsdecode(self.path)).exists() # good test, but fails for broken symlinks
         # self.pathlib = Path(os.fsdecode(self.path))
         self.lstat = None
 
@@ -318,7 +318,7 @@ class NameGen:
         #    print("NameGen() __attrs_post_init__() self.skip_names:", self.skip_names, file=sys.stderr)
 
     def __iter__(self):
-        #ic(self.path)
+        # ic(self.path)
 
         for inode, dtype, name in getdents(
             path=self.path,
@@ -381,7 +381,7 @@ class DentGen:
     # def __iter__(self, cur_depth: int):
     def __iter__(self, cur_depth: int = 0):
         index = 0
-        #ic(index, cur_depth, self.path)
+        # ic(index, cur_depth, self.path)
         for inode, dtype, name in getdents(
             path=self.path,
             buff_size=self.buff_size,
@@ -390,16 +390,16 @@ class DentGen:
             skip_names=self.skip_names,
             supress_permissionerror=self.supress_permissionerror,
         ):
-            #ic(self.path)
-            #ic(index, cur_depth, inode, dtype, name, self.path)
+            # ic(self.path)
+            # ic(index, cur_depth, inode, dtype, name, self.path)
             index += 1
             _test_path = Path(os.fsdecode(self.path))
-            #ic(_test_path)
-            #ic(self.path)
-            #assert _test_path.exists()
-            #assert (_test_path / Path(os.fsdecode(name))).exists()
+            # ic(_test_path)
+            # ic(self.path)
+            # assert _test_path.exists()
+            # assert (_test_path / Path(os.fsdecode(name))).exists()
             dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
-            #ic(dent)
+            # ic(dent)
             if dent.path == self.path:
                 if self.min_depth:
                     if dent.depth() < self.min_depth:
@@ -407,27 +407,27 @@ class DentGen:
                 yield dent
             elif dent.is_dir():
                 self.path = dent.parent + b"/" + dent.name
-                #ic(dent.parent, self.path)
+                # ic(dent.parent, self.path)
                 assert Path(os.fsdecode(self.path)).exists()
                 if cur_depth < self.max_depth:
-                    #ic("about to yield from", self.max_depth, cur_depth + 1)
+                    # ic("about to yield from", self.max_depth, cur_depth + 1)
                     yield from self.__iter__(cur_depth + 1)  # hmmm
                 elif cur_depth == self.max_depth:
-                    #ic(cur_depth, self.max_depth, self.min_depth, dent.depth(), dent)
+                    # ic(cur_depth, self.max_depth, self.min_depth, dent.depth(), dent)
                     if self.min_depth:
                         if dent.depth() < self.min_depth:
-                            #ic(dent.depth() < self.min_depth, "continueing")
+                            # ic(dent.depth() < self.min_depth, "continueing")
                             self.path = dent.parent
                             continue
-                    #assert False
-                    #ic("yielding", dent)
+                    # assert False
+                    # ic("yielding", dent)
                     yield dent
-                #ic("setting", self.path, "to", dent.parent)
-                #assert False
+                # ic("setting", self.path, "to", dent.parent)
+                # assert False
                 self.path = dent.parent
             else:
 
-                #ic("else (not dir) yielding", dent)
+                # ic("else (not dir) yielding", dent)
                 yield dent
 
 
@@ -448,7 +448,7 @@ def paths(
     max_depth=inf,
     min_depth=0,
     random: bool = False,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
 ) -> Iterator[Dent]:
 
     if verbose == inf:
@@ -541,7 +541,7 @@ def paths(
 
 def paths_pathlib(
     path,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
     **kw,
 ) -> Iterator[Path]:
     for dent in paths(path=path, verbose=verbose, **kw):
@@ -550,7 +550,7 @@ def paths_pathlib(
 
 def paths_names(
     path,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
     **kw,
 ) -> Iterator[bytes]:
     # for dent in paths(path=path, max_depth=0, **kw):
@@ -568,7 +568,7 @@ def files(
     max_size=inf,
     min_size: int = 0,
     random: bool = False,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
 ) -> Iterator[Dent]:
     if max_size < 0:
         max_size = inf
@@ -602,7 +602,7 @@ def files(
 
 def files_pathlib(
     path,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
     **kw,
 ) -> Iterator[Path]:
     for dent in files(path=path, verbose=verbose, **kw):
@@ -611,7 +611,7 @@ def files_pathlib(
 
 def files_names(
     path,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
     **kw,
 ) -> Iterator[bytes]:
     for dent in files(path=path, verbose=verbose, **kw):
@@ -626,7 +626,7 @@ def links(
     max_depth=inf,
     min_depth: int = 0,
     random: bool = False,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
 ) -> Iterator[Dent]:
     return paths(
         path=path,
@@ -648,7 +648,7 @@ def links(
 
 def links_pathlib(
     path,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
     **kw,
 ) -> Iterator[Path]:
     for dent in links(path=path, verbose=verbose, **kw):
@@ -658,7 +658,7 @@ def links_pathlib(
 
 def links_names(
     path,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
     **kw,
 ) -> Iterator[bytes]:
     for dent in links(path=path, verbose=verbose, **kw):
@@ -674,7 +674,7 @@ def dirs(
     max_depth=inf,
     min_depth: int = 0,
     random: bool = False,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
 ) -> Iterator[Dent]:
     return paths(
         path=path,
@@ -696,7 +696,7 @@ def dirs(
 
 def dirs_pathlib(
     path,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
     **kw,
 ) -> Iterator[Path]:
     for dent in dirs(path=path, verbose=verbose, **kw):
@@ -706,7 +706,7 @@ def dirs_pathlib(
 
 def dirs_names(
     path,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
     **kw,
 ) -> Iterator[bytes]:
     for dent in dirs(path=path, verbose=verbose, **kw):
