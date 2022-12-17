@@ -289,7 +289,6 @@ class NameGen:
     # bool is new in C99 and cpython tries to remain C90 compatible
     def __init__(
         self,
-        verbose: bool | int | float,
         skip_dotpaths: bool,
         skip_names: None | list[bytes],
         path: bytes,
@@ -297,6 +296,7 @@ class NameGen:
         random: bool = False,
         names_only: bool = False,
         supress_permissionerror: bool = False,
+        verbose: bool | int | float = False,
     ):
 
         self.verbose = verbose
@@ -344,7 +344,6 @@ class DentGen:
     def __init__(
         self,
         path: bytes,
-        verbose: bool | int | float,
         skip_dotpaths: bool,
         skip_names: None | list[bytes],
         min_depth: int = 0,
@@ -352,6 +351,7 @@ class DentGen:
         buff_size: int = BUFF_SIZE,
         random: bool = False,
         supress_permissionerror: bool = False,
+        verbose: bool | int | float = False,
     ):
         self.path = os.fsencode(path)
         self.verbose = verbose

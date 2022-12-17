@@ -99,7 +99,7 @@ def _iterate(
     no_dotfiles: bool,
     no_dotpaths: bool,
     tty: bool,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
 ):
     c = 0
     if command:
