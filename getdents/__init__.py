@@ -18,28 +18,20 @@ from functools import update_wrapper
 from math import inf
 from pathlib import Path
 
-from asserttool import ic
+# from asserttool import ic
 from epprint import epprint
 from eprint import eprint
 
 # from ._getdents import \
 #    MIN_GETDENTS_BUFF_SIZE  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import \
-    DT_BLK  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import \
-    DT_CHR  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import \
-    DT_DIR  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import \
-    DT_FIFO  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import \
-    DT_LNK  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import \
-    DT_REG  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import \
-    DT_SOCK  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import \
-    DT_UNKNOWN  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import DT_BLK  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import DT_CHR  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import DT_DIR  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import DT_FIFO  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import DT_LNK  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import DT_REG  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import DT_SOCK  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import DT_UNKNOWN  # noqa: ignore=F401 # pylint: disable=import-error
 from ._getdents import O_GETDENTS  # pylint: disable=import-error
 from ._getdents import getdents_raw  # pylint: disable=import-error
 
@@ -68,7 +60,6 @@ def getdents(
     buff_size: int = BUFF_SIZE,
     supress_permissionerror: bool = False,
 ):
-
     """Get directory entries.
 
     Wrapper around getdents_raw(), simulates ls behaviour: ignores deleted
@@ -298,7 +289,6 @@ class NameGen:
         supress_permissionerror: bool = False,
         verbose: bool | int | float = False,
     ):
-
         self.verbose = verbose
         self.skip_dotpaths = skip_dotpaths
         self.skip_names = skip_names
@@ -426,7 +416,6 @@ class DentGen:
                 # assert False
                 self.path = dent.parent
             else:
-
                 # ic("else (not dir) yielding", dent)
                 yield dent
 
@@ -450,7 +439,6 @@ def paths(
     random: bool = False,
     verbose: bool | int | float = False,
 ) -> Iterator[Dent]:
-
     if verbose == inf:
         epprint(
             path,

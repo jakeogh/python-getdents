@@ -47,7 +47,6 @@ def _filter(
     no_fifos: bool,
     no_dotfiles: bool,
 ):
-
     if names:
         if item.name not in names:
             return True
@@ -191,6 +190,7 @@ Options:
     --skipname  STR   Dont traverse PATH past name. Can be specified multiple times.
     --filesonly       Only print regular files.
     --dirsonly        Only print directories.
+    --symlinksonly    Only print symlinks.
     --nofiles         Do not print regular files.
     --nodirs          Do not print directories.
     --nosymlinks      Do not print symbolic links.
@@ -247,6 +247,7 @@ def main():
     skipnames = []
     nofiles = False
     filesonly = False
+    symlinksonly = False
     dirsonly = False
     nodirs = False
     nosymlinks = False
@@ -327,6 +328,9 @@ def main():
             elif sys.argv[index] in {"--filesonly", "--files-only", "--files"}:
                 filesonly = True
                 index += 1
+            elif sys.argv[index] in {"--symlinksonly", "--symlinks-only", "--symlinks"}:
+                symlinksonly = True
+                index += 1
             elif sys.argv[index] in {"--nodirs", "--no-dirs"}:
                 nodirs = True
                 index += 1
@@ -395,6 +399,13 @@ def main():
                 file=sys.stderr,
             )
             sys.exit(1)
+    if nosymlinks:
+        if symlinksonly:
+            print(
+                "Error: --symlinksonly and --nosymlinks are mutually exclusive. Exiting.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
     if nodirs:
         if dirsonly:
             print(
@@ -409,10 +420,26 @@ def main():
                 file=sys.stderr,
             )
             sys.exit(1)
+        if symlinksonly:
+            print(
+                "Error: --symlinksonly and --filesonly are mutually exclusive. Exiting.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+    # todo
 
     if filesonly:
         nodirs = True
         nosymlinks = True
+        nochar = True
+        noblock = True
+        nofifo = True
+        nosockets = True
+
+    if symlinksonly:
+        nofiles = True
+        nodirs = True
+        nosymlinks = False
         nochar = True
         noblock = True
         nofifo = True
