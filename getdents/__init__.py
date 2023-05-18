@@ -24,14 +24,22 @@ from eprint import eprint
 
 # from ._getdents import \
 #    MIN_GETDENTS_BUFF_SIZE  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_BLK  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_CHR  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_DIR  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_FIFO  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_LNK  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_REG  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_SOCK  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_UNKNOWN  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_BLK  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_CHR  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_DIR  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_FIFO  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_LNK  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_REG  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_SOCK  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_UNKNOWN  # noqa: ignore=F401 # pylint: disable=import-error
 from ._getdents import O_GETDENTS  # pylint: disable=import-error
 from ._getdents import getdents_raw  # pylint: disable=import-error
 
@@ -383,7 +391,7 @@ class DentGen:
             # ic(self.path)
             # ic(index, cur_depth, inode, dtype, name, self.path)
             index += 1
-            _test_path = Path(os.fsdecode(self.path))
+            # _test_path = Path(os.fsdecode(self.path))
             # ic(_test_path)
             # ic(self.path)
             # assert _test_path.exists()
@@ -398,7 +406,7 @@ class DentGen:
             elif dent.is_dir():
                 self.path = dent.parent + b"/" + dent.name
                 # ic(dent.parent, self.path)
-                assert Path(os.fsdecode(self.path)).exists()
+                # assert Path(os.fsdecode(self.path)).exists()
                 if cur_depth < self.max_depth:
                     # ic("about to yield from", self.max_depth, cur_depth + 1)
                     yield from self.__iter__(cur_depth + 1)  # hmmm
