@@ -18,9 +18,9 @@ from functools import update_wrapper
 from math import inf
 from pathlib import Path
 
-# from asserttool import ic
 from epprint import epprint
 from eprint import eprint
+from globalverbose import gvd
 
 # from ._getdents import \
 #    MIN_GETDENTS_BUFF_SIZE  # noqa: ignore=F401 # pylint: disable=import-error
@@ -42,6 +42,9 @@ from ._getdents import \
     DT_UNKNOWN  # noqa: ignore=F401 # pylint: disable=import-error
 from ._getdents import O_GETDENTS  # pylint: disable=import-error
 from ._getdents import getdents_raw  # pylint: disable=import-error
+
+# from asserttool import ic
+
 
 BUFF_SIZE = 4096 * 32  # 128k
 
@@ -308,7 +311,7 @@ class NameGen:
 
         if self.path[0] != b"/":
             self.path = os.path.realpath(os.path.expanduser(self.path))
-        # if self.verbose == inf:
+        # if gvd:
         #    print("NameGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
         #    print("NameGen() __attrs_post_init__() self.names_only:", self.names_only, file=sys.stderr)
         #    print("NameGen() __attrs_post_init__() self.random:", self.random, file=sys.stderr)
@@ -330,7 +333,7 @@ class NameGen:
                 continue
             if not self.names_only:
                 name = Path(os.fsdecode(self.path)) / Path(os.fsdecode(name))
-            # if self.verbose == inf:
+            # if gvd:
             #    print("NameGen() __iter__() inode:", inode, file=sys.stderr)
             #    print("NameGen() __iter__() dtype:", dtype, file=sys.stderr)
             #    print("NameGen() __iter__() name:", name, file=sys.stderr)
@@ -375,8 +378,6 @@ class DentGen:
                 f"DentGen() __init__() {self.path=!r} {self.min_depth=} {self.max_depth=} {self.skip_dotpaths=} {self.skip_names=}",
             )
 
-    # def __iter__(self, cur_depth: int = 0):
-    # def __iter__(self, cur_depth: int):
     def __iter__(self, cur_depth: int = 0):
         index = 0
         # ic(index, cur_depth, self.path)
@@ -447,7 +448,7 @@ def paths(
     random: bool = False,
     verbose: bool | int | float = False,
 ) -> Iterator[Dent]:
-    if verbose == inf:
+    if gvd:
         epprint(
             path,
             skip_dotpaths,
@@ -463,13 +464,12 @@ def paths(
             max_depth,
             min_depth,
             random,
-            verbose,
         )
 
     # eprint(f"{path=}")
     path = os.fsencode(path)
 
-    # if verbose == inf:
+    # if gvd:
     #    print('getdents/__init__.py',
     #          path,
     #          "return_dirs:", return_dirs,
