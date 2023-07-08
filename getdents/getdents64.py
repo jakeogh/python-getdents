@@ -26,9 +26,10 @@ from signal import signal
 
 import msgpack
 from eprint import eprint
+from unmp import unmp
+
 from getdents import Dent
 from getdents import DentGen
-from unmp import unmp
 
 signal(SIGPIPE, SIG_DFL)
 
@@ -110,7 +111,7 @@ def _iterate(
         min_depth=min_depth,
         skip_dotpaths=no_dotpaths,
         skip_names=skip_names,
-        supress_permissionerror=True,  # for CLI/script usage
+        suppress_permissionerror=True,  # for CLI/script usage
         random=random,
         verbose=verbose,
     )
