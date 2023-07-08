@@ -26,10 +26,9 @@ from signal import signal
 
 import msgpack
 from eprint import eprint
-from unmp import unmp
-
 from getdents import Dent
 from getdents import DentGen
+from unmp import unmp
 
 signal(SIGPIPE, SIG_DFL)
 

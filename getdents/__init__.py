@@ -93,15 +93,21 @@ def getdents(
         buff_size (int): Buffer size in bytes for getdents64 syscall.
     """
     # eprint(f"getdents()          {path=!r}")
-    if suppress_permissionerror:
-        try:
-            path_fd = os.open(path, O_GETDENTS)
-        except PermissionError:
-            sys.stderr.write(f"getdents: ‘{os.fsdecode(path)}’: Permission denied\n")
-            sys.stderr.flush()
-            return
-    else:
+    try:
         path_fd = os.open(path, O_GETDENTS)
+    except PermissionError as e:
+        if not suppress_permissionerror:
+            raise e
+        path_fd = os.open(path, O_GETDENTS)
+        sys.stderr.write(f"getdents: ‘{os.fsdecode(path)}’: Permission denied\n")
+        sys.stderr.flush()
+        return
+    except FileNotFoundError:
+        sys.stderr.write(
+            f"getdents: ‘{os.fsdecode(path)}’: No such file or directory\n"
+        )
+        sys.stderr.flush()
+        return
 
     if random is False:
         _random = 0
