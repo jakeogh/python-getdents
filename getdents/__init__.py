@@ -567,6 +567,7 @@ def files(
     max_size=inf,
     min_size: int = 0,
     random: bool = False,
+    suppress_permissionerror: bool = False,
     verbose: bool | int | float = False,
 ) -> Iterator[Dent]:
     if max_size < 0:
@@ -581,6 +582,7 @@ def files(
         return_char_devices=False,
         return_files=True,
         names=names,
+        suppress_permissionerror=suppress_permissionerror,
         skip_dotpaths=skip_dotpaths,
         max_depth=max_depth,
         min_depth=min_depth,
@@ -625,6 +627,7 @@ def links(
     max_depth=inf,
     min_depth: int = 0,
     random: bool = False,
+    suppress_permissionerror: bool = False,
     verbose: bool | int | float = False,
 ) -> Iterator[Dent]:
     return paths(
@@ -638,6 +641,7 @@ def links(
         return_char_devices=False,
         skip_dotpaths=skip_dotpaths,
         names=names,
+        suppress_permissionerror=suppress_permissionerror,
         max_depth=max_depth,
         min_depth=min_depth,
         random=random,
@@ -687,6 +691,7 @@ def dirs(
         return_char_devices=False,
         skip_dotpaths=skip_dotpaths,
         names=names,
+        suppress_permissionerror=suppress_permissionerror,
         max_depth=max_depth,
         min_depth=min_depth,
         random=random,
