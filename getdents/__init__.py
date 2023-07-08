@@ -98,7 +98,6 @@ def getdents(
     except PermissionError as e:
         if not suppress_permissionerror:
             raise e
-        path_fd = os.open(path, O_GETDENTS)
         sys.stderr.write(f"getdents: ‘{os.fsdecode(path)}’: Permission denied\n")
         sys.stderr.flush()
         return
