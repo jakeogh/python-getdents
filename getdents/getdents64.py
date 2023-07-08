@@ -234,12 +234,6 @@ def main():
     min_depth = -1
     command = None
     args = len(sys.argv) - 1
-    # if args >= 1:
-    #    path = os.fsencode(sys.argv[1])
-    # else:
-    #    print(usage(), file=sys.stderr)
-    #    print("Error: A path is required.", file=sys.stderr)
-    #    sys.exit(1)
     namesonly = False
     count = False
     random = False
@@ -259,7 +253,6 @@ def main():
     nodotpaths = False
     verbose = False
     debug = False
-    # print_end = b'\x00'
     index = 1
     if args >= 1:
         while index <= args:
