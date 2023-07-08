@@ -69,7 +69,7 @@ def getdents(
     skip_dotpaths: bool,
     skip_names: None | list[bytes],
     buff_size: int = BUFF_SIZE,
-    supress_permissionerror: bool = False,
+    suppress_permissionerror: bool = False,
 ):
     """Get directory entries.
 
@@ -93,7 +93,7 @@ def getdents(
         buff_size (int): Buffer size in bytes for getdents64 syscall.
     """
     # eprint(f"getdents()          {path=!r}")
-    if supress_permissionerror:
+    if suppress_permissionerror:
         try:
             path_fd = os.open(path, O_GETDENTS)
         except PermissionError:
@@ -297,7 +297,7 @@ class NameGen:
         buff_size: int = BUFF_SIZE,
         random: bool = False,
         names_only: bool = False,
-        supress_permissionerror: bool = False,
+        suppress_permissionerror: bool = False,
         verbose: bool | int | float = False,
     ):
         self.verbose = verbose
@@ -307,7 +307,7 @@ class NameGen:
         self.buff_size = buff_size
         self.random = random
         self.names_only = names_only
-        self.supress_permissionerror = supress_permissionerror
+        self.suppress_permissionerror = suppress_permissionerror
 
         if self.path[0] != b"/":
             self.path = os.path.realpath(os.path.expanduser(self.path))
@@ -327,7 +327,7 @@ class NameGen:
             random=self.random,
             skip_dotpaths=self.skip_dotpaths,
             skip_names=self.skip_names,
-            supress_permissionerror=self.supress_permissionerror,
+            suppress_permissionerror=self.suppress_permissionerror,
         ):
             if name == b".":
                 continue
@@ -351,7 +351,7 @@ class DentGen:
         max_depth: float = inf,
         buff_size: int = BUFF_SIZE,
         random: bool = False,
-        supress_permissionerror: bool = False,
+        suppress_permissionerror: bool = False,
         verbose: bool | int | float = False,
     ):
         self.path = os.fsencode(path)
@@ -362,7 +362,7 @@ class DentGen:
         self.max_depth = max_depth
         self.buff_size = buff_size
         self.random = random
-        self.supress_permissionerror = supress_permissionerror
+        self.suppress_permissionerror = suppress_permissionerror
         # iters: int = 0
 
         if self.path[0] != b"/":
@@ -387,7 +387,7 @@ class DentGen:
             random=self.random,
             skip_dotpaths=self.skip_dotpaths,
             skip_names=self.skip_names,
-            supress_permissionerror=self.supress_permissionerror,
+            suppress_permissionerror=self.suppress_permissionerror,
         ):
             # ic(self.path)
             # ic(index, cur_depth, inode, dtype, name, self.path)
@@ -446,6 +446,7 @@ def paths(
     max_depth=inf,
     min_depth=0,
     random: bool = False,
+    suppress_permissionerror: bool = False,
     verbose: bool | int | float = False,
 ) -> Iterator[Dent]:
     if gvd:
@@ -464,6 +465,7 @@ def paths(
             max_depth,
             min_depth,
             random,
+            suppress_permissionerror,
         )
 
     # eprint(f"{path=}")
@@ -491,6 +493,7 @@ def paths(
         min_depth=min_depth,
         skip_dotpaths=skip_dotpaths,
         skip_names=skip_names,
+        suppress_permissionerror=suppress_permissionerror,
         random=random,
         verbose=verbose,
     )
@@ -670,6 +673,7 @@ def dirs(
     max_depth=inf,
     min_depth: int = 0,
     random: bool = False,
+    ignore_permissionerror: bool = False,
     verbose: bool | int | float = False,
 ) -> Iterator[Dent]:
     return paths(
