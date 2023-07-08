@@ -673,7 +673,7 @@ def dirs(
     max_depth=inf,
     min_depth: int = 0,
     random: bool = False,
-    ignore_permissionerror: bool = False,
+    suppress_permissionerror: bool = False,
     verbose: bool | int | float = False,
 ) -> Iterator[Dent]:
     return paths(
