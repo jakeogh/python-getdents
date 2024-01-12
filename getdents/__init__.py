@@ -92,7 +92,8 @@ def getdents(
         path (str): Location of the directory.
         buff_size (int): Buffer size in bytes for getdents64 syscall.
     """
-    # eprint(f"getdents()          {path=!r}")
+    ## eprint(f"getdents()          {path=!r}")
+    eprint(os.getcwd())
     try:
         path_fd = os.open(path, O_GETDENTS)
     except PermissionError as e:
@@ -303,7 +304,7 @@ class NameGen:
         random: bool = False,
         names_only: bool = False,
         suppress_permissionerror: bool = False,
-        verbose: bool | int | float = False,
+        verbose: bool = False,
     ):
         self.verbose = verbose
         self.skip_dotpaths = skip_dotpaths
@@ -357,7 +358,7 @@ class DentGen:
         buff_size: int = BUFF_SIZE,
         random: bool = False,
         suppress_permissionerror: bool = False,
-        verbose: bool | int | float = False,
+        verbose: bool = False,
     ):
         self.path = os.fsencode(path)
         self.verbose = verbose
@@ -452,7 +453,7 @@ def paths(
     min_depth=0,
     random: bool = False,
     suppress_permissionerror: bool = False,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
 ) -> Iterator[Dent]:
     if gvd:
         epprint(
@@ -545,7 +546,7 @@ def paths(
 
 def paths_pathlib(
     path,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
     **kw,
 ) -> Iterator[Path]:
     for dent in paths(path=path, verbose=verbose, **kw):
@@ -554,7 +555,7 @@ def paths_pathlib(
 
 def paths_names(
     path,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
     **kw,
 ) -> Iterator[bytes]:
     # for dent in paths(path=path, max_depth=0, **kw):
@@ -573,7 +574,7 @@ def files(
     min_size: int = 0,
     random: bool = False,
     suppress_permissionerror: bool = False,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
 ) -> Iterator[Dent]:
     if max_size < 0:
         max_size = inf
@@ -608,7 +609,7 @@ def files(
 
 def files_pathlib(
     path,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
     **kw,
 ) -> Iterator[Path]:
     for dent in files(path=path, verbose=verbose, **kw):
@@ -617,7 +618,7 @@ def files_pathlib(
 
 def files_names(
     path,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
     **kw,
 ) -> Iterator[bytes]:
     for dent in files(path=path, verbose=verbose, **kw):
@@ -633,7 +634,7 @@ def links(
     min_depth: int = 0,
     random: bool = False,
     suppress_permissionerror: bool = False,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
 ) -> Iterator[Dent]:
     return paths(
         path=path,
@@ -656,7 +657,7 @@ def links(
 
 def links_pathlib(
     path,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
     **kw,
 ) -> Iterator[Path]:
     for dent in links(path=path, verbose=verbose, **kw):
@@ -666,7 +667,7 @@ def links_pathlib(
 
 def links_names(
     path,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
     **kw,
 ) -> Iterator[bytes]:
     for dent in links(path=path, verbose=verbose, **kw):
@@ -683,7 +684,7 @@ def dirs(
     min_depth: int = 0,
     random: bool = False,
     suppress_permissionerror: bool = False,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
 ) -> Iterator[Dent]:
     return paths(
         path=path,
@@ -706,7 +707,7 @@ def dirs(
 
 def dirs_pathlib(
     path,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
     **kw,
 ) -> Iterator[Path]:
     for dent in dirs(path=path, verbose=verbose, **kw):
@@ -716,7 +717,7 @@ def dirs_pathlib(
 
 def dirs_names(
     path,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
     **kw,
 ) -> Iterator[bytes]:
     for dent in dirs(path=path, verbose=verbose, **kw):
