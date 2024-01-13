@@ -93,7 +93,7 @@ def getdents(
         buff_size (int): Buffer size in bytes for getdents64 syscall.
     """
     ## eprint(f"getdents()          {path=!r}")
-    eprint(os.getcwd())
+    ##eprint(os.getcwd())
     try:
         path_fd = os.open(path, O_GETDENTS)
     except PermissionError as e:
