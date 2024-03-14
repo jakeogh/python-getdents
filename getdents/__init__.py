@@ -24,14 +24,22 @@ from globalverbose import gvd
 
 # from ._getdents import \
 #    MIN_GETDENTS_BUFF_SIZE  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_BLK  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_CHR  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_DIR  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_FIFO  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_LNK  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_REG  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_SOCK  # noqa: ignore=F401 # pylint: disable=import-error
-from ._getdents import DT_UNKNOWN  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_BLK  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_CHR  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_DIR  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_FIFO  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_LNK  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_REG  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_SOCK  # noqa: ignore=F401 # pylint: disable=import-error
+from ._getdents import \
+    DT_UNKNOWN  # noqa: ignore=F401 # pylint: disable=import-error
 from ._getdents import O_GETDENTS  # pylint: disable=import-error
 from ._getdents import getdents_raw  # pylint: disable=import-error
 
