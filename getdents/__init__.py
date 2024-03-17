@@ -102,12 +102,12 @@ def getdents(
         sys.stderr.write(f"getdents: ‘{os.fsdecode(path)}’: Permission denied\n")
         sys.stderr.flush()
         return
-    except FileNotFoundError:
+    except FileNotFoundError as e:
         sys.stderr.write(
             f"getdents: ‘{os.fsdecode(path)}’: No such file or directory\n"
         )
         sys.stderr.flush()
-        return
+        raise e
 
     if random is False:
         _random = 0
