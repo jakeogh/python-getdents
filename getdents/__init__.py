@@ -457,21 +457,21 @@ def paths(
 ) -> Iterator[Dent]:
     if gvd:
         epprint(
-            path,
-            skip_dotpaths,
-            skip_names,
-            return_dirs,
-            return_files,
-            return_symlinks,
-            return_sockets,
-            return_fifos,
-            return_block_devices,
-            return_char_devices,
-            names,
-            max_depth,
-            min_depth,
-            random,
-            suppress_permissionerror,
+            f"{path=}",
+            f"{skip_dotpaths=}",
+            f"{skip_names=}",
+            f"{return_dirs=}",
+            f"{return_files=}",
+            f"{return_symlinks=}",
+            f"{return_sockets=}",
+            f"{return_fifos=}",
+            f"{return_block_devices=}",
+            f"{return_char_devices=}",
+            f"{names=}",
+            f"{max_depth=}",
+            f"{min_depth=}",
+            f"{random=}",
+            f"{suppress_permissionerror=}",
         )
 
     # eprint(f"{path=}")
