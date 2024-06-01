@@ -40,7 +40,6 @@ struct getdents_state {
 # define MIN_GETDENTS_BUFF_SIZE (MAXNAMLEN + sizeof(struct linux_dirent64))
 #endif
 
-
 static PyObject *
 getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
