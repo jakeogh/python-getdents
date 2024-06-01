@@ -161,7 +161,8 @@ getdents_next(struct getdents_state *s)
             while(1) {
                 struct linux_dirent64 *dd = (struct linux_dirent64 *)(s->buff + bpos);
                 //fprintf(stderr, "%p %p %lu %d %hu dd->name: %s\n", &dd, s->buff + bpos, s->buff + bpos, bpos, dd->d_reclen, dd->d_name);
-                dents[index] = (unsigned long)(s->buff + bpos);
+                //dents[index] = s->buff + bpos;
+                dents[index] = (unsigned long *)(s->buff + bpos);
                 //fprintf(stderr, "%lu\n", dents[index]);
                 bpos += dd->d_reclen;
                 if (bpos >= s->nread)
