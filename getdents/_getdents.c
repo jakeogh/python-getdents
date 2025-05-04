@@ -9,6 +9,7 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <sys/syscall.h>
+#include <sys/time.h>
 #define SHUFFLE_IMPLEMENTATION
 #include "shuffle.h"
 
