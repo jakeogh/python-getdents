@@ -98,7 +98,7 @@ def getdents(
         path_fd = os.open(path, O_GETDENTS)
     except PermissionError as e:
         if not suppress_permissionerror:
-            raise e
+            raise
         sys.stderr.write(f"getdents: ‘{os.fsdecode(path)}’: Permission denied\n")
         sys.stderr.flush()
         return
@@ -107,7 +107,7 @@ def getdents(
             f"getdents: ‘{os.fsdecode(path)}’: No such file or directory\n"
         )
         sys.stderr.flush()
-        raise e
+        raise
 
     if random is False:
         _random = 0
