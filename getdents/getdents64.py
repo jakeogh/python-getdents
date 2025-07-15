@@ -289,7 +289,7 @@ def main():
                 try:
                     names.append(os.fsencode(sys.argv[index]))
                 except IndexError as e:
-                    raise e
+                    raise
                     # help_name()
                     # sys.exit(1)
                 index += 1
@@ -298,7 +298,7 @@ def main():
                 try:
                     skipnames.append(os.fsencode(sys.argv[index]))
                 except IndexError as e:
-                    raise e
+                    raise
                     # help_name()
                     # sys.exit(1)
                 index += 1
