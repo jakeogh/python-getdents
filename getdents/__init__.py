@@ -70,6 +70,7 @@ def getdents(
     skip_names: None | list[bytes],
     buff_size: int = BUFF_SIZE,
     suppress_permissionerror: bool = False,
+    suppress_filenotfounderror: bool = False,
 ):
     """Get directory entries.
 
@@ -96,18 +97,20 @@ def getdents(
     ##eprint(os.getcwd())
     try:
         path_fd = os.open(path, O_GETDENTS)
-    except PermissionError as e:
-        if not suppress_permissionerror:
-            raise
-        sys.stderr.write(f"getdents: ‘{os.fsdecode(path)}’: Permission denied\n")
-        sys.stderr.flush()
-        return
-    except FileNotFoundError as e:
+    except FileNotFoundError:
         sys.stderr.write(
             f"getdents: ‘{os.fsdecode(path)}’: No such file or directory\n"
         )
         sys.stderr.flush()
-        raise
+        if not suppress_filenotfounderror:
+            raise
+        return
+    except PermissionError:
+        sys.stderr.write(f"getdents: ‘{os.fsdecode(path)}’: Permission denied\n")
+        sys.stderr.flush()
+        if not suppress_permissionerror:
+            raise
+        return
 
     if random is False:
         _random = 0
@@ -304,6 +307,7 @@ class NameGen:
         random: bool = False,
         names_only: bool = False,
         suppress_permissionerror: bool = False,
+        suppress_filenotfounderror: bool = False,
         verbose: bool = False,
     ):
         self.verbose = verbose
@@ -314,6 +318,7 @@ class NameGen:
         self.random = random
         self.names_only = names_only
         self.suppress_permissionerror = suppress_permissionerror
+        self.suppress_filenotfounderror = suppress_filenotfounderror
 
         if self.path[0] != b"/":
             self.path = os.path.realpath(os.path.expanduser(self.path))
@@ -334,6 +339,7 @@ class NameGen:
             skip_dotpaths=self.skip_dotpaths,
             skip_names=self.skip_names,
             suppress_permissionerror=self.suppress_permissionerror,
+            suppress_filenotfounderror=self.suppress_filenotfounderror,
         ):
             if name == b".":
                 continue
@@ -358,6 +364,7 @@ class DentGen:
         buff_size: int = BUFF_SIZE,
         random: bool = False,
         suppress_permissionerror: bool = False,
+        suppress_filenotfounderror: bool = False,
         verbose: bool = False,
     ):
         self.path = os.fsencode(path)
@@ -369,6 +376,7 @@ class DentGen:
         self.buff_size = buff_size
         self.random = random
         self.suppress_permissionerror = suppress_permissionerror
+        self.suppress_filenotfounderror = suppress_filenotfounderror
         # iters: int = 0
 
         if self.path[0] != b"/":
@@ -394,6 +402,7 @@ class DentGen:
             skip_dotpaths=self.skip_dotpaths,
             skip_names=self.skip_names,
             suppress_permissionerror=self.suppress_permissionerror,
+            suppress_filenotfounderror=self.suppress_filenotfounderror,
         ):
             # ic(self.path)
             # ic(index, cur_depth, inode, dtype, name, self.path)
@@ -453,6 +462,7 @@ def paths(
     min_depth=0,
     random: bool = False,
     suppress_permissionerror: bool = False,
+    suppress_filenotfounderror: bool = False,
     verbose: bool = False,
 ) -> Iterator[Dent]:
     if gvd:
@@ -472,6 +482,7 @@ def paths(
             f"{min_depth=}",
             f"{random=}",
             f"{suppress_permissionerror=}",
+            f"{suppress_filenotfounderror=}",
         )
 
     # eprint(f"{path=}")
@@ -500,6 +511,7 @@ def paths(
         skip_dotpaths=skip_dotpaths,
         skip_names=skip_names,
         suppress_permissionerror=suppress_permissionerror,
+        suppress_filenotfounderror=suppress_filenotfounderror,
         random=random,
         verbose=verbose,
     )
@@ -574,6 +586,7 @@ def files(
     min_size: int = 0,
     random: bool = False,
     suppress_permissionerror: bool = False,
+    suppress_filenotfounderror: bool = False,
     verbose: bool = False,
 ) -> Iterator[Dent]:
     if max_size < 0:
@@ -589,6 +602,7 @@ def files(
         return_files=True,
         names=names,
         suppress_permissionerror=suppress_permissionerror,
+        suppress_filenotfounderror=suppress_filenotfounderror,
         skip_dotpaths=skip_dotpaths,
         max_depth=max_depth,
         min_depth=min_depth,
@@ -634,6 +648,7 @@ def links(
     min_depth: int = 0,
     random: bool = False,
     suppress_permissionerror: bool = False,
+    suppress_filenotfounderror: bool = False,
     verbose: bool = False,
 ) -> Iterator[Dent]:
     return paths(
@@ -648,6 +663,7 @@ def links(
         skip_dotpaths=skip_dotpaths,
         names=names,
         suppress_permissionerror=suppress_permissionerror,
+        suppress_filenotfounderror=suppress_filenotfounderror,
         max_depth=max_depth,
         min_depth=min_depth,
         random=random,
@@ -684,6 +700,7 @@ def dirs(
     min_depth: int = 0,
     random: bool = False,
     suppress_permissionerror: bool = False,
+    suppress_filenotfounderror: bool = False,
     verbose: bool = False,
 ) -> Iterator[Dent]:
     return paths(
@@ -698,6 +715,7 @@ def dirs(
         skip_dotpaths=skip_dotpaths,
         names=names,
         suppress_permissionerror=suppress_permissionerror,
+        suppress_filenotfounderror=suppress_filenotfounderror,
         max_depth=max_depth,
         min_depth=min_depth,
         random=random,
