@@ -112,6 +112,7 @@ def _iterate(
         skip_dotpaths=no_dotpaths,
         skip_names=skip_names,
         suppress_permissionerror=True,  # for CLI/script usage
+        suppress_filenotfounderror=True,  # for CLI/script usage
         random=random,
         verbose=verbose,
     )
