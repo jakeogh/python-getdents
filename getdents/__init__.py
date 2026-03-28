@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
 
-# pylint: disable=useless-suppression             # [I0021]
-# pylint: disable=missing-docstring               # [C0111] docstrings are always outdated and wrong
-# pylint: disable=fixme                           # [W0511] todo is encouraged
-# pylint: disable=too-many-arguments              # [R0913]
-# pylint: disable=too-many-branches               # [R0912]
-# pylint: disable=too-few-public-methods          # [R0903]
-# pylint: disable=missing-param-doc               # [W9015]
 
 from __future__ import annotations
 
@@ -55,7 +48,11 @@ class Reify:
         self.wrapped = wrapped
         update_wrapper(self, wrapped)
 
-    def __get__(self, inst, objtype=None):
+    def __get__(
+        self,
+        inst,
+        objtype=None,
+    ):
         if inst is None:
             return self
         val = self.wrapped(inst)
@@ -138,7 +135,13 @@ def getdents(
 
 
 class Dent:
-    def __init__(self, parent: bytes, name: bytes, inode: int, dtype: int):
+    def __init__(
+        self,
+        parent: bytes,
+        name: bytes,
+        inode: int,
+        dtype: int,
+    ):
         self.parent = parent
         self.name = name
         self.inode = inode
@@ -152,7 +155,7 @@ class Dent:
             self.name = split_p[-1]
             self.parent = b"/".join(split_p[:-1])
             # del split_p
-        self.path = b"/".join((self.parent, self.name))
+        self.path = os.path.join(self.parent, self.name)
         # ic(self.inode, self.name, split_p, self.parent, self.path)
         # assert Path(os.fsdecode(self.path)).exists() # good test, but fails for broken symlinks
         # self.pathlib = Path(os.fsdecode(self.path))
@@ -412,7 +415,12 @@ class DentGen:
             # ic(self.path)
             # assert _test_path.exists()
             # assert (_test_path / Path(os.fsdecode(name))).exists()
-            dent = Dent(parent=self.path, name=name, inode=inode, dtype=dtype)
+            dent = Dent(
+                parent=self.path,
+                name=name,
+                inode=inode,
+                dtype=dtype,
+            )
             # ic(dent)
             if dent.path == self.path:
                 if self.min_depth:
@@ -420,7 +428,7 @@ class DentGen:
                         continue
                 yield dent
             elif dent.is_dir():
-                self.path = dent.parent + b"/" + dent.name
+                self.path = os.path.join(dent.parent, dent.name)
                 # ic(dent.parent, self.path)
                 # assert Path(os.fsdecode(self.path)).exists()
                 if cur_depth < self.max_depth:
