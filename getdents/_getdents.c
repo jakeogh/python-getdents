@@ -133,7 +133,8 @@ getdents_next(struct getdents_state *s)
             return NULL;
 
         if (s->nread == -1) {
-            PyErr_SetString(PyExc_OSError, "getdents64");
+            //PyErr_SetString(PyExc_OSError, "getdents64");
+	    PyErr_SetFromErrnoWithFilenameObject(PyExc_OSError, PyBytes_FromString("getdents64"));
             return NULL;
         }
 
