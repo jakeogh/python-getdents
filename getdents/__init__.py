@@ -117,9 +117,6 @@ def getdents(
     gdindex = 0
     try:
         for inode, dtype, name in getdents_raw(path_fd, buff_size, _random):
-            # eprint(
-            #    f"getdents()           {gdindex=} {inode=}", f"{dtype=}", f"{name=!r}"
-            # )
             gdindex += 1
             if skip_dotpaths:
                 if name.startswith(b"."):
@@ -127,11 +124,17 @@ def getdents(
             if skip_names:
                 if name in skip_names:
                     continue
-
             if name != b"..":
                 yield (inode, dtype, name)
+    except OSError as e:
+        sys.stderr.write(f"getdents: '{os.fsdecode(path)}': {e.strerror}\n")
+        sys.stderr.flush()
     finally:
         os.close(path_fd)
+
+
+
+
 
 
 class Dent:
