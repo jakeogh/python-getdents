@@ -96,14 +96,14 @@ def getdents(
         path_fd = os.open(path, O_GETDENTS)
     except FileNotFoundError:
         sys.stderr.write(
-            f"getdents: ‘{os.fsdecode(path)}’: No such file or directory\n"
+            f"getdents: '{os.fsdecode(path)}': No such file or directory\n"
         )
         sys.stderr.flush()
         if not suppress_filenotfounderror:
             raise
         return
     except PermissionError:
-        sys.stderr.write(f"getdents: ‘{os.fsdecode(path)}’: Permission denied\n")
+        sys.stderr.write(f"getdents: '{os.fsdecode(path)}': Permission denied\n")
         sys.stderr.flush()
         if not suppress_permissionerror:
             raise
@@ -395,11 +395,12 @@ class DentGen:
                 f"DentGen() __init__() {self.path=!r} {self.min_depth=} {self.max_depth=} {self.skip_dotpaths=} {self.skip_names=}",
             )
 
-    def __iter__(self, cur_depth: int = 0):
-        index = 0
-        # ic(index, cur_depth, self.path)
+    def __iter__(self, cur_path: bytes | None = None, cur_depth: int = 0):
+        if cur_path is None:
+            cur_path = self.path
+        # ic(cur_depth, cur_path)
         for inode, dtype, name in getdents(
-            path=self.path,
+            path=cur_path,
             buff_size=self.buff_size,
             random=self.random,
             skip_dotpaths=self.skip_dotpaths,
@@ -407,46 +408,28 @@ class DentGen:
             suppress_permissionerror=self.suppress_permissionerror,
             suppress_filenotfounderror=self.suppress_filenotfounderror,
         ):
-            # ic(self.path)
-            # ic(index, cur_depth, inode, dtype, name, self.path)
-            index += 1
-            # _test_path = Path(os.fsdecode(self.path))
-            # ic(_test_path)
-            # ic(self.path)
-            # assert _test_path.exists()
-            # assert (_test_path / Path(os.fsdecode(name))).exists()
+            if name == b".":  # skip self-reference; dirs are yielded explicitly below
+                continue
+            # ic(cur_depth, inode, dtype, name, cur_path)
             dent = Dent(
-                parent=self.path,
+                parent=cur_path,
                 name=name,
                 inode=inode,
                 dtype=dtype,
             )
             # ic(dent)
-            if dent.path == self.path:
-                if self.min_depth:
-                    if dent.depth() < self.min_depth:
-                        continue
-                yield dent
-            elif dent.is_dir():
-                self.path = os.path.join(dent.parent, dent.name)
-                # ic(dent.parent, self.path)
-                # assert Path(os.fsdecode(self.path)).exists()
+            if dent.is_dir():
                 if cur_depth < self.max_depth:
-                    # ic("about to yield from", self.max_depth, cur_depth + 1)
-                    yield from self.__iter__(cur_depth + 1)  # hmmm
+                    # yield the dir itself (replaces the old "." entry mechanism)
+                    if not (self.min_depth and dent.depth() < self.min_depth):
+                        yield dent
+                    yield from self.__iter__(dent.path, cur_depth + 1)
                 elif cur_depth == self.max_depth:
                     # ic(cur_depth, self.max_depth, self.min_depth, dent.depth(), dent)
-                    if self.min_depth:
-                        if dent.depth() < self.min_depth:
-                            # ic(dent.depth() < self.min_depth, "continueing")
-                            self.path = dent.parent
-                            continue
-                    # assert False
+                    if self.min_depth and dent.depth() < self.min_depth:
+                        continue
                     # ic("yielding", dent)
                     yield dent
-                # ic("setting", self.path, "to", dent.parent)
-                # assert False
-                self.path = dent.parent
             else:
                 # ic("else (not dir) yielding", dent)
                 yield dent
