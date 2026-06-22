@@ -108,6 +108,15 @@ def getdents(
         if not suppress_permissionerror:
             raise
         return
+    except NotADirectoryError:
+        # entry enumerated as a dir by the parent but is no longer one (race)
+        sys.stderr.write(f"getdents: '{os.fsdecode(path)}': Not a directory\n")
+        sys.stderr.flush()
+        return
+    except OSError as e:
+        sys.stderr.write(f"getdents: '{os.fsdecode(path)}': {e.strerror}\n")
+        sys.stderr.flush()
+        return
 
     if random is False:
         _random = 0
@@ -117,6 +126,9 @@ def getdents(
     gdindex = 0
     try:
         for inode, dtype, name in getdents_raw(path_fd, buff_size, _random):
+            # eprint(
+            #    f"getdents()           {gdindex=} {inode=}", f"{dtype=}", f"{name=!r}"
+            # )
             gdindex += 1
             if skip_dotpaths:
                 if name.startswith(b"."):
@@ -124,17 +136,16 @@ def getdents(
             if skip_names:
                 if name in skip_names:
                     continue
+
             if name != b"..":
                 yield (inode, dtype, name)
     except OSError as e:
+        # syscall-level failure mid-iteration (EIO, ESTALE, etc.); the fd was
+        # opened fine but getdents64 itself failed. Don't let it abort the walk.
         sys.stderr.write(f"getdents: '{os.fsdecode(path)}': {e.strerror}\n")
         sys.stderr.flush()
     finally:
         os.close(path_fd)
-
-
-
-
 
 
 class Dent:
