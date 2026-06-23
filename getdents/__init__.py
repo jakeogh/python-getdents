@@ -193,34 +193,34 @@ class Dent:
         return hash(self.path)
 
     def __eq__(self, other):
-        if self.path == other.path:
-            return True
-        return False
+        if not isinstance(other, Dent):
+            return NotImplemented
+        return self.path == other.path
 
     def __ne__(self, other):
-        if self.path != other.path:
-            return True
-        return False
+        if not isinstance(other, Dent):
+            return NotImplemented
+        return self.path != other.path
 
     def __lt__(self, other):
-        if self.path < other.path:
-            return True
-        return False
+        if not isinstance(other, Dent):
+            return NotImplemented
+        return self.path < other.path
 
     def __le__(self, other):
-        if self.path <= other.path:
-            return True
-        return False
+        if not isinstance(other, Dent):
+            return NotImplemented
+        return self.path <= other.path
 
     def __gt__(self, other):
-        if self.path > other.path:
-            return True
-        return False
+        if not isinstance(other, Dent):
+            return NotImplemented
+        return self.path > other.path
 
     def __ge__(self, other):
-        if self.path >= other.path:
-            return True
-        return False
+        if not isinstance(other, Dent):
+            return NotImplemented
+        return self.path >= other.path
 
     def __fspath__(self):
         return os.fsdecode(self.path)
@@ -230,83 +230,83 @@ class Dent:
         return self.path.rsplit(path, maxsplit=1)[-1]
 
     def is_unknown(self):
-        if self.dtype == 0:
-            return True
-        return False
+        return self.dtype == 0
+
+    def _stat_mode(self):
+        # Only reached for DT_UNKNOWN entries (filesystems like XFS/overlayfs
+        # may report 0). The path can vanish or dangle between enumeration and
+        # the lstat, so a failure here just means "type indeterminate".
+        if self.lstat is None:
+            try:
+                self.lstat = os.lstat(self.path)
+            except OSError:
+                return None
+        return self.lstat.st_mode
 
     def is_fifo(self):
         if self.dtype == 1:
             return True
         if self.is_unknown():
-            if not self.lstat:
-                self.lstat = os.lstat(self.path)
-            if stat.S_ISFIFO(self.lstat.st_mode):
-                return True
+            mode = self._stat_mode()
+            return mode is not None and stat.S_ISFIFO(mode)
         return False
 
     def is_char_device(self):
         if self.dtype == 2:
             return True
         if self.is_unknown():
-            if not self.lstat:
-                self.lstat = os.lstat(self.path)
-            if stat.S_ISCHR(self.lstat.st_mode):
-                return True
+            mode = self._stat_mode()
+            return mode is not None and stat.S_ISCHR(mode)
         return False
 
     def is_dir(self):
         if self.dtype == 4:
             return True
         if self.is_unknown():
-            if not self.lstat:
-                self.lstat = os.lstat(self.path)
-            if stat.S_ISDIR(self.lstat.st_mode):
-                return True
+            mode = self._stat_mode()
+            return mode is not None and stat.S_ISDIR(mode)
         return False
 
     def is_block_device(self):
         if self.dtype == 6:
             return True
         if self.is_unknown():
-            if not self.lstat:
-                self.lstat = os.lstat(self.path)
-            if stat.S_ISBLK(self.lstat.st_mode):
-                return True
+            mode = self._stat_mode()
+            return mode is not None and stat.S_ISBLK(mode)
         return False
 
     def is_file(self):
         if self.dtype == 8:
             return True
         if self.is_unknown():
-            if not self.lstat:
-                self.lstat = os.lstat(self.path)
-            if stat.S_ISREG(self.lstat.st_mode):
-                return True
+            mode = self._stat_mode()
+            return mode is not None and stat.S_ISREG(mode)
         return False
 
     def is_symlink(self):
         if self.dtype == 10:
             return True
         if self.is_unknown():
-            if not self.lstat:
-                self.lstat = os.lstat(self.path)
-            if stat.S_ISLNK(self.lstat.st_mode):
-                return True
+            mode = self._stat_mode()
+            return mode is not None and stat.S_ISLNK(mode)
         return False
 
     def is_socket(self):
         if self.dtype == 12:
             return True
         if self.is_unknown():
-            if not self.lstat:
-                self.lstat = os.lstat(self.path)
-            if stat.S_ISSOCK(self.lstat.st_mode):
-                return True
+            mode = self._stat_mode()
+            return mode is not None and stat.S_ISSOCK(mode)
         return False
 
     # @Reify
     def depth(self):
-        return len(self.pathlib.parts)  # pylint: disable=no-member
+        # Number of path components; cheap byte count instead of building a
+        # Path and tuple-splitting on the hot recursion path.
+        p = self.path.rstrip(b"/")
+        if not p:
+            return 1  # root "/"
+        return p.count(b"/") + 1
 
     @Reify
     def size(self):
