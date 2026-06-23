@@ -50,8 +50,8 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
     // i (int)        -> fd
     // n (Py_ssize_t) -> buff_size
     // |              -> following args optional
-    // p (int/bool)   -> rand
-    if (!PyArg_ParseTuple(args, "in|p", &fd, &buff_size, &rand))
+    // i (int)        -> rand (validated to 0/1 below)
+    if (!PyArg_ParseTuple(args, "in|i", &fd, &buff_size, &rand))
         return NULL;
 
     struct stat st;
