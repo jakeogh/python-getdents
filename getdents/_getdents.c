@@ -1,5 +1,6 @@
 #include <Python.h>
 #include <dirent.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -23,14 +24,12 @@ struct linux_dirent64 {
 
 struct getdents_state {
     PyObject_HEAD
-    char  *buff;
-    int    bpos;
-    int    fd;
-    int    rand;
-    char  *names;
-    int    nread;
-    size_t buff_size;
-    bool   ready_for_next_batch;
+    char      *buff;
+    Py_ssize_t bpos;
+    int        fd;
+    int        rand;
+    Py_ssize_t nread;
+    size_t     buff_size;
 };
 
 #ifndef O_GETDENTS
@@ -44,28 +43,31 @@ struct getdents_state {
 static PyObject *
 getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 {
-    size_t buff_size;
+    Py_ssize_t buff_size;
     int fd;
-    int rand;
-    char *names;
+    int rand = 0;
 
-    // https://docs.python.org/3/c-api/arg.html#c.PyArg_ParseTuple
-    // i (int) [long int]: Convert a plain C int to a Python integer object.
-    // n (int) [Py_ssize_t]: Convert a C Py_ssize_t to a Python integer.
-    // y (bytes) [const char *]: This converts a C string to a Python bytes object. If the C string pointer is NULL, None is returned.
-    //if (!PyArg_ParseTuple(args, "iniy", &fd, &buff_size, &rand, &names))
-    if (!PyArg_ParseTuple(args, "ini", &fd, &buff_size, &rand))
+    // i (int)        -> fd
+    // n (Py_ssize_t) -> buff_size
+    // |              -> following args optional
+    // p (int/bool)   -> rand
+    if (!PyArg_ParseTuple(args, "in|p", &fd, &buff_size, &rand))
         return NULL;
 
-    if (!(fcntl(fd, F_GETFL) & O_DIRECTORY)) {
+    struct stat st;
+    if (fstat(fd, &st) == -1) {
+        PyErr_SetFromErrno(PyExc_OSError);
+        return NULL;
+    }
+    if (!S_ISDIR(st.st_mode)) {
         PyErr_SetString(
             PyExc_NotADirectoryError,
-            "fd must be opened with O_DIRECTORY flag"
+            "fd must refer to a directory"
         );
         return NULL;
     }
 
-    if (buff_size < MIN_GETDENTS_BUFF_SIZE) {
+    if (buff_size < (Py_ssize_t) MIN_GETDENTS_BUFF_SIZE) {
         PyErr_SetString(
             PyExc_ValueError,
             "buff_size is too small"
@@ -73,8 +75,7 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
         return NULL;
     }
 
-    //fprintf(stderr, "rand: %d\n", rand);
-    if ((rand != 1) & (rand != 0)) {
+    if (rand != 0 && rand != 1) {
         PyErr_SetString(
             PyExc_ValueError,
             "random must be 0 or 1"
@@ -82,163 +83,139 @@ getdents_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
         return NULL;
     }
 
-    struct getdents_state *state = (void *) type->tp_alloc(type, 0);
+    struct getdents_state *state =
+        (struct getdents_state *) type->tp_alloc(type, 0);
 
     if (!state)
         return NULL;
 
-    void *buff = malloc(buff_size);
+    void *buff = malloc((size_t) buff_size);
 
-    if (!buff)
+    if (!buff) {
+        Py_DECREF(state);
         return PyErr_NoMemory();
+    }
 
     state->buff = buff;
-    state->buff_size = buff_size;
+    state->buff_size = (size_t) buff_size;
     state->fd = fd;
     state->rand = rand;
-    state->names = names;
     state->bpos = 0;
     state->nread = 0;
-    state->ready_for_next_batch = true;
     return (PyObject *) state;
 }
 
 static void
 getdents_dealloc(struct getdents_state *state)
 {
-    //fprintf(stderr, "about to free(state->buff)\n");
     free(state->buff);
     Py_TYPE(state)->tp_free(state);
+}
+
+/* Shuffle the linux_dirent64 records contained in s->buff in place, using a
+ * format-preserving permutation seeded from the wall clock. Operates only on
+ * the records of the current syscall batch (s->nread bytes). */
+static int
+getdents_shuffle_batch(struct getdents_state *s)
+{
+    if (s->nread <= 0)
+        return 0;
+
+    void *random_buff = malloc(s->buff_size);
+    if (!random_buff) {
+        PyErr_NoMemory();
+        return -1;
+    }
+
+    /* Upper bound on record count. The smallest representable record is the
+     * fixed header plus a 1-byte name and its NUL; using a conservative
+     * minimum guarantees we never under-allocate the index arrays. */
+    size_t min_reclen = offsetof(struct linux_dirent64, d_name) + 2;
+    size_t max_records = (size_t) s->nread / min_reclen + 1;
+
+    char **dents = malloc(max_records * sizeof(char *));
+    char **random_dents = malloc(max_records * sizeof(char *));
+    if (!dents || !random_dents) {
+        free(dents);
+        free(random_dents);
+        free(random_buff);
+        PyErr_NoMemory();
+        return -1;
+    }
+
+    size_t count = 0;
+    Py_ssize_t bpos = 0;
+    while (bpos < s->nread) {
+        struct linux_dirent64 *dd =
+            (struct linux_dirent64 *)(s->buff + bpos);
+        if (dd->d_reclen == 0)  /* defensive: avoid infinite loop */
+            break;
+        dents[count++] = s->buff + bpos;
+        bpos += dd->d_reclen;
+    }
+
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+
+    struct shuffle_ctx ctx;
+    shuffle_init(&ctx, count, (size_t) tv.tv_usec);
+
+    for (size_t i = 0; i < count; ++i)
+        random_dents[i] = dents[shuffle_index(&ctx, i)];
+
+    bpos = 0;
+    for (size_t i = 0; i < count; ++i) {
+        struct linux_dirent64 *dd =
+            (struct linux_dirent64 *)(random_dents[i]);
+        memcpy(random_buff + bpos, random_dents[i], dd->d_reclen);
+        bpos += dd->d_reclen;
+    }
+    memcpy(s->buff, random_buff, (size_t) s->nread);
+
+    free(dents);
+    free(random_dents);
+    free(random_buff);
+    return 0;
 }
 
 static PyObject *
 getdents_next(struct getdents_state *s)
 {
-    // bool s->ready_for_next_batch
-    // int  s->bpos
-    // int  s->nread
-    s->ready_for_next_batch = s->bpos >= s->nread;
-
-    if (s->ready_for_next_batch) {
+    if (s->bpos >= s->nread) {
         s->bpos = 0;
-        // man getdents64:
-        //     int getdents64(unsigned int fd, struct linux_dirent64 *dirp, unsigned int count);  # count is the buffer size
-        //         int    s->fd
-        //         char*  s->buff  (linux_dirent64 entries)
-        //         size_t s->buff_size
-        s->nread = syscall(SYS_getdents64, s->fd, s->buff, s->buff_size);
-        //         int    s->nread (number of bytes read)
+        Py_ssize_t nread;
+        do {
+            errno = 0;
+            nread = syscall(SYS_getdents64, s->fd, s->buff, s->buff_size);
+        } while (nread == -1 && errno == EINTR);
+
+        if (nread == -1) {
+            PyErr_SetFromErrno(PyExc_OSError);
+            return NULL;
+        }
+
+        s->nread = nread;
 
         if (s->nread == 0)
-            return NULL;
-
-        if (s->nread == -1) {
-            //PyErr_SetString(PyExc_OSError, "getdents64");
-	    PyErr_SetFromErrnoWithFilenameObject(PyExc_OSError, PyBytes_FromString("getdents64"));
-            return NULL;
-        }
-
-        // TODO
-        //if (s->names) {
-        //    fprintf(stderr, "s->names: %s\n", s->names);
-        //}
+            return NULL;  /* StopIteration */
 
         if (s->rand) {
-            //void *buff = malloc(s->buff_size);
-            //if (!buff)
-            //    return PyErr_NoMemory();
-
-            void *random_buff = malloc(s->buff_size);
-            if (!random_buff)
-                return PyErr_NoMemory();
-
-            // each struct linux_dirent64 in s->buff has a different d->d_reclen
-
-            int bpos = 0;
-            int index = 0;
-            unsigned long *dents[s->nread/24];  // 24 appears the be the min linux_dirent64 size
-            unsigned long *random_dents[s->nread/24];
-
-            // calculate index, the number of dents in the struct
-            while(1) {
-                struct linux_dirent64 *dd = (struct linux_dirent64 *)(s->buff + bpos);
-                //fprintf(stderr, "%p %p %lu %d %hu dd->name: %s\n", &dd, s->buff + bpos, s->buff + bpos, bpos, dd->d_reclen, dd->d_name);
-                //dents[index] = s->buff + bpos;
-                dents[index] = (unsigned long *)(s->buff + bpos);
-                //fprintf(stderr, "%lu\n", dents[index]);
-                bpos += dd->d_reclen;
-                if (bpos >= s->nread)
-                    break;
-                index += 1;
-            }
-
-            int idx = 0;
-
-            //for (idx=0; idx<=index; idx++) {
-            //    fprintf(stderr, "%d %lu\n", idx, dents[idx]);
-            //}
-
-            size_t size = index + 1;
-            //fprintf(stderr, "size: %d\n", size);
-
-            struct timeval tv;
-            gettimeofday(&tv, NULL);
-            int usec = tv.tv_usec;
-
-            struct shuffle_ctx ctx;
-            //shuffle_init(&ctx, size, 0xBAD5EEED);
-            shuffle_init(&ctx, size, usec);
-
-            //size_t i, j, k;
-            size_t i, j;
-            for (i = 0; i < size; ++i) {
-                j = shuffle_index(&ctx, i);
-                //k = shuffle_index_invert(&ctx, j);
-                //k = 0;
-                //fprintf(stderr, "%2zu %6lu   %2zu %6lu\n", j, dents[j], k, dents[k]);
-                random_dents[i] = dents[j];
-            }
-
-            bpos = 0;
-            idx = 0;
-            for (idx=0; idx<=index; idx++) {
-                //fprintf(stderr, "%d %lu\n", idx, random_dents[idx]);
-                struct linux_dirent64 *dd = (struct linux_dirent64 *)(random_dents[idx]);
-                //fprintf(stderr, "random_dents[%d]: %lu dd->d_reclen: %hu dd->name: %s\n", idx, random_dents[idx], dd->d_reclen, dd->d_name);
-
-                memcpy(random_buff + bpos, random_dents[idx], dd->d_reclen);
-                //struct linux_dirent64 *ddd = (struct linux_dirent64 *)(random_buff + bpos);
-                //fprintf(stderr, "%hu ddd->name: %s\n", ddd->d_reclen, ddd->d_name); //works as expected
-
-                bpos += dd->d_reclen;
-                //fprintf(stderr, "bpos: %d\n", bpos);
-            }
-            //fprintf(stderr, "about to memcpy\n");
-            memcpy(s->buff, random_buff, s->nread);
-            //fprintf(stderr, "after memcpy\n");
-
-            free(random_buff);
-            //free(buff);
-            //fprintf(stderr, "after frees\n");
+            if (getdents_shuffle_batch(s) == -1)
+                return NULL;
         }
-
     }
 
-    struct linux_dirent64 *d = (struct linux_dirent64 *)(s->buff + s->bpos);
-    //printf("nread: %d d_reclen: %d d->name: %s d->d_ino: %d d->d_type: %d\n", s->nread, d->d_reclen, d->d_name, d->d_ino, d->d_type);
+    struct linux_dirent64 *d =
+        (struct linux_dirent64 *)(s->buff + s->bpos);
 
-    PyObject *py_name = PyBytes_FromString(d->d_name);  // want bytes
-//  PyObject *py_name = PyUnicode_DecodeFSDefault(d->d_name);
+    PyObject *py_name = PyBytes_FromString(d->d_name);
+    if (!py_name)
+        return NULL;
 
-    // https://docs.python.org/3/c-api/arg.html#c.Py_BuildValue
-    // K (int) [unsigned long long]     Convert a C unsigned long long to a Python integer object
-    // b (int) [char]                   Convert a plain C char to a Python integer object
-    // O (object) [PyObject *]          Pass a Python object untouched (except for its reference count, which is incremented by one)
     PyObject *result = Py_BuildValue("KbO", d->d_ino, d->d_type, py_name);
+    Py_DECREF(py_name);
 
-    // unsigned short  d->d_reclen  //always even
     s->bpos += d->d_reclen;
-    //fprintf(stderr, "s->bpos: %d\n", s->bpos);
 
     return result;
 }
@@ -303,7 +280,12 @@ PyInit__getdents(void)
         return NULL;
 
     Py_INCREF(&getdents_type);
-    PyModule_AddObject(module, "getdents_raw", (PyObject *) &getdents_type);
+    if (PyModule_AddObject(module, "getdents_raw",
+                           (PyObject *) &getdents_type) < 0) {
+        Py_DECREF(&getdents_type);
+        Py_DECREF(module);
+        return NULL;
+    }
     PyModule_AddIntMacro(module, DT_BLK);
     PyModule_AddIntMacro(module, DT_CHR);
     PyModule_AddIntMacro(module, DT_DIR);
