@@ -137,7 +137,7 @@ def _iterate(
             print(c)
             return
         sys.stdout.buffer.write(msgpack.packb(c))
-        sys.stdout.buffer.close()
+        sys.stdout.buffer.flush()
         return
 
     end = b"\0"
@@ -289,23 +289,31 @@ def main():
                 index += 1
                 try:
                     names.append(os.fsencode(sys.argv[index]))
-                except IndexError as e:
-                    raise
-                    # help_name()
-                    # sys.exit(1)
+                except IndexError:
+                    print(usage(), file=sys.stderr)
+                    print("Error: --name requires an argument.", file=sys.stderr)
+                    sys.exit(1)
                 index += 1
             elif sys.argv[index] in {"--skipname", "--skip-name"}:
                 index += 1
                 try:
                     skipnames.append(os.fsencode(sys.argv[index]))
-                except IndexError as e:
-                    raise
-                    # help_name()
-                    # sys.exit(1)
+                except IndexError:
+                    print(usage(), file=sys.stderr)
+                    print(
+                        "Error: --skipname requires an argument.",
+                        file=sys.stderr,
+                    )
+                    sys.exit(1)
                 index += 1
             elif sys.argv[index] == "--exec":
                 index += 1
-                command = sys.argv[index]
+                try:
+                    command = sys.argv[index]
+                except IndexError:
+                    print(usage(), file=sys.stderr)
+                    print("Error: --exec requires an argument.", file=sys.stderr)
+                    sys.exit(1)
                 index += 1
             elif sys.argv[index] in {"--namesonly", "--names-only"}:
                 namesonly = True
