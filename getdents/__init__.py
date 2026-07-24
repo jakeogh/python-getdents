@@ -11,12 +11,9 @@ from functools import update_wrapper
 from math import inf
 from pathlib import Path
 
-from epprint import epprint
 from eprint import eprint
 from globalverbose import gvd
 
-# from ._getdents import \
-#    MIN_GETDENTS_BUFF_SIZE  # noqa: ignore=F401 # pylint: disable=import-error
 from ._getdents import \
     DT_BLK  # noqa: ignore=F401 # pylint: disable=import-error
 from ._getdents import \
@@ -36,7 +33,6 @@ from ._getdents import \
 from ._getdents import O_GETDENTS  # pylint: disable=import-error
 from ._getdents import getdents_raw  # pylint: disable=import-error
 
-# from asserttool import ic
 
 
 BUFF_SIZE = 4096 * 32  # 128k
@@ -90,8 +86,6 @@ def getdents(
         path (str): Location of the directory.
         buff_size (int): Buffer size in bytes for getdents64 syscall.
     """
-    ## eprint(f"getdents()          {path=!r}")
-    ##eprint(os.getcwd())
     try:
         path_fd = os.open(path, O_GETDENTS)
     except FileNotFoundError:
@@ -118,6 +112,7 @@ def getdents(
         sys.stderr.flush()
         return
 
+    # the C extension takes int, not bool (C90)
     if random is False:
         _random = 0
     else:
@@ -126,9 +121,6 @@ def getdents(
     gdindex = 0
     try:
         for inode, dtype, name in getdents_raw(path_fd, buff_size, _random):
-            # eprint(
-            #    f"getdents()           {gdindex=} {inode=}", f"{dtype=}", f"{name=!r}"
-            # )
             gdindex += 1
             if skip_dotpaths:
                 if name.startswith(b"."):
@@ -161,23 +153,16 @@ class Dent:
         self.inode = inode
         self.dtype = dtype
 
-        # ic(self.inode, self.name, self.parent)
         split_p = None
         if self.name == b".":
             split_p = self.parent.split(b"/")
-            # eprint(f"Dent       __init__() {self.name=} {split_p=}")
             self.name = split_p[-1]
             self.parent = b"/".join(split_p[:-1])
-            # del split_p
         self.path = os.path.join(self.parent, self.name)
-        # ic(self.inode, self.name, split_p, self.parent, self.path)
-        # assert Path(os.fsdecode(self.path)).exists() # good test, but fails for broken symlinks
-        # self.pathlib = Path(os.fsdecode(self.path))
         self.lstat = None
 
     @Reify
     def pathlib(self):
-        # return Path(os.fsdecode(self.path)).resolve()  # resolve() might be a mistake
         return Path(os.fsdecode(self.path))  # resolve() is a mistake
 
     def __str__(self):
@@ -225,8 +210,7 @@ class Dent:
     def __fspath__(self):
         return os.fsdecode(self.path)
 
-    def relative_to(self, path):  # temp dont keep
-        # return self.path.split(path)[-1]
+    def relative_to(self, path):
         return self.path.rsplit(path, maxsplit=1)[-1]
 
     def is_unknown(self):
@@ -299,7 +283,6 @@ class Dent:
             return mode is not None and stat.S_ISSOCK(mode)
         return False
 
-    # @Reify
     def depth(self):
         # Number of path components; cheap byte count instead of building a
         # Path and tuple-splitting on the hot recursion path.
@@ -314,7 +297,6 @@ class Dent:
 
 
 class NameGen:
-    # bool is new in C99 and cpython tries to remain C90 compatible
     def __init__(
         self,
         skip_dotpaths: bool,
@@ -339,15 +321,8 @@ class NameGen:
 
         if self.path[0] != b"/":
             self.path = os.path.realpath(os.path.expanduser(self.path))
-        # if gvd:
-        #    print("NameGen() __attrs_post_init__() self.path:", self.path, file=sys.stderr)
-        #    print("NameGen() __attrs_post_init__() self.names_only:", self.names_only, file=sys.stderr)
-        #    print("NameGen() __attrs_post_init__() self.random:", self.random, file=sys.stderr)
-        #    print("NameGen() __attrs_post_init__() self.skip_dotpaths:", self.skip_dotpaths, file=sys.stderr)
-        #    print("NameGen() __attrs_post_init__() self.skip_names:", self.skip_names, file=sys.stderr)
 
     def __iter__(self):
-        # ic(self.path)
 
         for inode, dtype, name in getdents(
             path=self.path,
@@ -362,15 +337,10 @@ class NameGen:
                 continue
             if not self.names_only:
                 name = Path(os.fsdecode(self.path)) / Path(os.fsdecode(name))
-            # if gvd:
-            #    print("NameGen() __iter__() inode:", inode, file=sys.stderr)
-            #    print("NameGen() __iter__() dtype:", dtype, file=sys.stderr)
-            #    print("NameGen() __iter__() name:", name, file=sys.stderr)
             yield inode, dtype, name
 
 
 class DentGen:
-    # bool is new in C99 and cpython tries to remain C90 compatible
     def __init__(
         self,
         path: bytes,
@@ -394,7 +364,6 @@ class DentGen:
         self.random = random
         self.suppress_permissionerror = suppress_permissionerror
         self.suppress_filenotfounderror = suppress_filenotfounderror
-        # iters: int = 0
 
         if self.path[0] != b"/":
             self.path = os.path.realpath(os.path.expanduser(self.path))
@@ -412,7 +381,6 @@ class DentGen:
     def __iter__(self, cur_path: bytes | None = None, cur_depth: int = 0):
         if cur_path is None:
             cur_path = self.path
-        # ic(cur_depth, cur_path)
         for inode, dtype, name in getdents(
             path=cur_path,
             buff_size=self.buff_size,
@@ -424,14 +392,12 @@ class DentGen:
         ):
             if name == b".":  # skip self-reference; dirs are yielded explicitly below
                 continue
-            # ic(cur_depth, inode, dtype, name, cur_path)
             dent = Dent(
                 parent=cur_path,
                 name=name,
                 inode=inode,
                 dtype=dtype,
             )
-            # ic(dent)
             if dent.is_dir():
                 if cur_depth < self.max_depth:
                     # yield the dir itself (replaces the old "." entry mechanism)
@@ -439,13 +405,10 @@ class DentGen:
                         yield dent
                     yield from self.__iter__(dent.path, cur_depth + 1)
                 elif cur_depth == self.max_depth:
-                    # ic(cur_depth, self.max_depth, self.min_depth, dent.depth(), dent)
                     if self.min_depth and dent.depth() < self.min_depth:
                         continue
-                    # ic("yielding", dent)
                     yield dent
             else:
-                # ic("else (not dir) yielding", dent)
                 yield dent
 
 
@@ -471,7 +434,7 @@ def paths(
     verbose: bool = False,
 ) -> Iterator[Dent]:
     if gvd:
-        epprint(
+        eprint(
             f"{path=}",
             f"{skip_dotpaths=}",
             f"{skip_names=}",
@@ -490,25 +453,8 @@ def paths(
             f"{suppress_filenotfounderror=}",
         )
 
-    # eprint(f"{path=}")
     path = os.fsencode(path)
 
-    # if gvd:
-    #    print('getdents/__init__.py',
-    #          path,
-    #          "return_dirs:", return_dirs,
-    #          "return_files:", return_files,
-    #          "return_symlinks:", return_symlinks,
-    #          "return_sockets:", return_symlinks,
-    #          "return_fifos:", return_symlinks,
-    #          "return_block_devices:", return_block_devices,
-    #          "return_char_devices:", return_char_devices,
-    #          "max_depth:", max_depth,
-    #          "min_depth:", min_depth,
-    #          "names:", names,
-    #          "skip_dotpaths:", skip_dotpaths,
-    #          "skip_names:", skip_names,
-    #          file=sys.stderr,)
     fiterator = DentGen(
         path=path,
         max_depth=max_depth,
@@ -521,13 +467,11 @@ def paths(
         verbose=verbose,
     )
     if names:
-        # names = [os.fsdecode(name) for name in names]
         for name in names:
             assert isinstance(name, str)  # fixme
 
     for thing in fiterator:
         if names:
-            # print(thing.name)
             if os.fsdecode(thing.name) not in names:
                 continue
         if not return_dirs:
@@ -552,12 +496,6 @@ def paths(
             if thing.is_block_device():
                 continue
 
-        # # names_only overrules pathlib
-        # if names_only:
-        #    yield thing.name    # on first glance it might seem that this should still be a Dent,
-        #                        # but it CANT BE, Dents reprsent real fs objects, and have parents
-        #                        # names are just bytes
-        #                        # so, unless one wants bytes, just return the Dents and use Dent.pathlib.name
         yield thing
 
 
@@ -575,7 +513,6 @@ def paths_names(
     verbose: bool = False,
     **kw,
 ) -> Iterator[bytes]:
-    # for dent in paths(path=path, max_depth=0, **kw):
     for dent in paths(path=path, verbose=verbose, **kw):
         yield dent.name
 
@@ -584,7 +521,7 @@ def files(
     path,
     *,
     skip_dotpaths: bool = False,
-    names: None | list[str] = None,  # byggy
+    names: None | list[str] = None,
     max_depth=inf,
     min_depth: int = 0,
     max_size=inf,
@@ -620,9 +557,6 @@ def files(
                 continue
             if size > max_size:
                 continue
-        # if names_only:
-        #    yield p.name
-        # else:
         yield p
 
 
