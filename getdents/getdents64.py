@@ -2,17 +2,32 @@
 
 import os
 import sys
+from collections.abc import Iterator
 from signal import SIG_DFL
 from signal import SIGPIPE
 from signal import signal
 
 import msgpack
-from unmp import unmp
+from eprint import eprint
 
 from getdents import Dent
 from getdents import DentGen
 
 signal(SIGPIPE, SIG_DFL)
+
+READ_SIZE = 128
+
+
+def _packed_paths(*, verbose: bool) -> Iterator[bytes]:
+    unpacker = msgpack.Unpacker(strict_map_key=False, use_list=False)
+    for chunk in iter(lambda: sys.stdin.buffer.read(READ_SIZE), b""):
+        unpacker.feed(chunk)
+        for value in unpacker:
+            if not isinstance(value, bytes):
+                raise TypeError(f"{type(value)} is not bytes")
+            if verbose:
+                eprint(f"{value=}")
+            yield value
 
 
 def _filter(
@@ -410,10 +425,7 @@ def main() -> None:
 
     tty = sys.stdout.isatty()
 
-    for path in unmp(
-        valid_types=(bytes,),
-        verbose=verbose,
-    ):
+    for path in _packed_paths(verbose=verbose):
         _iterate(
             path=path,
             max_depth=max_depth,

@@ -1,30 +1,9 @@
 #!/usr/bin/env python3
-# isort: skip_file
 
+from setuptools import Extension
 from setuptools import setup
-from distutils.core import Extension
-
 
 setup(
-    name="getdents",
-    version="0.2",
-    description="Python binding to linux syscall getdents64.",
-    long_description=open("README.rst").read(),
-    classifiers=[
-        "License :: OSI Approved :: BSD License",
-        "Operating System :: POSIX :: Linux",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: Implementation :: CPython",
-        "Topic :: System :: Filesystems",
-    ],
-    keywords="getdents",
-    author="Anatolii Aniskovych",
-    author_email="lin.aaa.lin@gmail.com",
-    url="http://github.com/ZipFile/python-getdents",
-    license="BSD-2-Clause",
-    packages=["getdents"],
-    include_package_data=True,
-    zip_safe=False,
     ext_modules=[
         Extension(
             "getdents._getdents",
@@ -33,14 +12,4 @@ setup(
         ),
     ],
     headers=["getdents/shuffle.h"],
-    install_requires=[
-        "setuptools",
-    ],
-    setup_requires=[],
-    tests_require=[],
-    entry_points={
-        "console_scripts": [
-            "gd = getdents.getdents64:main",
-        ],
-    },
 )

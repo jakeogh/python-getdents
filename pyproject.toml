@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=77.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "getdents"
+version = "1!0.0.1787633982"
+description = "Python binding to linux syscall getdents64"
+readme = "README.rst"
+authors = [
+    { name = "Justin Keogh", email = "github.com@v6y.net" },
+]
+dependencies = [
+    "msgpack",
+    "eprint @ git+https://github.com/jakeogh/eprint@6ee1deca0c24b684eb5093247d6bd22e11f1b057",
+]
+license = "BSD-2-Clause"
+requires-python = ">=3.12"
+
+[project.urls]
+Homepage = "https://github.com/ZipFile/python-getdents"
+
+[project.scripts]
+gd = "getdents.getdents64:main"
+
+[tool.setuptools]
+include-package-data = true
+zip-safe = false
+packages = ["getdents"]
+
+[tool.setuptools.package-data]
+getdents = [
+    "py.typed",
+]

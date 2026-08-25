@@ -12,7 +12,6 @@ from math import inf
 from pathlib import Path
 
 from eprint import eprint
-from globalverbose import gvd
 
 from ._getdents import \
     DT_BLK  # noqa: ignore=F401 # pylint: disable=import-error
@@ -433,7 +432,7 @@ def paths(
     suppress_filenotfounderror: bool = False,
     verbose: bool = False,
 ) -> Iterator[Dent]:
-    if gvd:
+    if verbose:
         eprint(
             f"{path=}",
             f"{skip_dotpaths=}",
